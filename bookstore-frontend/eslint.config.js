@@ -1,23 +1,132 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-import { globalIgnores } from 'eslint/config'
+import js from '@eslint/js';
+import typescript from '@typescript-eslint/eslint-plugin';
+import typescriptParser from '@typescript-eslint/parser';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactNative from 'eslint-plugin-react-native';
+import prettier from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 
-export default tseslint.config([
-  globalIgnores(['dist']),
+export default [
+  js.configs.recommended,
+  prettierConfig,
   {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    files: ['**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+        ecmaVersion: 2020,
+        sourceType: 'module',
+      },
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': typescript,
+      'react': react,
+      'react-hooks': reactHooks,
+      'react-native': reactNative,
+      'prettier': prettier,
+    },
+    rules: {
+      // TypeScript rules
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      
+      // General JS/TS rules
+      'no-unused-vars': 'off',
+      'no-multi-spaces': 'error',
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+      'semi': ['error', 'never'],
+      'no-extra-semi': 'error',
+      'indent': ['error', 2],
+      'no-tabs': 'error',
+      
+      // React rules
+      'react/react-in-jsx-scope': 'off', // Not needed in React 17+
+      'react/prop-types': 'off', // Using TypeScript for prop validation
+      'react/display-name': 'off',
+      
+      // React Native rules
+      'react-native/no-unused-styles': 'error',
+      'react-native/split-platform-components': 'error',
+      'react-native/no-inline-styles': 'warn',
+      'react-native/no-color-literals': 'warn',
+      'react-native/no-raw-text': 'off',
+      
+      // Prettier integration
+     'prettier/prettier': [
+        'error',
+        {
+          printWidth: 80,
+          tabWidth: 2,
+          singleQuote: true,
+          trailingComma: 'all',
+          arrowParens: 'always',
+          semi: false,
+          endOfLine: 'auto',
+        },
+      ],
+      
+      // General rules
+      'no-console': 'warn',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'object-shorthand': 'error',
+      'prefer-template': 'error',
+      
+      // JSX formatting rules
+      'react/jsx-max-props-per-line': ['error', { maximum: 1, when: 'multiline' }],
+      'react/jsx-first-prop-new-line': ['error', 'multiline'],
+      'react/jsx-closing-bracket-location': ['error', 'line-aligned'],
+      'react/jsx-indent-props': ['error', 2],
+      'react/jsx-wrap-multilines': [
+        'error',
+        {
+          declaration: 'parens-new-line',
+          assignment: 'parens-new-line',
+          return: 'parens-new-line',
+          arrow: 'parens-new-line',
+          condition: 'parens-new-line',
+          logical: 'parens-new-line',
+          prop: 'parens-new-line',
+        },
+      ],
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
     },
   },
-])
+  {
+    ignores: [
+      'node_modules/',
+      '*.config.js',
+      '*.config.ts',
+      'metro.config.js',
+      'babel.config.js',
+      'expo-env.d.ts',
+      'assets/',
+      '*.log',
+      'coverage/',
+      'dist/',
+      'build/',
+      '.expo/',
+    ],
+  },
+];
