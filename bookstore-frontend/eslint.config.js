@@ -5,6 +5,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactNative from 'eslint-plugin-react-native';
 import prettier from 'eslint-plugin-prettier';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
@@ -39,6 +40,7 @@ export default [
       'react-hooks': reactHooks,
       'react-native': reactNative,
       'prettier': prettier,
+      'simple-import-sort': simpleImportSort
     },
     rules: {
       // TypeScript rules
@@ -67,6 +69,10 @@ export default [
       'react-native/no-inline-styles': 'warn',
       'react-native/no-color-literals': 'warn',
       'react-native/no-raw-text': 'off',
+
+      //simple-import-sort rules
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
       
       // Prettier integration
      'prettier/prettier': [
