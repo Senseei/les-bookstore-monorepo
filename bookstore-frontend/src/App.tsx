@@ -1,13 +1,13 @@
 import { ThemeProvider } from 'styled-components'
 
-import { SignIn } from './pages'
+import { AdminLayout } from './pages/Admin'
 import { defaultTheme, GlobalStyle } from './styles'
 
 function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyle />
-      <SignIn />
+      <AdminLayout />
     </ThemeProvider>
   )
 }
