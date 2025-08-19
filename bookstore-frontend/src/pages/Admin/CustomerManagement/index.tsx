@@ -1,3 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/Card/components'
+
 import { CustomerHeader } from './components'
 import { CustomerContainer } from './styles'
 
@@ -9,7 +17,18 @@ export const CustomerManagement = () => {
   return (
     <CustomerContainer>
       <CustomerHeader onAddCustomer={handleAddCustomer} />
-      {/* TODO: Add customer list/table here */}
+
+      {/* Example Card - demonstrating the new structure works */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Customer Management</CardTitle>
+          <CardDescription>Manage your customer database</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* TODO: Add customer list/table here */}
+          <p>Customer list will be implemented here</p>
+        </CardContent>
+      </Card>
     </CustomerContainer>
   )
 }

@@ -32,6 +32,11 @@ export default [
         module: 'readonly',
         require: 'readonly',
         exports: 'readonly',
+        document: 'readonly',
+        window: 'readonly',
+        navigator: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
       },
     },
     plugins: {
