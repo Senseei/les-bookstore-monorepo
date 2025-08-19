@@ -55,7 +55,7 @@ export default [
       'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       'semi': ['error', 'never'],
       'no-extra-semi': 'error',
-      'indent': ['error', 2],
+      // 'indent': ['error', 2], // Removed - handled by Prettier
       'no-tabs': 'error',
       
       // React rules
@@ -99,7 +99,7 @@ export default [
       'react/jsx-max-props-per-line': ['error', { maximum: 1, when: 'multiline' }],
       'react/jsx-first-prop-new-line': ['error', 'multiline'],
       'react/jsx-closing-bracket-location': ['error', 'line-aligned'],
-      'react/jsx-indent-props': ['error', 2],
+      // 'react/jsx-indent-props': ['error', 2], // Removed - handled by Prettier
       'react/jsx-wrap-multilines': [
         'error',
         {
