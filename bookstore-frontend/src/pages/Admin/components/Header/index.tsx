@@ -1,4 +1,5 @@
 import { TabButton } from './components'
+import { HeaderContainer, HeaderContent, Navigation, Title } from './styles'
 
 interface AdminHeaderProps {
   activeTab: string
@@ -7,20 +8,22 @@ interface AdminHeaderProps {
 
 export const AdminHeader = ({ activeTab, onTabChange }: AdminHeaderProps) => {
   return (
-    <header>
-      <h1>Bookstore Admin</h1>
-      <nav>
-        <TabButton
-          label="Customers"
-          isActive={activeTab === 'customers'}
-          onClick={() => onTabChange('customers')}
-        />
-        <TabButton
-          label="Books"
-          isActive={activeTab === 'books'}
-          onClick={() => onTabChange('books')}
-        />
-      </nav>
-    </header>
+    <HeaderContainer>
+      <HeaderContent>
+        <Title>Bookstore Admin</Title>
+        <Navigation>
+          <TabButton
+            label="Customers"
+            isActive={activeTab === 'customers'}
+            onClick={() => onTabChange('customers')}
+          />
+          <TabButton
+            label="Books"
+            isActive={activeTab === 'books'}
+            onClick={() => onTabChange('books')}
+          />
+        </Navigation>
+      </HeaderContent>
+    </HeaderContainer>
   )
 }

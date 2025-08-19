@@ -1,3 +1,5 @@
+import { StyledButton } from './styles'
+
 interface TabButtonProps {
   label: string
   isActive: boolean
@@ -5,5 +7,9 @@ interface TabButtonProps {
 }
 
 export const TabButton = ({ label, isActive, onClick }: TabButtonProps) => {
-  return <button onClick={onClick}>{isActive ? `[${label}]` : label}</button>
+  return (
+    <StyledButton $isActive={isActive} onClick={onClick}>
+      {label}
+    </StyledButton>
+  )
 }
