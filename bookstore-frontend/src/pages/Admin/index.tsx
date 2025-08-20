@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { Outlet } from 'react-router'
 
 import { AdminHeader } from './components'
 import { ADMIN_TABS } from './constants'
-import { CustomerManagement } from './CustomerManagement'
 import { LayoutContainer, MainContent } from './styles'
 
 export const AdminLayout = () => {
@@ -16,8 +16,7 @@ export const AdminLayout = () => {
         tabs={ADMIN_TABS}
       />
       <MainContent>
-        {activeTab === 'customers' && <CustomerManagement />}
-        {activeTab === 'books' && <div>Book Management Content</div>}
+        <Outlet />
       </MainContent>
     </LayoutContainer>
   )
