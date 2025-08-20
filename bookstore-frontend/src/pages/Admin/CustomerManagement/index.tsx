@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/Card/components'
+} from '@/components'
 
 import { CustomerHeader } from './components'
 import { CustomerContainer } from './styles'
@@ -18,7 +18,6 @@ export const CustomerManagement = () => {
     <CustomerContainer>
       <CustomerHeader onAddCustomer={handleAddCustomer} />
 
-      {/* Example Card - demonstrating the new structure works */}
       <Card>
         <CardHeader>
           <CardTitle>Customer Management</CardTitle>

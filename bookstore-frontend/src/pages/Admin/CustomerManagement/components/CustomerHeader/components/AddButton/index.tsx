@@ -1,4 +1,4 @@
-import { PlusIcon, StyledButton } from './styles'
+import { Button } from '@/components'
 
 interface AddButtonProps {
   onClick: () => void
@@ -6,9 +6,8 @@ interface AddButtonProps {
 
 export const AddButton = ({ onClick }: AddButtonProps) => {
   return (
-    <StyledButton onClick={onClick}>
-      <PlusIcon>+</PlusIcon>
+    <Button variant="primary" size="md" startIcon="+" onClick={onClick}>
       Adicionar Cliente
-    </StyledButton>
+    </Button>
   )
 }
