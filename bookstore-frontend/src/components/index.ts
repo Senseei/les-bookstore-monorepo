@@ -8,3 +8,4 @@ export {
   CardTitle,
 } from './Card'
 export { Input } from './Input'
+export { Select } from './Select'
