@@ -1,5 +1,5 @@
 import { AddButton } from './components'
-import { Header, HeaderContent, Subtitle, Title } from './styles'
+import * as S from './styles'
 
 interface CustomerHeaderProps {
   onAddCustomer: () => void
@@ -7,12 +7,12 @@ interface CustomerHeaderProps {
 
 export const CustomerHeader = ({ onAddCustomer }: CustomerHeaderProps) => {
   return (
-    <Header>
-      <HeaderContent>
-        <Title>Clientes</Title>
-        <Subtitle>Gerencie os clientes da sua livraria</Subtitle>
-      </HeaderContent>
+    <S.Header>
+      <S.HeaderContent>
+        <S.Title>Clientes</S.Title>
+        <S.Subtitle>Gerencie os clientes da sua livraria</S.Subtitle>
+      </S.HeaderContent>
       <AddButton onClick={onAddCustomer} />
-    </Header>
+    </S.Header>
   )
 }

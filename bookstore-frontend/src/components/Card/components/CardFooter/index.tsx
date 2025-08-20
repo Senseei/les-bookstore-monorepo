@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { StyledCardFooter } from './styles'
+import * as S from './styles'
 
 interface CardFooterProps {
   children?: React.ReactNode
@@ -13,8 +13,8 @@ export const CardFooter = ({
   ...props
 }: CardFooterProps) => {
   return (
-    <StyledCardFooter className={className} {...props}>
+    <S.StyledCardFooter className={className} {...props}>
       {children}
-    </StyledCardFooter>
+    </S.StyledCardFooter>
   )
 }

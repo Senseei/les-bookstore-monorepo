@@ -1,4 +1,4 @@
-import { type ButtonProps, StyledButton } from './styles'
+import * as S from './styles'
 
 export type { ButtonProps } from './styles'
 
@@ -12,9 +12,9 @@ export const Button = ({
   startIcon,
   endIcon,
   ...props
-}: ButtonProps) => {
+}: S.ButtonProps) => {
   return (
-    <StyledButton
+    <S.StyledButton
       variant={variant}
       size={size}
       fullWidth={fullWidth}
@@ -25,6 +25,6 @@ export const Button = ({
       {startIcon && <span>{startIcon}</span>}
       {loading ? 'Carregando...' : children}
       {endIcon && <span>{endIcon}</span>}
-    </StyledButton>
+    </S.StyledButton>
   )
 }

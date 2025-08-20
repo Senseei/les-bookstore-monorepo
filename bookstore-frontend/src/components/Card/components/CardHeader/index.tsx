@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { StyledCardHeader } from './styles'
+import * as S from './styles'
 
 interface CardHeaderProps {
   children?: React.ReactNode
@@ -13,8 +13,8 @@ export const CardHeader = ({
   ...props
 }: CardHeaderProps) => {
   return (
-    <StyledCardHeader className={className} {...props}>
+    <S.StyledCardHeader className={className} {...props}>
       {children}
-    </StyledCardHeader>
+    </S.StyledCardHeader>
   )
 }

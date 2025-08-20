@@ -1,5 +1,5 @@
 import { TabButton } from './components'
-import { HeaderContainer, HeaderContent, Navigation, Title } from './styles'
+import * as S from './styles'
 
 interface Tab {
   id: string
@@ -18,10 +18,10 @@ export const AdminHeader = ({
   tabs,
 }: AdminHeaderProps) => {
   return (
-    <HeaderContainer>
-      <HeaderContent>
-        <Title>Bookstore Admin</Title>
-        <Navigation>
+    <S.HeaderContainer>
+      <S.HeaderContent>
+        <S.Title>Bookstore Admin</S.Title>
+        <S.Navigation>
           {tabs.map((tab) => (
             <TabButton
               key={tab.id}
@@ -30,8 +30,8 @@ export const AdminHeader = ({
               onClick={() => onTabChange(tab.id)}
             />
           ))}
-        </Navigation>
-      </HeaderContent>
-    </HeaderContainer>
+        </S.Navigation>
+      </S.HeaderContent>
+    </S.HeaderContainer>
   )
 }

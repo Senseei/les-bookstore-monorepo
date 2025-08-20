@@ -7,7 +7,7 @@ import {
 } from '@/components'
 
 import { CustomerHeader } from './components'
-import { CustomerContainer } from './styles'
+import * as S from './styles'
 
 export const CustomerManagement = () => {
   const handleAddCustomer = () => {
@@ -15,7 +15,7 @@ export const CustomerManagement = () => {
   }
 
   return (
-    <CustomerContainer>
+    <S.CustomerContainer>
       <CustomerHeader onAddCustomer={handleAddCustomer} />
 
       <Card>
@@ -28,6 +28,6 @@ export const CustomerManagement = () => {
           <p>Customer list will be implemented here</p>
         </CardContent>
       </Card>
-    </CustomerContainer>
+    </S.CustomerContainer>
   )
 }

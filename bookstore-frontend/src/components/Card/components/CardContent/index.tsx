@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { StyledCardContent } from './styles'
+import * as S from './styles'
 
 interface CardContentProps {
   children?: React.ReactNode
@@ -13,8 +13,8 @@ export const CardContent = ({
   ...props
 }: CardContentProps) => {
   return (
-    <StyledCardContent className={className} {...props}>
+    <S.StyledCardContent className={className} {...props}>
       {children}
-    </StyledCardContent>
+    </S.StyledCardContent>
   )
 }

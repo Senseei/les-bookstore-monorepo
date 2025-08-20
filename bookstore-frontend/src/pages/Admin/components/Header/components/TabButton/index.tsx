@@ -1,4 +1,4 @@
-import { StyledButton } from './styles'
+import * as S from './styles'
 
 interface TabButtonProps {
   label: string
@@ -8,8 +8,8 @@ interface TabButtonProps {
 
 export const TabButton = ({ label, isActive, onClick }: TabButtonProps) => {
   return (
-    <StyledButton $isActive={isActive} onClick={onClick}>
+    <S.StyledButton $isActive={isActive} onClick={onClick}>
       {label}
-    </StyledButton>
+    </S.StyledButton>
   )
 }
