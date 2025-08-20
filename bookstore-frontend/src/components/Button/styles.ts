@@ -17,19 +17,22 @@ export interface ButtonProps {
 // Button size variants
 const sizeVariants = {
   sm: css`
-    padding: 8px 12px;
-    font-size: 12px;
-    border-radius: 4px;
+    padding: ${(props) =>
+      `${props.theme.SPACING.SM} ${props.theme.SPACING.MD}`};
+    font-size: ${(props) => props.theme.FONT_SIZE.XSMALL};
+    border-radius: ${(props) => props.theme.BORDER_RADIUS.SM};
   `,
   md: css`
-    padding: 12px 16px;
-    font-size: 14px;
-    border-radius: 6px;
+    padding: ${(props) =>
+      `${props.theme.SPACING.MD} ${props.theme.SPACING.LG}`};
+    font-size: ${(props) => props.theme.FONT_SIZE.SMALL};
+    border-radius: ${(props) => props.theme.BORDER_RADIUS.MD};
   `,
   lg: css`
-    padding: 16px 24px;
-    font-size: 16px;
-    border-radius: 8px;
+    padding: ${(props) =>
+      `${props.theme.SPACING.LG} ${props.theme.SPACING.XL}`};
+    font-size: ${(props) => props.theme.FONT_SIZE.MEDIUM};
+    border-radius: ${(props) => props.theme.BORDER_RADIUS.LG};
   `,
 }
 
@@ -116,9 +119,9 @@ export const StyledButton = styled.button<
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  gap: ${(props) => props.theme.SPACING.SM};
+  font-weight: ${(props) => props.theme.FONT_WEIGHT.MEDIUM};
+  transition: all ${(props) => props.theme.TRANSITIONS.NORMAL};
   cursor: pointer;
   font-family: inherit;
   line-height: 1;
@@ -155,6 +158,7 @@ export const StyledButton = styled.button<
   /* Focus styles */
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px ${(props) => props.theme.COLORS.PRIMARY_LIGHT}40;
+    box-shadow: ${(props) => props.theme.SHADOWS.FOCUS}
+      ${(props) => props.theme.COLORS.PRIMARY_LIGHT}40;
   }
 `
