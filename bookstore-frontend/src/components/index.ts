@@ -7,3 +7,4 @@ export {
   CardHeader,
   CardTitle,
 } from './Card'
+export { Input } from './Input'
