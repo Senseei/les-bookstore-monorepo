@@ -1,4 +1,4 @@
-import { Books, Users } from 'phosphor-react'
+import { Book, Books, Users } from 'phosphor-react'
 import { NavLink } from 'react-router'
 
 import { APP_ROUTES } from '../../../../routes/constants'
@@ -8,7 +8,10 @@ export const AdminHeader = () => {
   return (
     <S.HeaderContainer>
       <S.HeaderContent>
-        <S.Title>Bookstore Admin</S.Title>
+        <S.Title>
+          <Book size={32} />
+          Bookstore Admin
+        </S.Title>
         <nav>
           <NavLink to={APP_ROUTES.admin.customers}>
             <Users size={24} />

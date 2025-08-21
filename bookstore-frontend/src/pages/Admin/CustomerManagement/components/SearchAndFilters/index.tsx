@@ -1,3 +1,4 @@
+import { Funnel } from 'phosphor-react'
 import React from 'react'
 
 import { Button, Input, Select } from '@/components'
@@ -45,7 +46,11 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             />
           </S.SearchInputWithIcon>
         </S.SearchInputWrapper>
-        <Button variant="outline" onClick={onToggleFilters} startIcon="⚙️">
+        <Button
+          variant="outline"
+          onClick={onToggleFilters}
+          startIcon={<Funnel size={16} />}
+        >
           Filtros
         </Button>
       </S.SearchRow>

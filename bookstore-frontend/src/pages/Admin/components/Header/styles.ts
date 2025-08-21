@@ -47,4 +47,7 @@ export const Title = styled.h1`
   font-size: ${(props) => props.theme.FONT_SIZE.XLARGE};
   font-weight: ${(props) => props.theme.FONT_WEIGHT.BOLD};
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `
