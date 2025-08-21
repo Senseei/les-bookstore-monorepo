@@ -1,31 +1,42 @@
+import { CustomerCard } from './components'
 import * as S from './styles'
-
-export interface Customer {
-  id: number
-  name: string
-  email: string
-  status: string
-}
+import type { Customer } from './types'
 
 interface CustomerListProps {
   customers: Customer[]
 }
 
 export const CustomerList = ({ customers }: CustomerListProps) => {
+  const handleViewDetails = (customerId: number) => {
+    // TODO: Navigate to customer details
+    // eslint-disable-next-line no-console
+    console.log('View details for customer:', customerId)
+  }
+
+  const handleEditCustomer = (customerId: number) => {
+    // TODO: Navigate to customer edit
+    // eslint-disable-next-line no-console
+    console.log('Edit customer:', customerId)
+  }
+
+  const handleMoreOptions = (customerId: number) => {
+    // TODO: Show options menu
+    // eslint-disable-next-line no-console
+    console.log('More options for customer:', customerId)
+  }
+
   return (
     <>
       {customers.length > 0 ? (
         <S.CustomerGrid>
           {customers.map((customer) => (
-            <S.CustomerCard key={customer.id}>
-              <S.CustomerInfo>
-                <S.CustomerName>{customer.name}</S.CustomerName>
-                <S.CustomerEmail>{customer.email}</S.CustomerEmail>
-              </S.CustomerInfo>
-              <S.CustomerStatus status={customer.status}>
-                {customer.status}
-              </S.CustomerStatus>
-            </S.CustomerCard>
+            <CustomerCard
+              key={customer.id}
+              customer={customer}
+              onViewDetails={handleViewDetails}
+              onEditCustomer={handleEditCustomer}
+              onMoreOptions={handleMoreOptions}
+            />
           ))}
         </S.CustomerGrid>
       ) : (
@@ -36,3 +47,6 @@ export const CustomerList = ({ customers }: CustomerListProps) => {
     </>
   )
 }
+
+// Export the Customer type for use in parent components
+export type { Customer }
