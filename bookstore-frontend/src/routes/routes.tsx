@@ -2,18 +2,19 @@ import { createBrowserRouter } from 'react-router'
 
 import { AdminLayout } from '@/pages'
 import { CustomerManagement } from '@/pages/Admin/CustomerManagement'
+import { APP_ROUTES_PATHS } from '@/routes/constants'
 
 export const Router = createBrowserRouter([
   {
-    path: '/admin',
+    path: APP_ROUTES_PATHS.admin.base,
     element: <AdminLayout />,
     children: [
       {
-        path: 'customers',
+        path: APP_ROUTES_PATHS.admin.customers,
         element: <CustomerManagement />,
       },
       {
-        path: 'books',
+        path: APP_ROUTES_PATHS.admin.books,
         element: <div>Book Management Page</div>,
       },
     ],

@@ -1,36 +1,24 @@
-import { TabButton } from './components'
+import { Books, Users } from 'phosphor-react'
+import { NavLink } from 'react-router'
+
+import { APP_ROUTES } from '../../../../routes/constants'
 import * as S from './styles'
 
-interface Tab {
-  id: string
-  label: string
-}
-
-interface AdminHeaderProps {
-  activeTab: string
-  onTabChange: (tabId: string) => void
-  tabs: Tab[]
-}
-
-export const AdminHeader = ({
-  activeTab,
-  onTabChange,
-  tabs,
-}: AdminHeaderProps) => {
+export const AdminHeader = () => {
   return (
     <S.HeaderContainer>
       <S.HeaderContent>
         <S.Title>Bookstore Admin</S.Title>
-        <S.Navigation>
-          {tabs.map((tab) => (
-            <TabButton
-              key={tab.id}
-              label={tab.label}
-              isActive={activeTab === tab.id}
-              onClick={() => onTabChange(tab.id)}
-            />
-          ))}
-        </S.Navigation>
+        <nav>
+          <NavLink to={APP_ROUTES.admin.customers}>
+            <Users size={24} />
+            <span>Clientes</span>
+          </NavLink>
+          <NavLink to={APP_ROUTES.admin.books}>
+            <Books size={24} />
+            <span>Livros</span>
+          </NavLink>
+        </nav>
       </S.HeaderContent>
     </S.HeaderContainer>
   )
