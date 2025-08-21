@@ -20,7 +20,7 @@ export interface SelectProps {
   error?: boolean
 }
 
-export const Select: React.FC<SelectProps> = ({
+export const Select = ({
   options,
   value,
   placeholder = 'Select an option...',
@@ -31,7 +31,7 @@ export const Select: React.FC<SelectProps> = ({
   label,
   helperText,
   error = false,
-}) => {
+}: SelectProps) => {
   const handleChange = (event: { target: { value: string } }) => {
     onChange?.(event.target.value)
   }
