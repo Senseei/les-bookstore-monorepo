@@ -9,4 +9,5 @@ export {
   CardTitle,
 } from './Card'
 export { Input } from './Input'
+export { NavigationButton } from './NavigationButton'
 export { Select } from './Select'

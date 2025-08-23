@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components'
 import { PageHeader } from '@/pages/Admin/components'
+import { APP_ROUTES } from '@/routes'
 
 import { AddButton, CustomerList, SearchAndFilters } from './components'
 import type { Customer } from './components/CustomerList/types'
@@ -95,10 +96,6 @@ export const CustomerManagement = () => {
     return matchesSearch && matchesStatus && matchesRanking
   })
 
-  const handleAddCustomer = () => {
-    // TODO: Navigate to new customer form or open modal
-  }
-
   const clearFilters = () => {
     setSearchTerm('')
     setStatusFilter('')
@@ -110,7 +107,7 @@ export const CustomerManagement = () => {
       <PageHeader
         title="Clientes"
         subtitle="Gerencie os clientes da sua livraria"
-        actionButton={<AddButton onClick={handleAddCustomer} />}
+        actionButton={<AddButton to={APP_ROUTES.admin.customers.new} />}
       />
 
       {/* Search and Filters */}
