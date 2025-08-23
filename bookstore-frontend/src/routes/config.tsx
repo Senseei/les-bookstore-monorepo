@@ -1,29 +1,29 @@
 import { AdminLayout } from '@/pages'
 import { CustomerManagement } from '@/pages/Admin/CustomerManagement'
 
-import { ROUTES } from './constants'
+import { PATHS, ROUTES } from './constants'
 
-// Route configuration objects - easier to maintain
+// Route configuration using reusable path segments
 export const adminRoutes = [
   {
-    path: 'customers',
+    path: PATHS.CUSTOMERS, // 'customers' - reusable segment
     element: <CustomerManagement />,
   },
   {
-    path: 'customers/new',
-    element: <div>New Customer Form</div>, // TODO: Create CustomerForm component
+    path: `${PATHS.CUSTOMERS}/${PATHS.NEW}`, // 'customers/new' - composed from segments
+    element: <div>New Customer Form</div>,
   },
   {
-    path: 'customers/:id/edit',
-    element: <div>Edit Customer Form</div>, // TODO: Create CustomerForm component
+    path: `${PATHS.CUSTOMERS}/:id/${PATHS.EDIT}`, // 'customers/:id/edit' - pattern from segments
+    element: <div>Edit Customer Form</div>,
   },
   {
-    path: 'books',
-    element: <div>Book Management Page</div>, // TODO: Create BookManagement component
+    path: PATHS.BOOKS, // 'books' - reusable segment
+    element: <div>Book Management Page</div>,
   },
   {
-    path: 'books/new',
-    element: <div>New Book Form</div>, // TODO: Create BookForm component
+    path: `${PATHS.BOOKS}/${PATHS.NEW}`, // 'books/new' - composed from segments
+    element: <div>New Book Form</div>,
   },
 ]
 
@@ -34,9 +34,4 @@ export const routeConfig = [
     element: <AdminLayout />,
     children: adminRoutes,
   },
-  // Future: public routes
-  // {
-  //   path: ROUTES.HOME,
-  //   element: <HomePage />,
-  // },
 ]
