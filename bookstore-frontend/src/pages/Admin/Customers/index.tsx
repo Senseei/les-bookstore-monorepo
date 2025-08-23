@@ -14,7 +14,7 @@ import { AddButton, CustomerList, SearchAndFilters } from './components'
 import type { Customer } from './components/CustomerList/types'
 import * as S from './styles'
 
-export const CustomerManagement = () => {
+export const Customers = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [statusFilter, setStatusFilter] = useState('')
