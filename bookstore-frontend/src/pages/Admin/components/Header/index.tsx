@@ -1,7 +1,7 @@
 import { Book, Books, Users } from 'phosphor-react'
 import { NavLink } from 'react-router'
 
-import { APP_ROUTES } from '@/routes/constants'
+import { ROUTES } from '@/routes/constants'
 
 import * as S from './styles'
 
@@ -14,11 +14,11 @@ export const AdminHeader = () => {
           Bookstore Admin
         </S.Title>
         <nav>
-          <NavLink to={APP_ROUTES.admin.customers.list}>
+          <NavLink to={ROUTES.ADMIN_CUSTOMERS}>
             <Users size={24} />
             <span>Clientes</span>
           </NavLink>
-          <NavLink to={APP_ROUTES.admin.books.list}>
+          <NavLink to={ROUTES.ADMIN_BOOKS}>
             <Books size={24} />
             <span>Livros</span>
           </NavLink>
