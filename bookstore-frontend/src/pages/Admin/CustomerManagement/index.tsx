@@ -7,8 +7,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components'
+import { PageHeader } from '@/pages/Admin/components'
 
-import { CustomerHeader, CustomerList, SearchAndFilters } from './components'
+import { AddButton, CustomerList, SearchAndFilters } from './components'
 import type { Customer } from './components/CustomerList/types'
 import * as S from './styles'
 
@@ -106,7 +107,11 @@ export const CustomerManagement = () => {
 
   return (
     <S.CustomerContainer>
-      <CustomerHeader onAddCustomer={handleAddCustomer} />
+      <PageHeader
+        title="Clientes"
+        subtitle="Gerencie os clientes da sua livraria"
+        actionButton={<AddButton onClick={handleAddCustomer} />}
+      />
 
       {/* Search and Filters */}
       <Card>

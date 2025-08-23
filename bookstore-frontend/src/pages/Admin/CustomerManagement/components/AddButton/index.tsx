@@ -6,8 +6,8 @@ interface AddButtonProps {
 
 export const AddButton = ({ onClick }: AddButtonProps) => {
   return (
-    <Button variant="primary" size="md" startIcon="+" onClick={onClick}>
-      Adicionar Cliente
+    <Button variant="primary" size="md" onClick={onClick}>
+      + Adicionar Cliente
     </Button>
   )
 }
