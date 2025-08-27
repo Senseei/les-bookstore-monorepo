@@ -1,5 +1,4 @@
-import { AdminLayout } from '@/pages'
-import { Customers } from '@/pages/Admin/Customers'
+import { AdminLayout, CustomersList } from '@/pages'
 
 import { PATHS, ROUTES } from './constants'
 
@@ -7,7 +6,7 @@ import { PATHS, ROUTES } from './constants'
 export const adminRoutes = [
   {
     path: PATHS.CUSTOMERS, // 'customers' - reusable segment
-    element: <Customers />,
+    element: <CustomersList />,
   },
   {
     path: `${PATHS.CUSTOMERS}/${PATHS.NEW}`, // 'customers/new' - composed from segments

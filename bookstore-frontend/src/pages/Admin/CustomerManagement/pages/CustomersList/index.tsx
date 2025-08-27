@@ -7,14 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components'
-import { PageHeader } from '@/pages/Admin/components'
+import { PageHeader } from '@/pages/Admin/layout/components'
 import { ROUTES } from '@/routes/constants'
 
 import { AddButton, CustomerList, SearchAndFilters } from './components'
 import type { Customer } from './components/CustomerList/types'
 import * as S from './styles'
 
-export const Customers = () => {
+export const CustomersList = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [statusFilter, setStatusFilter] = useState('')
