@@ -3,10 +3,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from '@auth/auth.module';
+import { UsersModule } from '@users/users.module';
+import { CommonModule } from '@common/common.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    AuthModule,
+    CommonModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
