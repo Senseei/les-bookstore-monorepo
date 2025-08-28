@@ -5,7 +5,7 @@ import { PaginatedResult } from '@common/paginated-result';
 export abstract class CRUDRepository<E extends DomainEntity> {
   protected constructor(protected readonly repository: Repository<E>) {}
 
-  public async findById(id: number): Promise<E | null> {
+  public async findById(id: string): Promise<E | null> {
     return this.repository.findOne({
       where: { id } as FindOptionsWhere<E>,
     });
@@ -34,7 +34,7 @@ export abstract class CRUDRepository<E extends DomainEntity> {
     return this.repository.save(entity);
   }
 
-  public async deleteById(id: number): Promise<void> {
+  public async deleteById(id: string): Promise<void> {
     await this.repository.delete({ id } as FindOptionsWhere<E>);
   }
 

@@ -5,8 +5,8 @@ import {
 } from 'typeorm';
 
 export abstract class DomainEntity {
-  @PrimaryGeneratedColumn()
-  readonly id: number;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
