@@ -1,10 +1,8 @@
-import { Injectable } from '@nestjs/common';
 import { DomainEntity } from './domain.entity';
 import { CRUDRepository } from './common.repository';
 import { EntityNotFoundException } from './exceptions/entity-not-found.exception';
 
-@Injectable()
-export class CommonService<E extends DomainEntity> {
+export abstract class CommonService<E extends DomainEntity> {
   constructor(private readonly commonRepository: CRUDRepository<E>) {}
 
   public async save(entity: E): Promise<E> {
