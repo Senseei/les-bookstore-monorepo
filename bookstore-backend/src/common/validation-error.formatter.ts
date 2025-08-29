@@ -2,7 +2,7 @@ import { ValidationError } from 'class-validator';
 
 export class ValidationErrorFormatter {
   public static format(errors: ValidationError[]): string {
-    return errors.map((error) => this.formatError(error)).join('; ');
+    return errors.map((error) => this.formatError(error)).join(';\n');
   }
 
   private static formatError(error: ValidationError): string {
