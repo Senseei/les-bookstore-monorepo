@@ -13,4 +13,9 @@ export abstract class DomainEntity {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
+
+  public equals(other: DomainEntity): boolean {
+    if (!(other instanceof DomainEntity)) return false;
+    return this.id === other.id;
+  }
 }

@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { JwtToken } from './interfaces/jwt-token.interface';
 import { LoginCredentialsDTO } from './dtos/login-credentials.dto';
 import { UserDTO } from '@users/dtos/user.dto';
-import { SignUpCredentialsDTO } from './dtos/signup-credentials.dto';
+import { NewUserDTO } from './dtos/new-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(201)
-  public async signUp(@Body() body: SignUpCredentialsDTO): Promise<UserDTO> {
+  public async signUp(@Body() body: NewUserDTO): Promise<UserDTO> {
     return await this.authService.signUp(body);
   }
 }
