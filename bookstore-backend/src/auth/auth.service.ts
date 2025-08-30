@@ -9,6 +9,7 @@ import { UsersService } from '@users/users.service';
 import { NewUserDTO } from './dtos/new-user.dto';
 import { User } from '@users/entities/user.entity';
 import { UserDTO } from '@users/dtos/user.dto';
+import { Address } from '@users/entities/address.entity';
 
 @Injectable()
 export class AuthService {
@@ -48,6 +49,20 @@ export class AuthService {
       password: hashedPassword,
       phone: dto.phone,
     });
+
+    user.addresses.push(
+      new Address({
+        type: dto.address.type,
+        addressName: dto.address.addressName,
+        postalCode: dto.address.postalCode,
+        street: dto.address.street,
+        number: dto.address.number,
+        complement: dto.address.complement,
+        district: dto.address.district,
+        city: dto.address.city,
+        state: dto.address.state,
+      }),
+    );
 
     return new UserDTO(await this.usersService.save(user));
   }

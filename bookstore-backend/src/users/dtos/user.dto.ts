@@ -22,8 +22,7 @@ export class UserDTO {
     this.phone = user.phone;
     this.gender = user.gender;
     this.birthDate = user.birthDate;
-    this.addresses =
-      user.addresses?.map((address) => new AddressDTO(address)) || [];
+    this.addresses = user.addresses.map((address) => new AddressDTO(address));
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
   }

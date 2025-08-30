@@ -50,6 +50,7 @@ export class User extends DomainEntity {
       this.password = props.password;
       this.gender = props.gender;
       this.birthDate = props.birthDate;
+      this.addresses = [];
     }
   }
 
