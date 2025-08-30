@@ -4,33 +4,31 @@ import {
   IsEnum,
   IsNotEmpty,
   IsString,
-  Length,
   ValidateNested,
 } from 'class-validator';
 import { SignUpAddressDTO } from './signup-address.dto';
 import { Gender } from '@users/enums/gender.enum';
 import { Type } from 'class-transformer';
+import { IsCpf } from '@common/decorators/validators/cpf.validator';
+import { IsPassword } from '@common/decorators/validators/password.validator';
+import { IsBrPhone } from '@common/decorators/validators/br-phone.validator';
 
 export class NewUserDTO {
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsPassword()
   password: string;
 
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @Length(11, 11)
+  @IsCpf()
   cpf: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsBrPhone()
   phone: string;
 
   @IsEnum(Gender)
