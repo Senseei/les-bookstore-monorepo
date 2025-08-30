@@ -19,7 +19,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {
-        console.log(errors);
         const errorMessages = ValidationErrorFormatter.formatAsObject(errors);
         return new InvalidBodyException('Invalid Body', errorMessages);
       },
