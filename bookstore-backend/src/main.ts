@@ -20,8 +20,8 @@ async function bootstrap() {
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {
         console.log(errors);
-        const errorMessages = ValidationErrorFormatter.format(errors);
-        return new InvalidBodyException(errorMessages);
+        const errorMessages = ValidationErrorFormatter.formatAsObject(errors);
+        return new InvalidBodyException('Invalid Body', errorMessages);
       },
       transform: true,
       whitelist: true,

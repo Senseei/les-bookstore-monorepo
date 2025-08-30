@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { SignUpAddressDTO } from './signup-address.dto';
 import { Gender } from '@users/enums/gender.enum';
+import { Type } from 'class-transformer';
 
 export class NewUserDTO {
   @IsNotEmpty()
@@ -36,8 +37,11 @@ export class NewUserDTO {
   gender: Gender;
 
   @IsDate()
+  @Type(() => Date)
   birthDate: Date;
 
+  @IsNotEmpty()
   @ValidateNested()
+  @Type(() => SignUpAddressDTO)
   address: SignUpAddressDTO;
 }
