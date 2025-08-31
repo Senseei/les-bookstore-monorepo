@@ -11,29 +11,9 @@ export class CreateNewUser {
 
   async execute(dto: NewUserDTO): Promise<User> {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-    const user = new User({
-      name: dto.name,
-      birthDate: dto.birthDate,
-      cpf: dto.cpf,
-      email: dto.email,
-      gender: dto.gender,
-      password: hashedPassword,
-      phone: dto.phone,
-    });
+    const user = new User({ ...dto, password: hashedPassword });
 
-    user.addresses.push(
-      new Address({
-        type: dto.address.type,
-        addressName: dto.address.addressName,
-        postalCode: dto.address.postalCode,
-        street: dto.address.street,
-        number: dto.address.number,
-        complement: dto.address.complement,
-        district: dto.address.district,
-        city: dto.address.city,
-        state: dto.address.state,
-      }),
-    );
+    user.addresses.push(new Address(dto.address));
 
     return this.usersService.save(user);
   }
