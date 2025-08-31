@@ -15,4 +15,8 @@ export class UsersService extends BaseService<User> {
   public async findByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findByEmail(email);
   }
+
+  public async findByCpf(cpf: string): Promise<User | null> {
+    return this.usersRepository.findByCpf(cpf);
+  }
 }

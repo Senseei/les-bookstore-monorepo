@@ -8,13 +8,29 @@ import { CreateNewUser } from '@application/users/use-cases/create-new-user.usec
 import { UsersController } from '@presentation/users/users.controller';
 import { ChangeUserPassword } from '@application/users/use-cases/change-user-password.usecase';
 import { UsersWebService } from '@presentation/users/users.webservice';
+import { UpdateUser } from '@application/users/use-cases/update-user.usecase';
+import { EmailExistenceStrategy } from '@application/users/validators/strategies/email-existance.strategy';
+import { CpfExistenceStrategy } from '@application/users/validators/strategies/cpf-existance.strategy';
+import { UserValidationStrategy } from '@application/users/validators/strategies/user.strategy';
+import { UserValidator } from '@application/users/validators/user.validator';
 
-const USE_CASES = [CreateNewUser, ChangeUserPassword];
+const USE_CASES = [CreateNewUser, ChangeUserPassword, UpdateUser];
+const VALIDATION_STRATEGIES = [EmailExistenceStrategy, CpfExistenceStrategy];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Address])],
   controllers: [UsersController],
   providers: [
+    ...VALIDATION_STRATEGIES,
+    {
+      provide: 'UserValidationStrategies',
+      useFactory: (
+        emailStrategy: EmailExistenceStrategy,
+        cpfStrategy: CpfExistenceStrategy,
+      ): UserValidationStrategy[] => [emailStrategy, cpfStrategy],
+      inject: [EmailExistenceStrategy, CpfExistenceStrategy],
+    },
+    UserValidator,
     {
       provide: 'UsersRepository',
       useClass: UsersRepositoryImpl,
