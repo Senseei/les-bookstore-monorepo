@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 
-import { AuthWebService } from './auth.service';
+import { AuthWebService } from './auth.webservice';
 import { JwtToken } from './interfaces/jwt-token.interface';
 import { LoginCredentialsDTO } from './dtos/login-credentials.dto';
 import { UserDTO } from '@presentation/users/dtos/user.dto';

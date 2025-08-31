@@ -5,18 +5,22 @@ import { UsersRepositoryImpl } from '@infrastructure/persistence/typeorm/reposit
 import { UsersService } from '@application/users/use-cases/users.service';
 import { Address } from '@domain/address.entity';
 import { CreateNewUser } from '@application/users/use-cases/create-new-user.usecase';
+import { UsersController } from '@presentation/users/users.controller';
+import { ChangeUserPassword } from '@application/users/use-cases/change-user-password.usecase';
+import { UsersWebService } from '@presentation/users/users.webservice';
 
-const USE_CASES = [CreateNewUser];
+const USE_CASES = [CreateNewUser, ChangeUserPassword];
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Address])],
-  controllers: [],
+  controllers: [UsersController],
   providers: [
     {
       provide: 'UsersRepository',
       useClass: UsersRepositoryImpl,
     },
     UsersService,
+    UsersWebService,
     ...USE_CASES,
   ],
   exports: [UsersService, ...USE_CASES],
