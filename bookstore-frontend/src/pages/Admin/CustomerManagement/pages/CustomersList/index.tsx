@@ -113,9 +113,9 @@ export const CustomersList = () => {
       {/* Search and Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Search and Filters</CardTitle>
+          <CardTitle>Busca e Filtros</CardTitle>
           <CardDescription>
-            Use the search bar and filters to find customers
+            Use a busca e os filtros para encontrar clientes específicos.
           </CardDescription>
         </CardHeader>
         <CardContent>
