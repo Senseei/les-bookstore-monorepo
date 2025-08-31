@@ -37,4 +37,10 @@ export abstract class BaseService<E extends DomainEntity> {
       sortOrder,
     );
   }
+
+  public async inactivate(id: string): Promise<void> {
+    const entity = await this.findByIdOrThrow(id);
+    entity.inactivate();
+    await this.save(entity);
+  }
 }

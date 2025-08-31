@@ -57,4 +57,20 @@ export class User extends DomainEntity {
   public hasAddress(address: Address): boolean {
     return this.addresses.some((a) => a.equals(address));
   }
+
+  public override update(props: {
+    name: string;
+    email: string;
+    cpf: string;
+    phone: string;
+    gender: Gender;
+    birthDate: Date;
+  }) {
+    this.name = props.name;
+    this.email = props.email;
+    this.cpf = props.cpf;
+    this.phone = props.phone;
+    this.gender = props.gender;
+    this.birthDate = props.birthDate;
+  }
 }

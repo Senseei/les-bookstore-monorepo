@@ -74,4 +74,26 @@ export class Address extends DomainEntity {
       this.state === other.state
     );
   }
+
+  public override update(props: {
+    type: AddressType;
+    addressName: string;
+    postalCode: string;
+    street: string;
+    number: string;
+    complement?: string;
+    district: string;
+    city: string;
+    state: string;
+  }) {
+    this.type = props.type;
+    this.addressName = props.addressName;
+    this.postalCode = props.postalCode;
+    this.street = props.street;
+    this.number = props.number;
+    this.complement = props.complement;
+    this.district = props.district;
+    this.city = props.city;
+    this.state = props.state;
+  }
 }
