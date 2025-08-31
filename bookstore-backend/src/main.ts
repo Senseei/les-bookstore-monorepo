@@ -4,8 +4,8 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 
-import { ValidationErrorFormatter } from '@common/validation-error.formatter';
-import { InvalidBodyException } from '@common/exceptions/invalid-body.exception';
+import { ValidationErrorFormatter } from '@presentation/validation-error.formatter';
+import { InvalidBodyException } from '@application/exceptions/invalid-body.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
