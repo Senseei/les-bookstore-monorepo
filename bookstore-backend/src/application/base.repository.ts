@@ -6,9 +6,9 @@ export interface BaseRepository<E extends DomainEntity> {
   findAll(
     page: number,
     limit: number,
-    filters: Record<string, any>,
-    sortField: keyof E,
-    sortOrder: 'ASC' | 'DESC',
+    filters?: Record<string, any>,
+    sortField?: string,
+    sortOrder?: 'ASC' | 'DESC',
   ): Promise<PaginatedResult<E>>;
   save(entity: E): Promise<E>;
   deleteById(id: string): Promise<void>;

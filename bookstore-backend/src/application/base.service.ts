@@ -1,6 +1,7 @@
 import { DomainEntity } from '@domain/domain.entity';
 import { EntityNotFoundException } from './exceptions/entity-not-found.exception';
 import { BaseRepository } from '@application/base.repository';
+import { PaginatedResult } from './paginated-result';
 
 export abstract class BaseService<E extends DomainEntity> {
   constructor(private readonly commonRepository: BaseRepository<E>) {}
@@ -19,5 +20,21 @@ export abstract class BaseService<E extends DomainEntity> {
       throw new EntityNotFoundException('Entity', id);
     }
     return entity;
+  }
+
+  public async findAll(
+    page: number,
+    limit: number,
+    filters: Record<string, any> = {},
+    sortField?: string,
+    sortOrder: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<PaginatedResult<E>> {
+    return this.commonRepository.findAll(
+      page,
+      limit,
+      filters,
+      sortField,
+      sortOrder,
+    );
   }
 }

@@ -14,22 +14,36 @@ export abstract class CRUDRepository<E extends DomainEntity>
     });
   }
 
+  private getSafeSortField(sortField: string): string {
+    const metadata = this.repository.metadata;
+    const columnNames = metadata.columns.map((column) => column.propertyName);
+
+    if (columnNames.includes(sortField)) {
+      return sortField;
+    }
+
+    return 'createdAt';
+  }
+
   public async findAll(
     page: number,
     limit: number,
     filters: Record<string, any> = {},
-    sortField: keyof E = 'createdAt',
+    sortField: string = 'createdAt',
     sortOrder: 'ASC' | 'DESC' = 'DESC',
   ): Promise<PaginatedResult<E>> {
     const skip = (page - 1) * limit;
+    const safeSortField = this.getSafeSortField(sortField);
+
     const [entities, total] = await this.repository.findAndCount({
       where: filters,
       skip,
       take: limit,
       order: {
-        [sortField]: sortOrder,
+        [safeSortField]: sortOrder,
       } as FindOptionsOrder<E>,
     });
+
     return new PaginatedResult<E>(entities, total);
   }
 
