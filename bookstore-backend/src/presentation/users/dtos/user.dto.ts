@@ -13,6 +13,7 @@ export class UserDTO {
   addresses: AddressDTO[];
   createdAt: Date;
   updatedAt: Date;
+  active: boolean;
 
   constructor(user: User) {
     this.id = user.id;
@@ -25,5 +26,6 @@ export class UserDTO {
     this.addresses = user.addresses.map((address) => new AddressDTO(address));
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
+    this.active = user.active;
   }
 }

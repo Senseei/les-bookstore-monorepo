@@ -9,6 +9,7 @@ import { NewUserDTO } from './dtos/new-user.dto';
 import { UserDTO } from '@presentation/users/dtos/user.dto';
 import { CreateNewUser } from '@application/users/use-cases/create-new-user.usecase';
 import { UsersService } from '@application/users/use-cases/users.service';
+import { InactiveUserException } from './exceptions/inactive-user.exception';
 
 @Injectable()
 export class AuthWebService {
@@ -26,6 +27,10 @@ export class AuthWebService {
 
     if (!user || !(await bcrypt.compare(userPassword, user.password))) {
       throw new InvalidCredentialsException('Invalid email or password');
+    }
+
+    if (!user.active) {
+      throw new InactiveUserException('User is inactive');
     }
 
     return new AuthenticatedUserDTO(user.id, user.name, user.email);
