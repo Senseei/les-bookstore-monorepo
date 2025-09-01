@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { EntityTarget, DataSource } from 'typeorm';
 
 @Injectable()
@@ -16,7 +16,11 @@ export class EntityValidatorService {
 
       return columns.includes(key) ? (key as keyof T) : defaultKey;
     } catch (error) {
-      console.error('Error fetching entity metadata:', error);
+      Logger.error(
+        'Error validating entity key',
+        error,
+        'EntityValidatorService',
+      );
       return defaultKey;
     }
   }
