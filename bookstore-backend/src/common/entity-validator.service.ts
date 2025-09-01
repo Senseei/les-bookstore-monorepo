@@ -16,6 +16,7 @@ export class EntityValidatorService {
 
       return columns.includes(key) ? (key as keyof T) : defaultKey;
     } catch (error) {
+      console.error('Error fetching entity metadata:', error);
       return defaultKey;
     }
   }
