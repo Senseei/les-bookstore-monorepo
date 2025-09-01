@@ -44,6 +44,15 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## With docker compose
+
+```bash
+# direct docker compose command
+$ docker compose up -d --build
+# or use the provided script
+$ yarn run docker:up
+```
+
 ## Run tests
 
 ```bash

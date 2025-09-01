@@ -1,0 +1,29 @@
+services:
+  app:
+    container_name: les_bookstore_backend_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./test:/app/test
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    command: yarn run start:dev
+
+  postgres:
+    container_name: les_bookstore_postgres_container
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
