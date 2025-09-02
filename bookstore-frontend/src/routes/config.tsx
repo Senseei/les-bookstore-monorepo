@@ -1,4 +1,4 @@
-import { AdminLayout, CustomersList } from '@/pages'
+import { AdminLayout, CustomersList, SiteLayout } from '@/pages'
 
 import { PATHS, ROUTES } from './constants'
 
@@ -32,5 +32,15 @@ export const routeConfig = [
     path: ROUTES.ADMIN,
     element: <AdminLayout />,
     children: adminRoutes,
+  },
+  {
+    path: ROUTES.HOME,
+    element: <SiteLayout />,
+    children: [
+      {
+        path: '',
+        element: <div>Home Page</div>,
+      },
+    ],
   },
 ]
