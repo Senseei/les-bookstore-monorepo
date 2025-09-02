@@ -4,8 +4,8 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 
-import { ValidationErrorFormatter } from '@common/validation-error.formatter';
-import { InvalidBodyException } from '@common/exceptions/invalid-body.exception';
+import { ValidationErrorFormatter } from '@presentation/validation-error.formatter';
+import { InvalidBodyException } from '@application/exceptions/invalid-body.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,9 +19,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {
-        console.log(errors);
-        const errorMessages = ValidationErrorFormatter.format(errors);
-        return new InvalidBodyException(errorMessages);
+        const errorMessages = ValidationErrorFormatter.formatAsObject(errors);
+        return new InvalidBodyException('Invalid Body', errorMessages);
       },
       transform: true,
       whitelist: true,
