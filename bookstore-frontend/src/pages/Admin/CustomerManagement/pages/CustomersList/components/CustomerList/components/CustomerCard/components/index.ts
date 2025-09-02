@@ -1,0 +1,5 @@
+export { ActionButtons } from './ActionButtons'
+export { ContactInfo } from './ContactInfo'
+export { CustomerActions } from './CustomerActions'
+export { CustomerHeader } from './CustomerHeader'
+export { LastOrder } from './LastOrder'

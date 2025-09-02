@@ -41,6 +41,22 @@ export const defaultTheme = {
     SUCCESS_DARK: '#389490',
     SUCCESS_DARKER: '#2A6F6C',
   },
+  SPACING: {
+    XS: '4px',
+    SM: '8px',
+    MD: '12px',
+    LG: '16px',
+    XL: '24px',
+    XXL: '32px',
+    XXXL: '48px',
+  },
+  BORDER_RADIUS: {
+    SM: '4px',
+    MD: '6px',
+    LG: '8px',
+    XL: '12px',
+    XXL: '16px',
+  },
   FONT_SIZE: {
     XXSMALL: '10px',
     XSMALL: '12px',
@@ -60,5 +76,16 @@ export const defaultTheme = {
     REGULAR: 'Roboto_400Regular',
     MEDIUM: 'Roboto_500Medium',
     BOLD: 'Roboto_700Bold',
+  },
+  TRANSITIONS: {
+    FAST: '0.15s ease',
+    NORMAL: '0.2s ease',
+    SLOW: '0.3s ease',
+  },
+  SHADOWS: {
+    SM: '0 1px 2px rgba(0, 0, 0, 0.05)',
+    MD: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+    LG: '0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06)',
+    FOCUS: '0 0 0 2px',
   },
 }
