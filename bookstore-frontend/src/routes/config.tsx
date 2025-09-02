@@ -1,4 +1,4 @@
-import { AdminLayout, CustomersList, SiteLayout } from '@/pages'
+import { AdminLayout, CustomersList, SignUp, SiteLayout } from '@/pages'
 
 import { PATHS, ROUTES } from './constants'
 
@@ -40,6 +40,10 @@ export const routeConfig = [
       {
         path: '',
         element: <div>Home Page</div>,
+      },
+      {
+        path: ROUTES.REGISTER.slice(1), // Remove leading slash for child route
+        element: <SignUp />,
       },
     ],
   },
