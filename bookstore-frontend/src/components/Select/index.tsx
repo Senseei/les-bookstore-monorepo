@@ -1,3 +1,5 @@
+import { CaretDown } from 'phosphor-react'
+
 import * as S from './styles'
 
 export interface SelectOption {
@@ -53,7 +55,9 @@ export const Select = ({
             </option>
           ))}
         </S.StyledSelect>
-        <S.SelectArrow>▼</S.SelectArrow>
+        <S.SelectArrow>
+          <CaretDown size={16} />
+        </S.SelectArrow>
       </S.SelectWrapper>
 
       {helperText && (

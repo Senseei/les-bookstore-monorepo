@@ -1,4 +1,9 @@
-import { FacebookLogo, InstagramLogo, TwitterLogo } from 'phosphor-react'
+import {
+  BookOpen,
+  FacebookLogo,
+  InstagramLogo,
+  TwitterLogo,
+} from 'phosphor-react'
 
 import * as S from './styles'
 
@@ -10,7 +15,9 @@ export const Footer = () => {
           {/* Logo and description */}
           <S.LogoSection>
             <S.LogoWrapper>
-              <S.LogoIcon>📚</S.LogoIcon>
+              <S.LogoIcon>
+                <BookOpen size={20} weight="bold" />
+              </S.LogoIcon>
               <S.LogoText>BookStore</S.LogoText>
             </S.LogoWrapper>
             <S.Description>

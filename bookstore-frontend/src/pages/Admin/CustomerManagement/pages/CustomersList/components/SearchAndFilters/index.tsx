@@ -1,4 +1,4 @@
-import { Funnel } from 'phosphor-react'
+import { Funnel, MagnifyingGlass } from 'phosphor-react'
 import React from 'react'
 
 import { Button, Input, Select } from '@/components'
@@ -36,7 +36,9 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
     <S.SearchAndFiltersContainer>
       <S.SearchRow>
         <S.SearchInputWrapper>
-          <S.SearchIcon>🔍</S.SearchIcon>
+          <S.SearchIcon>
+            <MagnifyingGlass size={16} />
+          </S.SearchIcon>
           <S.SearchInputWithIcon>
             <Input
               placeholder="Pesquisar por nome, email, CPF, código do cliente ou telefone..."

@@ -1,10 +1,14 @@
+import { BookOpen } from 'phosphor-react'
+
 import * as S from './styles'
 
 export const Header = () => {
   return (
     <S.Container>
       <S.LogoLink href="/">
-        <S.LogoIcon>📚</S.LogoIcon>
+        <S.LogoIcon>
+          <BookOpen size={20} weight="bold" />
+        </S.LogoIcon>
         <S.LogoText>BookStore</S.LogoText>
       </S.LogoLink>
 
