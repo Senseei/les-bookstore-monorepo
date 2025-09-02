@@ -7,11 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components'
-import { PageHeader } from '@/pages/Admin/layout/components'
+import { PageHeader } from '@/pages/admin/layout/components'
 import { ROUTES } from '@/routes/constants'
 
-import { AddButton, CustomerList, SearchAndFilters } from './components'
-import type { Customer } from './components/CustomerList/types'
+import { AddButton, CustomersListSection, SearchAndFilters } from './components'
+import type { Customer } from './components/customers-list-section/types'
 import * as S from './styles'
 
 export const CustomersList = () => {
@@ -136,7 +136,7 @@ export const CustomersList = () => {
       </Card>
 
       {/* Customer List */}
-      <CustomerList customers={filteredCustomers} />
+      <CustomersListSection customers={filteredCustomers} />
     </S.CustomerContainer>
   )
 }

@@ -1,5 +1,4 @@
 import { Funnel, MagnifyingGlass } from 'phosphor-react'
-import React from 'react'
 
 import { Button, Input, Select } from '@/components'
 
@@ -19,7 +18,7 @@ interface SearchAndFiltersProps {
   totalCount: number
 }
 
-export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
+export const SearchAndFilters = ({
   searchTerm,
   onSearchChange,
   showFilters,
@@ -31,7 +30,7 @@ export const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   onClearFilters,
   resultsCount,
   totalCount,
-}) => {
+}: SearchAndFiltersProps) => {
   return (
     <S.SearchAndFiltersContainer>
       <S.SearchRow>

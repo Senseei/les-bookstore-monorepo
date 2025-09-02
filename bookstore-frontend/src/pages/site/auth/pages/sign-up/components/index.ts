@@ -1,3 +1,3 @@
-export * from './AddressForm'
-export * from './Header'
-export * from './PersonalDataForm'
+export * from './address-form'
+export * from './header'
+export * from './personal-data-form'

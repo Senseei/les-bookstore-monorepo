@@ -2,11 +2,13 @@ import { CustomerCard } from './components'
 import * as S from './styles'
 import type { Customer } from './types'
 
-interface CustomerListProps {
+interface CustomersListSectionProps {
   customers: Customer[]
 }
 
-export const CustomerList = ({ customers }: CustomerListProps) => {
+export const CustomersListSection = ({
+  customers,
+}: CustomersListSectionProps) => {
   const handleViewDetails = (customerId: number) => {
     // TODO: Navigate to customer details
     // eslint-disable-next-line no-console

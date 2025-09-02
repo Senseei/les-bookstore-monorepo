@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components'
-import type { Customer } from '@/pages/Admin/Customers/components/CustomerList/types'
+import type { Customer } from '@/pages/Admin/Customers/components/CustomersListSection/types'
 
 import {
   ActionButtons,
