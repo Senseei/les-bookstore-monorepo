@@ -1,3 +1,5 @@
+import type { FieldErrors, UseFormRegister } from 'react-hook-form'
+
 export type Gender = 'male' | 'female' | 'other' | ''
 
 // Brazilian State Codes - union type for compile-time safety
@@ -86,8 +88,20 @@ export interface FormErrors {
   [key: string]: string
 }
 
+export interface ValidationRule {
+  required?: string
+  minLength?: { value: number; message: string }
+  maxLength?: { value: number; message: string }
+  pattern?: { value: RegExp; message: string }
+  validate?: (value: string) => string | boolean
+}
+
+export interface FormValidation {
+  [key: string]: ValidationRule
+}
+
 export interface FormProps {
-  formData: SignUpFormData
-  errors: FormErrors
-  onChange: (name: string, value: string) => void
+  register: UseFormRegister<SignUpFormData>
+  errors: FieldErrors<SignUpFormData>
+  formValidation: FormValidation
 }

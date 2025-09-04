@@ -1,109 +1,102 @@
-import { Input, Select } from '@/components'
+import { Input } from '@/components'
 
-import { residenceTypeOptions, stateOptions } from '../../constants'
 import type { FormProps } from '../../types'
 import * as S from './styles'
 
-export const AddressForm = ({ formData, errors, onChange }: FormProps) => {
+export const AddressForm = ({
+  register,
+  errors,
+  formValidation,
+}: FormProps) => {
   return (
     <S.Section>
       <S.SectionTitle>Endereço Principal</S.SectionTitle>
       <S.Grid>
         <Input
           label="Nome do Endereço"
-          value={formData.addressIdentifier}
-          onChange={(value) => onChange('addressIdentifier', value)}
+          {...register('addressIdentifier')}
           error={!!errors.addressIdentifier}
-          errorMessage={errors.addressIdentifier}
+          errorMessage={errors.addressIdentifier?.message}
           placeholder="Ex: Casa Principal"
         />
 
-        <Select
+        <Input
           label="Tipo de Residência"
-          value={formData.residenceType}
-          onChange={(value) => onChange('residenceType', value)}
+          {...register('residenceType', formValidation.residenceType)}
           error={!!errors.residenceType}
-          helperText={errors.residenceType}
-          placeholder="Selecione"
-          options={residenceTypeOptions}
+          errorMessage={errors.residenceType?.message}
+          placeholder="Casa/Apartamento/etc"
+          required
         />
 
         <Input
           label="CEP"
-          value={formData.zipCode}
-          onChange={(value) => onChange('zipCode', value)}
+          {...register('zipCode', formValidation.zipCode)}
           error={!!errors.zipCode}
-          errorMessage={errors.zipCode}
+          errorMessage={errors.zipCode?.message}
           placeholder="00000-000"
           required
         />
 
         <Input
           label="Logradouro"
-          value={formData.street}
-          onChange={(value) => onChange('street', value)}
+          {...register('street', formValidation.street)}
           error={!!errors.street}
-          errorMessage={errors.street}
+          errorMessage={errors.street?.message}
           placeholder="Rua, Avenida, etc."
           required
         />
 
         <Input
           label="Número"
-          value={formData.number}
-          onChange={(value) => onChange('number', value)}
+          {...register('number', formValidation.number)}
           error={!!errors.number}
-          errorMessage={errors.number}
+          errorMessage={errors.number?.message}
           placeholder="123"
           required
         />
 
         <Input
           label="Complemento"
-          value={formData.complement}
-          onChange={(value) => onChange('complement', value)}
+          {...register('complement')}
           error={!!errors.complement}
-          errorMessage={errors.complement}
+          errorMessage={errors.complement?.message}
           placeholder="Apto, Bloco, etc. (opcional)"
         />
 
         <Input
           label="Bairro"
-          value={formData.neighborhood}
-          onChange={(value) => onChange('neighborhood', value)}
+          {...register('neighborhood', formValidation.neighborhood)}
           error={!!errors.neighborhood}
-          errorMessage={errors.neighborhood}
+          errorMessage={errors.neighborhood?.message}
           placeholder="Nome do bairro"
           required
         />
 
         <Input
           label="Cidade"
-          value={formData.city}
-          onChange={(value) => onChange('city', value)}
+          {...register('city', formValidation.city)}
           error={!!errors.city}
-          errorMessage={errors.city}
+          errorMessage={errors.city?.message}
           placeholder="Nome da cidade"
           required
         />
 
-        <Select
+        <Input
           label="Estado"
-          value={formData.state}
-          onChange={(value) => onChange('state', value)}
+          {...register('state', formValidation.state)}
           error={!!errors.state}
-          helperText={errors.state}
-          placeholder="Selecione o estado"
-          options={stateOptions}
+          errorMessage={errors.state?.message}
+          placeholder="SP, RJ, MG, etc"
+          required
         />
 
         <S.FullWidthWrapper>
           <Input
             label="Observações"
-            value={formData.observations}
-            onChange={(value) => onChange('observations', value)}
+            {...register('observations')}
             error={!!errors.observations}
-            errorMessage={errors.observations}
+            errorMessage={errors.observations?.message}
             placeholder="Informações adicionais (opcional)"
           />
         </S.FullWidthWrapper>
