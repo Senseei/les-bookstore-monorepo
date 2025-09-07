@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
 import { useAuth } from '@/hooks/use-auth'
-import { useToast } from '@/hooks/use-toast'
 import { ROUTES } from '@/routes/constants'
 import {
   formatCPF,
@@ -17,7 +16,10 @@ import type { SignUpFormData } from './types'
 
 type InputChangeEvent = React.ChangeEvent<{ value: string }>
 
-export const useSignUp = () => {
+export const useSignUp = (
+  showSuccess: (message: string, duration?: number) => void,
+  showError: (message: string, duration?: number) => void,
+) => {
   const {
     register,
     handleSubmit,
@@ -28,7 +30,6 @@ export const useSignUp = () => {
   } = useForm<SignUpFormData>()
 
   const { signUp, isLoading, error } = useAuth()
-  const { showSuccess, showError } = useToast()
   const navigate = useNavigate()
 
   const password = watch('password')
@@ -51,7 +52,7 @@ export const useSignUp = () => {
       // Redirect to login page after a short delay
       window.setTimeout(() => {
         navigate(ROUTES.LOGIN)
-      }, 2000)
+      }, 3000)
     } else {
       // Error is already handled by the useAuth hook
       // eslint-disable-next-line no-console

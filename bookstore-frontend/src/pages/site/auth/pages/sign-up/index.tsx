@@ -6,7 +6,7 @@ import * as S from './styles'
 import { useSignUp } from './use-sign-up'
 
 export const SignUp = () => {
-  const { toasts, removeToast } = useToast()
+  const { toasts, removeToast, showSuccess, showError } = useToast()
 
   const {
     register,
@@ -20,7 +20,7 @@ export const SignUp = () => {
     passwordValue,
     isLoading,
     error,
-  } = useSignUp()
+  } = useSignUp(showSuccess, showError)
 
   return (
     <ToastContainer toasts={toasts} onRemoveToast={removeToast}>
