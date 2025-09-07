@@ -1,6 +1,7 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
+import { useAuth } from '@/hooks/use-auth'
 import {
   formatCPF,
   formatDate,
@@ -23,17 +24,31 @@ export const useSignUp = () => {
     control,
   } = useForm<SignUpFormData>()
 
+  const { signUp, isLoading, error } = useAuth()
+
   const password = watch('password')
 
-  const onSubmit = (data: SignUpFormData) => {
+  const onSubmit = async (data: SignUpFormData) => {
     // Map form data to DTO for backend
     const newUserData = mapFormDataToNewUserDTO(data)
 
     // eslint-disable-next-line no-console
     console.log('New User DTO:', newUserData)
 
-    // TODO: Send newUserData to backend API
-    // await createUser(newUserData)
+    // Send data to backend API
+    const result = await signUp(newUserData)
+
+    if (result.success) {
+      // Handle successful signup (redirect, show success message, etc.)
+      // eslint-disable-next-line no-console
+      console.log('User created successfully!', result.data)
+      // You can add navigation logic here, e.g.:
+      // navigate('/dashboard') or navigate('/signin')
+    } else {
+      // Error is already handled by the useAuth hook
+      // eslint-disable-next-line no-console
+      console.error('Signup failed:', result.error)
+    }
   }
 
   // Helper functions for masked inputs
@@ -79,5 +94,8 @@ export const useSignUp = () => {
     registerBirthDate,
     control,
     passwordValue: password || '',
+    // Auth state
+    isLoading,
+    error,
   }
 }
