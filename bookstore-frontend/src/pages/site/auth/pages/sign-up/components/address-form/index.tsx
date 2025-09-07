@@ -2,6 +2,12 @@ import { Controller } from 'react-hook-form'
 
 import { Input, Select } from '@/components'
 import { residenceTypeOptions, stateOptions } from '@/utils/constants'
+import {
+  addressValidationRules,
+  residenceTypeValidationRules,
+  stateValidationRules,
+  zipCodeValidationRules,
+} from '@/utils/validation-rules'
 
 import type { FormProps } from '../../types'
 import * as S from './styles'
@@ -9,7 +15,6 @@ import * as S from './styles'
 export const AddressForm = ({
   register,
   errors,
-  formValidation,
   registerZipCode,
   control,
 }: FormProps) => {
@@ -28,7 +33,7 @@ export const AddressForm = ({
         <Controller
           name="residenceType"
           control={control}
-          rules={formValidation.residenceType}
+          rules={residenceTypeValidationRules}
           render={({ field: { onChange, value } }) => (
             <Select
               label="Tipo de Residência"
@@ -44,7 +49,7 @@ export const AddressForm = ({
 
         <Input
           label="CEP"
-          {...registerZipCode?.(formValidation.zipCode)}
+          {...registerZipCode?.(zipCodeValidationRules)}
           error={!!errors.zipCode}
           errorMessage={errors.zipCode?.message}
           placeholder="00000-000"
@@ -53,7 +58,7 @@ export const AddressForm = ({
 
         <Input
           label="Logradouro"
-          {...register('street', formValidation.street)}
+          {...register('street', addressValidationRules.street)}
           error={!!errors.street}
           errorMessage={errors.street?.message}
           placeholder="Rua, Avenida, etc."
@@ -62,7 +67,7 @@ export const AddressForm = ({
 
         <Input
           label="Número"
-          {...register('number', formValidation.number)}
+          {...register('number', addressValidationRules.number)}
           error={!!errors.number}
           errorMessage={errors.number?.message}
           placeholder="123"
@@ -71,7 +76,7 @@ export const AddressForm = ({
 
         <Input
           label="Complemento"
-          {...register('complement')}
+          {...register('complement', addressValidationRules.complement)}
           error={!!errors.complement}
           errorMessage={errors.complement?.message}
           placeholder="Apto, Bloco, etc. (opcional)"
@@ -79,7 +84,7 @@ export const AddressForm = ({
 
         <Input
           label="Bairro"
-          {...register('neighborhood', formValidation.neighborhood)}
+          {...register('neighborhood', addressValidationRules.neighborhood)}
           error={!!errors.neighborhood}
           errorMessage={errors.neighborhood?.message}
           placeholder="Nome do bairro"
@@ -88,7 +93,7 @@ export const AddressForm = ({
 
         <Input
           label="Cidade"
-          {...register('city', formValidation.city)}
+          {...register('city', addressValidationRules.city)}
           error={!!errors.city}
           errorMessage={errors.city?.message}
           placeholder="Nome da cidade"
@@ -98,7 +103,7 @@ export const AddressForm = ({
         <Controller
           name="state"
           control={control}
-          rules={formValidation.state}
+          rules={stateValidationRules}
           render={({ field: { onChange, value } }) => (
             <Select
               label="Estado"
@@ -115,7 +120,7 @@ export const AddressForm = ({
         <S.FullWidthWrapper>
           <Input
             label="Observações"
-            {...register('observations')}
+            {...register('observations', addressValidationRules.observations)}
             error={!!errors.observations}
             errorMessage={errors.observations?.message}
             placeholder="Informações adicionais (opcional)"

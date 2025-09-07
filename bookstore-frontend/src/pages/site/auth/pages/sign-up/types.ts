@@ -1,4 +1,9 @@
-import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
+import type {
+  Control,
+  FieldErrors,
+  RegisterOptions,
+  UseFormRegister,
+} from 'react-hook-form'
 
 import type {
   AddressTypeValue,
@@ -28,29 +33,17 @@ export interface SignUpFormData {
   observations: string
 }
 
-export interface FormErrors {
-  [key: string]: string
-}
-
-export interface ValidationRule {
-  required?: string
-  minLength?: { value: number; message: string }
-  maxLength?: { value: number; message: string }
-  pattern?: { value: RegExp; message: string }
-  validate?: (value: string) => string | boolean
-}
-
 export interface FormValidation {
-  [key: string]: ValidationRule
+  [key: string]: RegisterOptions
 }
 
 export interface FormProps {
   register: UseFormRegister<SignUpFormData>
   errors: FieldErrors<SignUpFormData>
-  formValidation: FormValidation
   registerCPF?: (validationRules: object) => object
   registerPhone?: (validationRules: object) => object
   registerZipCode?: (validationRules: object) => object
   registerBirthDate?: (validationRules: object) => object
   control?: Control<SignUpFormData>
+  passwordValue?: string
 }

@@ -2,6 +2,16 @@ import { Controller } from 'react-hook-form'
 
 import { Input, Select } from '@/components'
 import { genderOptions } from '@/utils/constants'
+import {
+  birthDateValidationRules,
+  confirmPasswordValidationRules,
+  cpfValidationRules,
+  emailValidationRules,
+  genderValidationRules,
+  passwordValidationRules,
+  personNameValidationRules,
+  phoneValidationRules,
+} from '@/utils/validation-rules'
 
 import type { FormProps } from '../../types'
 import * as S from './styles'
@@ -9,11 +19,11 @@ import * as S from './styles'
 export const PersonalDataForm = ({
   register,
   errors,
-  formValidation,
   registerCPF,
   registerPhone,
   registerBirthDate,
   control,
+  passwordValue = '',
 }: FormProps) => {
   return (
     <S.Section>
@@ -21,7 +31,7 @@ export const PersonalDataForm = ({
       <S.Grid>
         <Input
           label="Nome Completo"
-          {...register('name', formValidation.name)}
+          {...register('name', personNameValidationRules)}
           error={!!errors.name}
           errorMessage={errors.name?.message}
           placeholder="Seu nome completo"
@@ -30,7 +40,7 @@ export const PersonalDataForm = ({
 
         <Input
           label="CPF"
-          {...registerCPF?.(formValidation.cpf)}
+          {...registerCPF?.(cpfValidationRules)}
           error={!!errors.cpf}
           errorMessage={errors.cpf?.message}
           placeholder="000.000.000-00"
@@ -40,7 +50,7 @@ export const PersonalDataForm = ({
         <Input
           label="Email"
           type="email"
-          {...register('email', formValidation.email)}
+          {...register('email', emailValidationRules)}
           error={!!errors.email}
           errorMessage={errors.email?.message}
           placeholder="seu@email.com"
@@ -49,7 +59,7 @@ export const PersonalDataForm = ({
 
         <Input
           label="Telefone"
-          {...registerPhone?.(formValidation.phone)}
+          {...registerPhone?.(phoneValidationRules)}
           error={!!errors.phone}
           errorMessage={errors.phone?.message}
           placeholder="(11) 99999-9999"
@@ -59,7 +69,7 @@ export const PersonalDataForm = ({
         <Controller
           name="gender"
           control={control}
-          rules={formValidation.gender}
+          rules={genderValidationRules}
           render={({ field: { onChange, value } }) => (
             <Select
               label="Gênero"
@@ -75,7 +85,7 @@ export const PersonalDataForm = ({
 
         <Input
           label="Data de Nascimento"
-          {...registerBirthDate?.(formValidation.birthDate)}
+          {...registerBirthDate?.(birthDateValidationRules)}
           error={!!errors.birthDate}
           errorMessage={errors.birthDate?.message}
           placeholder="DD/MM/AAAA"
@@ -85,7 +95,7 @@ export const PersonalDataForm = ({
         <Input
           label="Senha"
           type="password"
-          {...register('password', formValidation.password)}
+          {...register('password', passwordValidationRules)}
           error={!!errors.password}
           errorMessage={errors.password?.message}
           placeholder="••••••••"
@@ -95,7 +105,10 @@ export const PersonalDataForm = ({
         <Input
           label="Confirmar Senha"
           type="password"
-          {...register('confirmPassword', formValidation.confirmPassword)}
+          {...register(
+            'confirmPassword',
+            confirmPasswordValidationRules(passwordValue),
+          )}
           error={!!errors.confirmPassword}
           errorMessage={errors.confirmPassword?.message}
           placeholder="••••••••"

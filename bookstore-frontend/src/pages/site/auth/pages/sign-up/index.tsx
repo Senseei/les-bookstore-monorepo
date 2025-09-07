@@ -9,12 +9,12 @@ export const SignUp = () => {
     register,
     handleSubmit,
     errors,
-    formValidation,
     registerCPF,
     registerPhone,
     registerZipCode,
     registerBirthDate,
     control,
+    passwordValue,
   } = useSignUp()
 
   return (
@@ -27,17 +27,16 @@ export const SignUp = () => {
             <PersonalDataForm
               register={register}
               errors={errors}
-              formValidation={formValidation}
               registerCPF={registerCPF}
               registerPhone={registerPhone}
               registerBirthDate={registerBirthDate}
               control={control}
+              passwordValue={passwordValue}
             />
 
             <AddressForm
               register={register}
               errors={errors}
-              formValidation={formValidation}
               registerZipCode={registerZipCode}
               control={control}
             />
