@@ -8,9 +8,8 @@ import {
   CardTitle,
 } from '@/components'
 import { PageHeader } from '@/pages/admin/layout/components'
-import { ROUTES } from '@/routes/constants'
 
-import { AddButton, CustomersListSection, SearchAndFilters } from './components'
+import { CustomersListSection, SearchAndFilters } from './components'
 import type { Customer } from './components/customers-list-section/types'
 import * as S from './styles'
 
@@ -107,7 +106,6 @@ export const CustomersList = () => {
       <PageHeader
         title="Clientes"
         subtitle="Gerencie os clientes da sua livraria"
-        actionButton={<AddButton to={ROUTES.ADMIN_CUSTOMERS_NEW} />}
       />
 
       {/* Search and Filters */}
