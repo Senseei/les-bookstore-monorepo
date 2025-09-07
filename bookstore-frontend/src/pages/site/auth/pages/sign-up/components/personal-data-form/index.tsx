@@ -7,6 +7,9 @@ export const PersonalDataForm = ({
   register,
   errors,
   formValidation,
+  registerCPF,
+  registerPhone,
+  registerBirthDate,
 }: FormProps) => {
   return (
     <S.Section>
@@ -23,7 +26,7 @@ export const PersonalDataForm = ({
 
         <Input
           label="CPF"
-          {...register('cpf', formValidation.cpf)}
+          {...registerCPF?.(formValidation.cpf)}
           error={!!errors.cpf}
           errorMessage={errors.cpf?.message}
           placeholder="000.000.000-00"
@@ -42,7 +45,7 @@ export const PersonalDataForm = ({
 
         <Input
           label="Telefone"
-          {...register('phone', formValidation.phone)}
+          {...registerPhone?.(formValidation.phone)}
           error={!!errors.phone}
           errorMessage={errors.phone?.message}
           placeholder="(11) 99999-9999"
@@ -60,8 +63,7 @@ export const PersonalDataForm = ({
 
         <Input
           label="Data de Nascimento"
-          type="text"
-          {...register('birthDate', formValidation.birthDate)}
+          {...registerBirthDate?.(formValidation.birthDate)}
           error={!!errors.birthDate}
           errorMessage={errors.birthDate?.message}
           placeholder="DD/MM/AAAA"

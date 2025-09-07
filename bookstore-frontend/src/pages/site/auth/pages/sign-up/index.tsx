@@ -5,7 +5,16 @@ import * as S from './styles'
 import { useSignUp } from './use-sign-up'
 
 export const SignUp = () => {
-  const { register, handleSubmit, errors, formValidation } = useSignUp()
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formValidation,
+    registerCPF,
+    registerPhone,
+    registerZipCode,
+    registerBirthDate,
+  } = useSignUp()
 
   return (
     <S.Container>
@@ -18,12 +27,16 @@ export const SignUp = () => {
               register={register}
               errors={errors}
               formValidation={formValidation}
+              registerCPF={registerCPF}
+              registerPhone={registerPhone}
+              registerBirthDate={registerBirthDate}
             />
 
             <AddressForm
               register={register}
               errors={errors}
               formValidation={formValidation}
+              registerZipCode={registerZipCode}
             />
 
             <Button type="submit" variant="primary" size="lg" fullWidth>
