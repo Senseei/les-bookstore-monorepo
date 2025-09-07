@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useAuth } from '@/hooks/use-auth'
+import { useToast } from '@/hooks/use-toast'
 import {
   formatCPF,
   formatDate,
@@ -25,6 +26,7 @@ export const useSignUp = () => {
   } = useForm<SignUpFormData>()
 
   const { signUp, isLoading, error } = useAuth()
+  const { showSuccess, showError } = useToast()
 
   const password = watch('password')
 
@@ -42,12 +44,18 @@ export const useSignUp = () => {
       // Handle successful signup (redirect, show success message, etc.)
       // eslint-disable-next-line no-console
       console.log('User created successfully!', result.data)
+
+      // Show success toast
+      showSuccess('Conta criada com sucesso! Redirecionando...', 3000)
       // You can add navigation logic here, e.g.:
-      // navigate('/dashboard') or navigate('/signin')
+      // setTimeout(() => navigate('/dashboard'), 2000)
     } else {
       // Error is already handled by the useAuth hook
       // eslint-disable-next-line no-console
       console.error('Signup failed:', result.error)
+
+      // Show error toast
+      showError(result.error || 'Erro ao criar conta. Tente novamente.', 5000)
     }
   }
 

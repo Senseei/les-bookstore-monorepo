@@ -1,10 +1,13 @@
-import { Button, Card } from '@/components'
+import { Alert, Button, Card, ToastContainer } from '@/components'
+import { useToast } from '@/hooks/use-toast'
 
 import { AddressForm, Header, PersonalDataForm } from './components'
 import * as S from './styles'
 import { useSignUp } from './use-sign-up'
 
 export const SignUp = () => {
+  const { toasts, removeToast } = useToast()
+
   const {
     register,
     handleSubmit,
@@ -15,45 +18,64 @@ export const SignUp = () => {
     registerBirthDate,
     control,
     passwordValue,
+    isLoading,
+    error,
   } = useSignUp()
 
   return (
-    <S.Container>
-      <S.ContentWrapper>
-        <Header />
+    <ToastContainer toasts={toasts} onRemoveToast={removeToast}>
+      <S.Container>
+        <S.ContentWrapper>
+          <Header />
 
-        <Card>
-          <S.Form onSubmit={handleSubmit}>
-            <PersonalDataForm
-              register={register}
-              errors={errors}
-              registerCPF={registerCPF}
-              registerPhone={registerPhone}
-              registerBirthDate={registerBirthDate}
-              control={control}
-              passwordValue={passwordValue}
-            />
+          <Card>
+            {/* Global error display */}
+            {error && (
+              <S.GlobalErrorAlert>
+                <Alert variant="error">{error}</Alert>
+              </S.GlobalErrorAlert>
+            )}
 
-            <AddressForm
-              register={register}
-              errors={errors}
-              registerZipCode={registerZipCode}
-              control={control}
-            />
+            <S.Form onSubmit={handleSubmit}>
+              <PersonalDataForm
+                register={register}
+                errors={errors}
+                registerCPF={registerCPF}
+                registerPhone={registerPhone}
+                registerBirthDate={registerBirthDate}
+                control={control}
+                passwordValue={passwordValue}
+              />
 
-            <Button type="submit" variant="primary" size="lg" fullWidth>
-              Criar Conta
-            </Button>
-          </S.Form>
-        </Card>
+              <AddressForm
+                register={register}
+                errors={errors}
+                registerZipCode={registerZipCode}
+                control={control}
+              />
 
-        <S.LoginLink>
-          <S.LoginText>
-            Já tem uma conta? {/* TODO <Link to="/login">Fazer login</Link> */}
-            <S.LoginAnchor href="/login">Fazer login</S.LoginAnchor>
-          </S.LoginText>
-        </S.LoginLink>
-      </S.ContentWrapper>
-    </S.Container>
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                fullWidth
+                loading={isLoading}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Criando conta...' : 'Criar Conta'}
+              </Button>
+            </S.Form>
+          </Card>
+
+          <S.LoginLink>
+            <S.LoginText>
+              Já tem uma conta?{' '}
+              {/* TODO <Link to="/login">Fazer login</Link> */}
+              <S.LoginAnchor href="/login">Fazer login</S.LoginAnchor>
+            </S.LoginText>
+          </S.LoginLink>
+        </S.ContentWrapper>
+      </S.Container>
+    </ToastContainer>
   )
 }

@@ -29,6 +29,10 @@ export const ErrorMessage = styled.div`
   font-size: ${({ theme }) => theme.FONT_SIZE.SMALL};
 `
 
+export const GlobalErrorAlert = styled.div`
+  margin-bottom: ${({ theme }) => theme.SPACING.MD};
+`
+
 export const LoginLink = styled.div`
   margin-top: ${({ theme }) => theme.SPACING.XL};
   text-align: center;
