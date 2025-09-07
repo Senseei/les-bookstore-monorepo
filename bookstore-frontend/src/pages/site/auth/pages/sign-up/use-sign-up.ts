@@ -6,9 +6,9 @@ import {
   formatDate,
   formatPhone,
   formatZipCode,
-  removeMask,
 } from '@/utils/input-masks'
 
+import { mapFormDataToNewUserDTO } from './mappers'
 import type { SignUpFormData } from './types'
 
 type InputChangeEvent = React.ChangeEvent<{ value: string }>
@@ -26,18 +26,14 @@ export const useSignUp = () => {
   const password = watch('password')
 
   const onSubmit = (data: SignUpFormData) => {
-    // Remove masks before submitting
-    // TODO sanitize the data
-    const cleanData = {
-      ...data,
-      cpf: removeMask(data.cpf),
-      phone: removeMask(data.phone),
-      zipCode: removeMask(data.zipCode),
-      birthDate: data.birthDate.replace(/\//g, '-'), // Convert DD/MM/YYYY to DD-MM-YYYY
-    }
+    // Map form data to DTO for backend
+    const newUserData = mapFormDataToNewUserDTO(data)
 
     // eslint-disable-next-line no-console
-    console.log('Sign Up Data:', cleanData)
+    console.log('New User DTO:', newUserData)
+
+    // TODO: Send newUserData to backend API
+    // await createUser(newUserData)
   }
 
   // Helper functions for masked inputs
@@ -58,10 +54,10 @@ export const useSignUp = () => {
   })
 
   const registerZipCode = (validationRules: object) => ({
-    ...register('zipCode', validationRules),
+    ...register('address.zipCode', validationRules),
     onChange: (e: InputChangeEvent) => {
       const maskedValue = formatZipCode(e.target.value)
-      setValue('zipCode', maskedValue, { shouldValidate: true })
+      setValue('address.zipCode', maskedValue, { shouldValidate: true })
     },
   })
 

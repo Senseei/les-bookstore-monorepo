@@ -20,17 +20,19 @@ export interface SignUpFormData {
   gender: Gender
   birthDate: string
   phone: string
-  // Address
-  addressIdentifier: string
-  residenceType: AddressTypeValue | ''
-  street: string
-  number: string
-  complement: string
-  neighborhood: string
-  city: string
-  state: BrazilianStateCode
-  zipCode: string
-  observations: string
+  // Address - nested structure to match backend
+  address: {
+    identifier: string // addressName in backend
+    residenceType: AddressTypeValue | '' // type in backend
+    street: string
+    number: string
+    complement: string
+    neighborhood: string // district in backend
+    city: string
+    state: BrazilianStateCode
+    zipCode: string // postalCode in backend
+    observations: string // not sent to backend
+  }
 }
 
 export interface FormValidation {
