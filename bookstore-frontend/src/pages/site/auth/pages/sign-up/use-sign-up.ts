@@ -139,11 +139,29 @@ export const useSignUp = () => {
     birthDate: {
       required: 'Data de nascimento é obrigatória',
       validate: (value: string) => {
-        const today = new Date()
-        const birthDate = new Date(value)
+        // Parse DD/MM/YYYY format correctly
+        const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/
+        const match = value.match(dateRegex)
 
-        // Check if date is valid
-        if (isNaN(birthDate.getTime())) return 'Data inválida'
+        if (!match) return 'Data deve estar no formato DD/MM/AAAA'
+
+        const [, day, month, year] = match
+        const birthDate = new Date(
+          parseInt(year),
+          parseInt(month) - 1,
+          parseInt(day),
+        )
+
+        // Check if the parsed date is valid and matches input
+        if (
+          birthDate.getDate() !== parseInt(day) ||
+          birthDate.getMonth() !== parseInt(month) - 1 ||
+          birthDate.getFullYear() !== parseInt(year)
+        ) {
+          return 'Data inválida'
+        }
+
+        const today = new Date()
 
         // Check if date is not in the future
         if (birthDate > today)

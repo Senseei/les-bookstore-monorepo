@@ -7,6 +7,7 @@ export const AddressForm = ({
   register,
   errors,
   formValidation,
+  registerZipCode,
 }: FormProps) => {
   return (
     <S.Section>
@@ -31,7 +32,7 @@ export const AddressForm = ({
 
         <Input
           label="CEP"
-          {...register('zipCode', formValidation.zipCode)}
+          {...registerZipCode?.(formValidation.zipCode)}
           error={!!errors.zipCode}
           errorMessage={errors.zipCode?.message}
           placeholder="00000-000"
