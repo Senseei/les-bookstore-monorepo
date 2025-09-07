@@ -175,12 +175,6 @@ export const addressValidationRules = {
       message: 'Complemento deve ter no máximo 100 caracteres',
     },
   },
-  observations: {
-    maxLength: {
-      value: 500,
-      message: 'Observações devem ter no máximo 500 caracteres',
-    },
-  },
   addressIdentifier: {
     maxLength: {
       value: 50,

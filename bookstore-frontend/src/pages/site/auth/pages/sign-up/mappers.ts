@@ -31,7 +31,6 @@ export const mapFormDataToNewUserDTO = (
       district: formData.address.neighborhood.trim(), // Map neighborhood -> district
       city: formData.address.city.trim(),
       state: formData.address.state,
-      // Note: observations is not sent to backend (UI-only field)
     },
   }
 }

@@ -31,7 +31,6 @@ export interface SignUpFormData {
     city: string
     state: BrazilianStateCode
     zipCode: string // postalCode in backend
-    observations: string // not sent to backend
   }
 }
 

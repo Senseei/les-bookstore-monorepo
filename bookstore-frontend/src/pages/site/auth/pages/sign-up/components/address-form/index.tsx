@@ -122,19 +122,6 @@ export const AddressForm = ({
             />
           )}
         />
-
-        <S.FullWidthWrapper>
-          <Input
-            label="Observações"
-            {...register(
-              'address.observations',
-              addressValidationRules.observations,
-            )}
-            error={!!errors.address?.observations}
-            errorMessage={errors.address?.observations?.message}
-            placeholder="Informações adicionais (opcional)"
-          />
-        </S.FullWidthWrapper>
       </S.Grid>
     </S.Section>
   )
