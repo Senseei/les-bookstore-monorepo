@@ -1,8 +1,10 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router'
 
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
+import { ROUTES } from '@/routes/constants'
 import {
   formatCPF,
   formatDate,
@@ -27,6 +29,7 @@ export const useSignUp = () => {
 
   const { signUp, isLoading, error } = useAuth()
   const { showSuccess, showError } = useToast()
+  const navigate = useNavigate()
 
   const password = watch('password')
 
@@ -42,13 +45,13 @@ export const useSignUp = () => {
 
     if (result.success) {
       // Handle successful signup (redirect, show success message, etc.)
-      // eslint-disable-next-line no-console
-      console.log('User created successfully!', result.data)
-
       // Show success toast
       showSuccess('Conta criada com sucesso! Redirecionando...', 3000)
-      // You can add navigation logic here, e.g.:
-      // setTimeout(() => navigate('/dashboard'), 2000)
+
+      // Redirect to login page after a short delay
+      window.setTimeout(() => {
+        navigate(ROUTES.LOGIN)
+      }, 2000)
     } else {
       // Error is already handled by the useAuth hook
       // eslint-disable-next-line no-console
