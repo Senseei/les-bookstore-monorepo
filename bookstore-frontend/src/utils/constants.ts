@@ -2,13 +2,25 @@ import type {
   AddressTypeValue,
   BrazilianState,
   BrazilianStateCode,
-  ResidenceTypeOption,
-  StateOption,
+  Gender,
 } from './types'
 import { AddressType } from './types'
 
+// Gender options for Select component
+export const genderOptions: {
+  value: Gender
+  label: string
+}[] = [
+  { value: 'male', label: 'Masculino' },
+  { value: 'female', label: 'Feminino' },
+  { value: 'other', label: 'Outro' },
+]
+
 // Residence types mapped to backend enum values with Portuguese labels
-export const residenceTypeOptions: ResidenceTypeOption[] = [
+export const residenceTypeOptions: {
+  value: AddressTypeValue
+  label: string
+}[] = [
   { value: AddressType.HOUSE, label: 'Casa' },
   { value: AddressType.APARTMENT, label: 'Apartamento' },
   { value: AddressType.CONDO, label: 'Condomínio' },
@@ -48,10 +60,11 @@ export const brazilianStatesData: BrazilianState[] = [
 ]
 
 // State options for Select component
-export const stateOptions: StateOption[] = brazilianStatesData.map((state) => ({
-  value: state.code,
-  label: state.name,
-}))
+export const stateOptions: { value: BrazilianStateCode; label: string }[] =
+  brazilianStatesData.map((state) => ({
+    value: state.code,
+    label: state.name,
+  }))
 
 // Helper function to get residence type label by value
 export const getResidenceTypeLabel = (value: AddressTypeValue): string => {
@@ -63,4 +76,10 @@ export const getResidenceTypeLabel = (value: AddressTypeValue): string => {
 export const getStateName = (code: BrazilianStateCode): string => {
   const state = brazilianStatesData.find((state) => state.code === code)
   return state?.name || code
+}
+
+// Helper function to get gender label by value
+export const getGenderLabel = (value: Gender): string => {
+  const option = genderOptions.find((opt) => opt.value === value)
+  return option?.label || value
 }

@@ -20,6 +20,7 @@ export const useSignUp = () => {
     formState: { errors },
     watch,
     setValue,
+    control,
   } = useForm<SignUpFormData>()
 
   const password = watch('password')
@@ -285,5 +286,6 @@ export const useSignUp = () => {
     registerPhone,
     registerZipCode,
     registerBirthDate,
+    control,
   }
 }

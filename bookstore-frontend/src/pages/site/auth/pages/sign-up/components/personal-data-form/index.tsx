@@ -1,4 +1,7 @@
-import { Input } from '@/components'
+import { Controller } from 'react-hook-form'
+
+import { Input, Select } from '@/components'
+import { genderOptions } from '@/utils/constants'
 
 import type { FormProps } from '../../types'
 import * as S from './styles'
@@ -10,6 +13,7 @@ export const PersonalDataForm = ({
   registerCPF,
   registerPhone,
   registerBirthDate,
+  control,
 }: FormProps) => {
   return (
     <S.Section>
@@ -52,13 +56,21 @@ export const PersonalDataForm = ({
           required
         />
 
-        <Input
-          label="Gênero"
-          {...register('gender', formValidation.gender)}
-          error={!!errors.gender}
-          errorMessage={errors.gender?.message}
-          placeholder="Masculino/Feminino/Outro"
-          required
+        <Controller
+          name="gender"
+          control={control}
+          rules={formValidation.gender}
+          render={({ field: { onChange, value } }) => (
+            <Select
+              label="Gênero"
+              value={value}
+              onChange={onChange}
+              error={!!errors.gender}
+              helperText={errors.gender?.message}
+              placeholder="Selecione"
+              options={genderOptions}
+            />
+          )}
         />
 
         <Input

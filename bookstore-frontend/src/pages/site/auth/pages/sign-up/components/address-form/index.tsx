@@ -1,4 +1,7 @@
-import { Input } from '@/components'
+import { Controller } from 'react-hook-form'
+
+import { Input, Select } from '@/components'
+import { residenceTypeOptions, stateOptions } from '@/utils/constants'
 
 import type { FormProps } from '../../types'
 import * as S from './styles'
@@ -8,6 +11,7 @@ export const AddressForm = ({
   errors,
   formValidation,
   registerZipCode,
+  control,
 }: FormProps) => {
   return (
     <S.Section>
@@ -21,13 +25,21 @@ export const AddressForm = ({
           placeholder="Ex: Casa Principal"
         />
 
-        <Input
-          label="Tipo de Residência"
-          {...register('residenceType', formValidation.residenceType)}
-          error={!!errors.residenceType}
-          errorMessage={errors.residenceType?.message}
-          placeholder="Casa/Apartamento/etc"
-          required
+        <Controller
+          name="residenceType"
+          control={control}
+          rules={formValidation.residenceType}
+          render={({ field: { onChange, value } }) => (
+            <Select
+              label="Tipo de Residência"
+              value={value}
+              onChange={onChange}
+              error={!!errors.residenceType}
+              helperText={errors.residenceType?.message}
+              placeholder="Selecione"
+              options={residenceTypeOptions}
+            />
+          )}
         />
 
         <Input
@@ -83,13 +95,21 @@ export const AddressForm = ({
           required
         />
 
-        <Input
-          label="Estado"
-          {...register('state', formValidation.state)}
-          error={!!errors.state}
-          errorMessage={errors.state?.message}
-          placeholder="SP, RJ, MG, etc"
-          required
+        <Controller
+          name="state"
+          control={control}
+          rules={formValidation.state}
+          render={({ field: { onChange, value } }) => (
+            <Select
+              label="Estado"
+              value={value}
+              onChange={onChange}
+              error={!!errors.state}
+              helperText={errors.state?.message}
+              placeholder="Selecione o estado"
+              options={stateOptions}
+            />
+          )}
         />
 
         <S.FullWidthWrapper>

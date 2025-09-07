@@ -14,6 +14,7 @@ export const SignUp = () => {
     registerPhone,
     registerZipCode,
     registerBirthDate,
+    control,
   } = useSignUp()
 
   return (
@@ -30,6 +31,7 @@ export const SignUp = () => {
               registerCPF={registerCPF}
               registerPhone={registerPhone}
               registerBirthDate={registerBirthDate}
+              control={control}
             />
 
             <AddressForm
@@ -37,6 +39,7 @@ export const SignUp = () => {
               errors={errors}
               formValidation={formValidation}
               registerZipCode={registerZipCode}
+              control={control}
             />
 
             <Button type="submit" variant="primary" size="lg" fullWidth>
