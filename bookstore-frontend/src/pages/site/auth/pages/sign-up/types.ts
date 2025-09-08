@@ -8,15 +8,15 @@ import type {
 import type { Gender } from '@/utils/types'
 
 export interface SignUpFormData {
-  firstName: string
-  lastName: string
+  name: string
   gender: Gender
+  birthDate: string
   cpf: string
   phone: string
   email: string
   password: string
   confirmPassword: string
-  
+
   address: {
     identifier: string
     zipCode: string

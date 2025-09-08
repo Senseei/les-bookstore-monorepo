@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { Button, Input, Select } from '@/components'
+import { formatDate } from '@/utils/input-masks'
 
 import * as S from '../styles'
 import type { Customer } from '../types'
@@ -21,8 +22,7 @@ export const ProfileEditForm = ({
   const [formData, setFormData] = useState({
     name: customer.name,
     email: customer.email,
-    phoneAreaCode: customer.phoneAreaCode,
-    phoneNumber: customer.phoneNumber,
+    phone: customer.phone,
     cpf: customer.cpf || '',
     birthDate: customer.birthDate || '',
     gender: customer.gender || 'Masculino',
@@ -68,21 +68,19 @@ export const ProfileEditForm = ({
         <Input
           label="Data de Nascimento"
           value={formData.birthDate}
-          onChange={(e) => handleInputChange('birthDate', e.target.value)}
-          required
-        />
-
-        <Input
-          label="DDD"
-          value={formData.phoneAreaCode}
-          onChange={(e) => handleInputChange('phoneAreaCode', e.target.value)}
+          onChange={(e) => {
+            const maskedValue = formatDate(e.target.value)
+            handleInputChange('birthDate', maskedValue)
+          }}
+          placeholder="DD/MM/AAAA"
           required
         />
 
         <Input
           label="Telefone"
-          value={formData.phoneNumber}
-          onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+          value={formData.phone}
+          onChange={(e) => handleInputChange('phone', e.target.value)}
+          placeholder="(11) 99999-9999"
           required
         />
 

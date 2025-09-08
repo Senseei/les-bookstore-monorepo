@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router'
 
 import { Button, Input, Select } from '@/components'
+import { formatDate } from '@/utils/input-masks'
 
 import { AddressForm } from './components/address-form'
 import { AddressList } from './components/address-list'
@@ -159,10 +160,11 @@ export const ProfileEdit = () => {
                 <Input
                   label="Data de Nascimento"
                   value={formData.birthDate || ''}
-                  onChange={(e) =>
-                    handleInputChange('birthDate', e.target.value)
-                  }
-                  placeholder="YYYY-MM-DD"
+                  onChange={(e) => {
+                    const maskedValue = formatDate(e.target.value)
+                    handleInputChange('birthDate', maskedValue)
+                  }}
+                  placeholder="DD/MM/AAAA"
                   required
                 />
 

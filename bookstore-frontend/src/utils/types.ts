@@ -48,7 +48,8 @@ export const AddressPurpose = {
 } as const
 
 export type AddressTypeValue = (typeof AddressType)[keyof typeof AddressType]
-export type AddressPurposeValue = (typeof AddressPurpose)[keyof typeof AddressPurpose]
+export type AddressPurposeValue =
+  (typeof AddressPurpose)[keyof typeof AddressPurpose]
 
 // Brazilian States
 export interface BrazilianState {

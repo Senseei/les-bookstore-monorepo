@@ -26,6 +26,21 @@ const mapGenderFromBackend = (
   return genderMapping[backendGender] || 'Outro'
 }
 
+// Funções para conversão de formato de data
+const formatDateFromBackend = (backendDate: string): string => {
+  // Converte de YYYY-MM-DD para DD/MM/AAAA
+  // Remove a parte de hora se existir (ex: "2024-03-15T00:00:00.000Z" -> "2024-03-15")
+  const dateOnly = backendDate.split('T')[0]
+  const [year, month, day] = dateOnly.split('-')
+  return `${day}/${month}/${year}`
+}
+
+const formatDateToBackend = (frontendDate: string): string => {
+  // Converte de DD/MM/AAAA para YYYY-MM-DD
+  const [day, month, year] = frontendDate.split('/')
+  return `${year}-${month}-${day}`
+}
+
 interface BackendAddress {
   id: string
   type: AddressType
@@ -78,7 +93,7 @@ export class UserServiceImpl implements UserService {
       cpf: userData.cpf,
       phone: userData.phone,
       gender: mapGenderFromBackend(userData.gender), // Converte de inglês para português
-      birthDate: userData.birthDate,
+      birthDate: formatDateFromBackend(userData.birthDate), // Converte para DD/MM/AAAA
       addresses: userData.addresses?.map((addr) => ({
         id: addr.id,
         type: addr.type,
@@ -105,7 +120,9 @@ export class UserServiceImpl implements UserService {
       cpf: userData.cpf,
       phone: userData.phone,
       gender: userData.gender ? mapGenderToBackend(userData.gender) : undefined, // Converte de português para inglês
-      birthDate: userData.birthDate,
+      birthDate: userData.birthDate
+        ? formatDateToBackend(userData.birthDate)
+        : undefined, // Converte para YYYY-MM-DD
     }
 
     const response = await AxiosApp.put<BackendUser>(`/users/${id}`, updateData)
@@ -119,7 +136,7 @@ export class UserServiceImpl implements UserService {
       cpf: updatedUserData.cpf,
       phone: updatedUserData.phone,
       gender: mapGenderFromBackend(updatedUserData.gender), // Converte de inglês para português
-      birthDate: updatedUserData.birthDate.split('T')[0],
+      birthDate: formatDateFromBackend(updatedUserData.birthDate), // Converte para DD/MM/AAAA
       addresses:
         updatedUserData.addresses?.map((addr: BackendAddress) => ({
           id: addr.id,
