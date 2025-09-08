@@ -29,7 +29,7 @@ export class UsersWebService {
   ) {}
 
   public async findById(id: string): Promise<UserDTO> {
-    const user = await this.usersService.findByIdOrThrow(id);
+    const user = await this.usersService.findActiveUserById(id);
     return new UserDTO(user);
   }
 

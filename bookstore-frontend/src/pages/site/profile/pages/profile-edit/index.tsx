@@ -6,6 +6,7 @@ import { formatDate } from '@/utils/input-masks'
 
 import { AddressForm } from './components/address-form'
 import { AddressList } from './components/address-list'
+import { InactivateAccountForm } from './components/inactivate-account-form'
 import { PasswordForm } from './components/password-form'
 import * as S from './styles'
 import type { Address, PasswordChangeData } from './types'
@@ -36,6 +37,9 @@ export const ProfileEdit = () => {
     // Alteração de senha
     setPasswordFormData,
     changePassword,
+
+    // Inativação de conta
+    inactivateAccount,
 
     // Funções de carregamento
     loadProfile,
@@ -208,6 +212,11 @@ export const ProfileEdit = () => {
             addresses={customer.addresses || []}
             onEdit={handleEditAddress}
             onDelete={handleDeleteAddress}
+            loading={saving}
+          />
+
+          <InactivateAccountForm
+            onInactivate={inactivateAccount}
             loading={saving}
           />
         </>

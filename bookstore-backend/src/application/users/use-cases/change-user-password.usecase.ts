@@ -12,7 +12,7 @@ export class ChangeUserPassword {
     oldPassword: string,
     newPassword: string,
   ): Promise<void> {
-    const user = await this.usersService.findByIdOrThrow(userId);
+    const user = await this.usersService.findActiveUserById(userId);
 
     if (!(await bcrypt.compare(oldPassword, user.password)))
       throw new InvalidCredentialsException('Old password is incorrect');

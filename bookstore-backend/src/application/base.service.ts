@@ -22,6 +22,17 @@ export abstract class BaseService<E extends DomainEntity> {
     return entity;
   }
 
+  public async findActiveByIdOrThrow(id: string): Promise<E> {
+    const entity = await this.commonRepository.findById(id);
+    if (!entity) {
+      throw new EntityNotFoundException('Entity', id);
+    }
+    if (!entity.active) {
+      throw new Error('Entity is inactive');
+    }
+    return entity;
+  }
+
   public async findAll(
     page: number,
     limit: number,

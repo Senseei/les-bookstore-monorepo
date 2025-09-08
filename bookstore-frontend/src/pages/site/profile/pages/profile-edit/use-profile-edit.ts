@@ -35,6 +35,9 @@ export interface UseProfileEditReturn {
   setPasswordFormData: (data: PasswordChangeData) => void
   changePassword: () => Promise<void>
 
+  // Inativação de conta
+  inactivateAccount: () => Promise<void>
+
   // Funções de carregamento
   loadProfile: () => Promise<void>
 }
@@ -77,8 +80,20 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
       const userData = await userService.getUserById(userId)
       setCustomer(userData)
       setFormData(userData)
-    } catch {
-      toast.showError('Erro ao carregar dados do perfil')
+    } catch (error: unknown) {
+      // Verificar se é erro de usuário inativo
+      const axiosError = error as { response?: { status?: number } }
+      if (axiosError?.response?.status === 403) {
+        toast.showError('Esta conta foi inativada e não pode ser acessada.')
+        // Redirecionar para página inicial após 3 segundos
+        window.setTimeout(() => {
+          window.location.href = '/'
+        }, 3000)
+      } else if (axiosError?.response?.status === 404) {
+        toast.showError('Usuário não encontrado.')
+      } else {
+        toast.showError('Erro ao carregar dados do perfil')
+      }
     } finally {
       setLoading(false)
     }
@@ -210,8 +225,7 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
         }
 
         cancelAddressEditing()
-      } catch (error) {
-        console.error('Erro ao salvar endereço:', error)
+      } catch {
         toast.showError(
           editingAddress
             ? 'Erro ao atualizar endereço'
@@ -306,6 +320,27 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     }
   }, [customer, passwordFormData, toast])
 
+  // Função para inativar conta
+  const inactivateAccount = useCallback(async () => {
+    if (!customer) {
+      toast.showError('Usuário não encontrado')
+      return
+    }
+
+    setSaving(true)
+
+    try {
+      await userService.inactivateUser(customer.id)
+      toast.showSuccess('Conta inativada com sucesso!')
+      // Redirecionar para página inicial ou login
+      window.location.href = '/'
+    } catch {
+      toast.showError('Erro ao inativar conta. Tente novamente.')
+    } finally {
+      setSaving(false)
+    }
+  }, [customer, toast])
+
   return {
     // Estado principal
     customer,
@@ -334,6 +369,9 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     passwordFormData,
     setPasswordFormData,
     changePassword,
+
+    // Inativação de conta
+    inactivateAccount,
 
     // Funções de carregamento
     loadProfile,

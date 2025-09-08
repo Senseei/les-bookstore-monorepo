@@ -71,6 +71,7 @@ export interface UserService {
   getUserById(id: string): Promise<Customer>
   updateUser(id: string, userData: Partial<Customer>): Promise<Customer>
   changePassword(id: string, passwordData: PasswordChangeData): Promise<void>
+  inactivateUser(id: string): Promise<void>
 }
 
 export class UserServiceImpl implements UserService {
@@ -164,6 +165,10 @@ export class UserServiceImpl implements UserService {
     }
 
     await AxiosApp.put(`/users/${id}/password`, changePasswordData)
+  }
+
+  async inactivateUser(id: string): Promise<void> {
+    await AxiosApp.delete(`/users/${id}`)
   }
 }
 

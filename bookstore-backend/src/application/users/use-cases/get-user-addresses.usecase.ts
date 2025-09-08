@@ -11,7 +11,7 @@ export class GetUserAddresses {
   ) {}
 
   async execute(userId: string): Promise<Address[]> {
-    await this.usersService.findByIdOrThrow(userId);
+    await this.usersService.findActiveUserById(userId);
     return await this.addressService.findByUserId(userId);
   }
 }
