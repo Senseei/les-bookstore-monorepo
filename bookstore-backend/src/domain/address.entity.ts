@@ -1,6 +1,6 @@
 import { DomainEntity } from './domain.entity';
 import { AddressType } from '@domain/enums/address-type.enum';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('tb_addresses')
@@ -32,7 +32,8 @@ export class Address extends DomainEntity {
   @Column()
   state: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.addresses)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   constructor(props: {
