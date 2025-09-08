@@ -21,7 +21,6 @@ export const ROUTES_V2 = {
 
 // Route patterns - built using the same builder
 export const ROUTE_PATTERNS_V2 = {
-  ADMIN_CUSTOMER_EDIT: route.adminCustomerEdit().pattern(),
   ADMIN_CUSTOMER_VIEW: route.adminCustomerView().pattern(),
   ADMIN_BOOK_EDIT: route.adminBookEdit().pattern(),
   ADMIN_BOOK_VIEW: route.adminBookView().pattern(),
@@ -29,7 +28,6 @@ export const ROUTE_PATTERNS_V2 = {
 
 // Helper functions - using the same builder with IDs
 export const createRoute_V2 = {
-  adminCustomerEdit: (id: string) => route.adminCustomerEdit(id).build(),
   adminCustomerView: (id: string) => route.adminCustomerView(id).build(),
   adminBookEdit: (id: string) => route.adminBookEdit(id).build(),
   adminBookView: (id: string) => route.adminBookView(id).build(),
@@ -41,12 +39,10 @@ Examples of how this eliminates duplication:
 ❌ Before (lots of duplication):
 ADMIN_CUSTOMERS: '/admin/customers',
 ADMIN_CUSTOMERS_NEW: '/admin/customers/new',
-adminCustomerEdit: (id: string) => `/admin/customers/${id}/edit`,
 
 ✅ After (zero duplication):
 ADMIN_CUSTOMERS: route.adminCustomers().build(),
 ADMIN_CUSTOMERS_NEW: route.adminCustomersNew().build(),
-adminCustomerEdit: (id: string) => route.adminCustomerEdit(id).build(),
 
 Benefits:
 1. Single source of truth for path segments
