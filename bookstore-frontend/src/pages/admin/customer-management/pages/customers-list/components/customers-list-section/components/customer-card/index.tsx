@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from '@/components'
-import type { Customer } from '@/pages/Admin/Customers/components/CustomersListSection/types'
 
+import type { Customer } from '../../types'
 import {
   ActionButtons,
   ContactInfo,
@@ -13,14 +13,12 @@ import * as S from './styles'
 interface CustomerCardProps {
   customer: Customer
   onViewDetails: (customerId: number) => void
-  onEditCustomer: (customerId: number) => void
   onMoreOptions: (customerId: number) => void
 }
 
 export const CustomerCard = ({
   customer,
   onViewDetails,
-  onEditCustomer,
   onMoreOptions,
 }: CustomerCardProps) => {
   return (
@@ -48,10 +46,7 @@ export const CustomerCard = ({
 
         <LastOrder lastOrder={customer.lastOrder} />
 
-        <ActionButtons
-          onViewDetails={() => onViewDetails(customer.id)}
-          onEditCustomer={() => onEditCustomer(customer.id)}
-        />
+        <ActionButtons onViewDetails={() => onViewDetails(customer.id)} />
       </CardContent>
     </Card>
   )
