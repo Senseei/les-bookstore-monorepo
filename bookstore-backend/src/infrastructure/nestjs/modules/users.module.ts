@@ -13,6 +13,8 @@ import { EmailExistenceStrategy } from '@application/users/validators/strategies
 import { CpfExistenceStrategy } from '@application/users/validators/strategies/cpf-existance.strategy';
 import { UserValidationStrategy } from '@application/users/validators/strategies/user.strategy';
 import { UserValidator } from '@application/users/validators/user.validator';
+import { AddressValidator } from '@application/users/validators/address.validator';
+import { UserWithAddressValidator } from '@application/users/validators/user-with-address.validator';
 import { AddressessRepositoryImpl } from '@infrastructure/persistence/typeorm/repositories/address.repository';
 import { AddUserAddress } from '@application/users/use-cases/add-user-address.usecase';
 import { UpdateUserAddress } from '@application/users/use-cases/update-user-address.usecase';
@@ -45,6 +47,8 @@ const VALIDATION_STRATEGIES = [EmailExistenceStrategy, CpfExistenceStrategy];
       inject: [EmailExistenceStrategy, CpfExistenceStrategy],
     },
     UserValidator,
+    AddressValidator,
+    UserWithAddressValidator,
     {
       provide: 'UsersRepository',
       useClass: UsersRepositoryImpl,

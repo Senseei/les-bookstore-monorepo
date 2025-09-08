@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { Button, Input, Select } from '@/components'
-import { residenceTypeOptions, stateOptions } from '@/utils/constants'
+import { residenceTypeOptions, addressPurposeOptions, stateOptions } from '@/utils/constants'
 
 import type { Address } from '../../types'
 import * as S from './styles'
@@ -21,6 +21,7 @@ export const AddressForm = ({
 }: AddressFormProps) => {
   const [formData, setFormData] = useState({
     type: address?.type || 'house',
+    purpose: address?.purpose || 'both',
     addressName: address?.addressName || '',
     postalCode: address?.postalCode || '',
     street: address?.street || '',
@@ -64,6 +65,13 @@ export const AddressForm = ({
             value={formData.type}
             onChange={(value) => handleInputChange('type', value)}
             options={residenceTypeOptions}
+          />
+
+          <Select
+            label="Finalidade do Endereço"
+            value={formData.purpose}
+            onChange={(value) => handleInputChange('purpose', value)}
+            options={addressPurposeOptions}
           />
 
           <Input

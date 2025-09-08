@@ -40,7 +40,15 @@ export const AddressType = {
   RURAL: 'rural',
 } as const
 
+// Address Purpose - aligned with backend enum
+export const AddressPurpose = {
+  BILLING: 'billing',
+  DELIVERY: 'delivery',
+  BOTH: 'both',
+} as const
+
 export type AddressTypeValue = (typeof AddressType)[keyof typeof AddressType]
+export type AddressPurposeValue = (typeof AddressPurpose)[keyof typeof AddressPurpose]
 
 // Brazilian States
 export interface BrazilianState {

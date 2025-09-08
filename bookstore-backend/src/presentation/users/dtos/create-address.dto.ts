@@ -1,4 +1,5 @@
 import { AddressType } from '@domain/enums/address-type.enum';
+import { AddressPurpose } from '@domain/enums/address-purpose.enum';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IsCep } from '@presentation/decorators/validators/cep.validator';
 
@@ -6,6 +7,10 @@ export class CreateAddressDTO {
   @IsEnum(AddressType)
   @IsNotEmpty()
   type: AddressType;
+
+  @IsEnum(AddressPurpose)
+  @IsNotEmpty()
+  purpose: AddressPurpose;
 
   @IsString()
   @IsNotEmpty()

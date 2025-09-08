@@ -26,6 +26,7 @@ export class UpdateUserAddress {
     // Atualizar apenas os campos fornecidos
     const updateData = {
       type: dto.type ?? address.type,
+      purpose: dto.purpose ?? address.purpose,
       addressName: dto.addressName ?? address.addressName,
       postalCode: dto.postalCode ?? address.postalCode,
       street: dto.street ?? address.street,

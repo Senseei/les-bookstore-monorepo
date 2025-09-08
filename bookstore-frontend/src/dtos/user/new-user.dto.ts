@@ -2,6 +2,7 @@ import type { Gender } from '@/utils/types'
 
 export interface SignUpAddressDTO {
   type: string // Will map from AddressType enum
+  purpose: string // Will map from AddressPurpose enum
   addressName: string
   postalCode: string
   street: string

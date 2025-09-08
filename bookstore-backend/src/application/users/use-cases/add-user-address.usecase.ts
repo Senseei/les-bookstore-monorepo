@@ -18,6 +18,7 @@ export class AddUserAddress {
     // Criar novo endereço
     const address = new Address({
       type: dto.type,
+      purpose: dto.purpose,
       addressName: dto.addressName,
       postalCode: dto.postalCode,
       street: dto.street,

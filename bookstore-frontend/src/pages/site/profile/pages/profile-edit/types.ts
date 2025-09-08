@@ -14,6 +14,7 @@ export interface Customer {
 export interface Address {
   id: string
   type: 'house' | 'apartment' | 'condo' | 'work' | 'rural'
+  purpose: 'billing' | 'delivery' | 'both'
   addressName: string // Nome identificador do endereço
   postalCode: string // CEP
   street: string
