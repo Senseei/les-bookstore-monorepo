@@ -18,7 +18,7 @@ export class UsersService extends BaseService<User> {
    */
   public async findActiveUserById(id: string): Promise<User> {
     const user = await this.usersRepository.findActiveById(id);
-    
+
     if (!user) {
       // Verificar se o usuário existe mas está inativo
       const inactiveUser = await this.usersRepository.findById(id);
@@ -27,19 +27,22 @@ export class UsersService extends BaseService<User> {
       }
       throw new EntityNotFoundException('User', id);
     }
-    
+
     return user;
   }
 
   /**
    * Atualiza um usuário, verificando se está ativo
    */
-  public async updateActiveUser(id: string, updateData: Partial<User>): Promise<User> {
+  public async updateActiveUser(
+    id: string,
+    updateData: Partial<User>,
+  ): Promise<User> {
     const user = await this.findActiveUserById(id);
-    
+
     // Aplicar as atualizações
     Object.assign(user, updateData);
-    
+
     return await this.save(user);
   }
 }
