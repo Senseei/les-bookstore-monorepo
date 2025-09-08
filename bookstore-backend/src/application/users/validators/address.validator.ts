@@ -14,14 +14,14 @@ export class AddressValidator {
    */
   validateRequiredAddressTypes(addresses: Address[]): void {
     const hasBillingAddress = addresses.some(
-      (address) => 
-        address.purpose === AddressPurpose.BILLING || 
+      (address) =>
+        address.purpose === AddressPurpose.BILLING ||
         address.purpose === AddressPurpose.BOTH,
     );
-    
+
     const hasDeliveryAddress = addresses.some(
-      (address) => 
-        address.purpose === AddressPurpose.DELIVERY || 
+      (address) =>
+        address.purpose === AddressPurpose.DELIVERY ||
         address.purpose === AddressPurpose.BOTH,
     );
 
@@ -34,9 +34,7 @@ export class AddressValidator {
     }
 
     if (!hasDeliveryAddress) {
-      errors.push(
-        'É obrigatório cadastrar pelo menos um endereço de entrega.',
-      );
+      errors.push('É obrigatório cadastrar pelo menos um endereço de entrega.');
     }
 
     if (errors.length > 0) {
@@ -54,27 +52,27 @@ export class AddressValidator {
 
     // Verifica se após a remoção ainda haverá os endereços obrigatórios
     const willHaveBillingAddress = remainingAddresses.some(
-      (address) => 
-        address.purpose === AddressPurpose.BILLING || 
+      (address) =>
+        address.purpose === AddressPurpose.BILLING ||
         address.purpose === AddressPurpose.BOTH,
     );
-    
+
     const willHaveDeliveryAddress = remainingAddresses.some(
-      (address) => 
-        address.purpose === AddressPurpose.DELIVERY || 
+      (address) =>
+        address.purpose === AddressPurpose.DELIVERY ||
         address.purpose === AddressPurpose.BOTH,
     );
 
     const errors: string[] = [];
 
     // Verifica se o endereço a ser removido é necessário para cobrança
-    const isRequiredForBilling = 
-      addressToRemove.purpose === AddressPurpose.BILLING || 
+    const isRequiredForBilling =
+      addressToRemove.purpose === AddressPurpose.BILLING ||
       addressToRemove.purpose === AddressPurpose.BOTH;
-      
-    // Verifica se o endereço a ser removido é necessário para entrega  
-    const isRequiredForDelivery = 
-      addressToRemove.purpose === AddressPurpose.DELIVERY || 
+
+    // Verifica se o endereço a ser removido é necessário para entrega
+    const isRequiredForDelivery =
+      addressToRemove.purpose === AddressPurpose.DELIVERY ||
       addressToRemove.purpose === AddressPurpose.BOTH;
 
     if (!willHaveBillingAddress && isRequiredForBilling) {
