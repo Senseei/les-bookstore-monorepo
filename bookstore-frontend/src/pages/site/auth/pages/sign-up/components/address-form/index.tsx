@@ -1,10 +1,7 @@
 import { Controller } from 'react-hook-form'
 
 import { Input, Select } from '@/components'
-import {
-  residenceTypeOptions,
-  stateOptions,
-} from '@/utils/constants'
+import { residenceTypeOptions, stateOptions } from '@/utils/constants'
 import {
   addressValidationRules,
   residenceTypeValidationRules,

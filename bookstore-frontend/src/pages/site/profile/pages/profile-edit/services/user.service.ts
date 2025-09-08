@@ -37,6 +37,7 @@ interface BackendAddress {
   district: string
   city: string
   state: string
+  purpose: 'billing' | 'delivery' | 'both'
 }
 
 interface BackendUser {
@@ -91,6 +92,7 @@ export class UserServiceImpl implements UserService {
         state: addr.state,
         createdAt: '',
         updatedAt: '',
+        purpose: addr.purpose,
       })),
     }
   }
@@ -130,6 +132,7 @@ export class UserServiceImpl implements UserService {
           district: addr.district,
           city: addr.city,
           state: addr.state,
+          purpose: addr.purpose,
         })) || [],
     }
   }
