@@ -30,8 +30,9 @@ export class UsersController {
   @Get()
   public async findAll(
     @Query() query: PaginationParamsDTO,
+    @Query() filters: Record<string, any> = {},
   ): Promise<PaginatedResultDTO<MinUserDTO>> {
-    return this.usersWebService.findAll(query);
+    return this.usersWebService.findAll(query, filters);
   }
 
   @Get(':id')
