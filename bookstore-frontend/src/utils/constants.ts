@@ -1,11 +1,11 @@
 import type {
-  AddressTypeValue,
   AddressPurposeValue,
+  AddressTypeValue,
   BrazilianState,
   BrazilianStateCode,
   Gender,
 } from './types'
-import { AddressType, AddressPurpose } from './types'
+import { AddressPurpose, AddressType } from './types'
 
 // Gender options for Select component
 export const genderOptions: {

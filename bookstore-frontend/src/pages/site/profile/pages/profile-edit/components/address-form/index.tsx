@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 
 import { Button, Input, Select } from '@/components'
-import { residenceTypeOptions, addressPurposeOptions, stateOptions } from '@/utils/constants'
+import {
+  addressPurposeOptions,
+  residenceTypeOptions,
+  stateOptions,
+} from '@/utils/constants'
 
 import type { Address } from '../../types'
 import * as S from './styles'

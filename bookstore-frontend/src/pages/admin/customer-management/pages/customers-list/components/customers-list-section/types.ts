@@ -5,7 +5,7 @@ export interface Customer {
   email: string
   status: 'Ativo' | 'Inativo' | 'Suspenso'
   ranking: number
-  phoneAreaCode: string
+  // phoneAreaCode: string
   phoneNumber: string
   address: string
   lastOrder: string

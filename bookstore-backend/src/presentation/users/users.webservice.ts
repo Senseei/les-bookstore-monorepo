@@ -14,6 +14,7 @@ import { GetUserAddresses } from '@application/users/use-cases/get-user-addresse
 import { CreateAddressDTO } from './dtos/create-address.dto';
 import { UpdateAddressDTO } from './dtos/update-address.dto';
 import { AddressDTO } from './dtos/address.dto';
+import { MinUserDTO } from './dtos/min-user.dto';
 
 @Injectable()
 export class UsersWebService {
@@ -35,7 +36,7 @@ export class UsersWebService {
   public async findAll(
     params: PaginationParamsDTO,
     filters: Record<string, any> = {},
-  ): Promise<PaginatedResultDTO<UserDTO>> {
+  ): Promise<PaginatedResultDTO<MinUserDTO>> {
     const result = await this.usersService.findAll(
       params.page,
       params.limit,
@@ -44,7 +45,7 @@ export class UsersWebService {
     );
 
     return new PaginatedResultDTO(
-      result.items.map((item) => new UserDTO(item)),
+      result.items.map((item) => new MinUserDTO(item)),
       result.count,
       params.limit,
       params.page,

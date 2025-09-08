@@ -39,7 +39,7 @@ export const CustomerCard = ({
       <CardContent>
         <ContactInfo
           email={customer.email}
-          phoneAreaCode={customer.phoneAreaCode}
+          // phoneAreaCode={customer.phoneAreaCode}
           phoneNumber={customer.phoneNumber}
           address={customer.address}
         />

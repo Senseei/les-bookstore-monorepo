@@ -19,6 +19,7 @@ import { UpdateUserDTO } from './dtos/update-user.dto';
 import { CreateAddressDTO } from './dtos/create-address.dto';
 import { UpdateAddressDTO } from './dtos/update-address.dto';
 import { AddressDTO } from './dtos/address.dto';
+import { MinUserDTO } from './dtos/min-user.dto';
 
 // TODO: Reativar JWT Auth quando implementar o login
 // @UseGuards(JwtAuthGuard)
@@ -29,7 +30,7 @@ export class UsersController {
   @Get()
   public async findAll(
     @Query() query: PaginationParamsDTO,
-  ): Promise<PaginatedResultDTO<UserDTO>> {
+  ): Promise<PaginatedResultDTO<MinUserDTO>> {
     return this.usersWebService.findAll(query);
   }
 
