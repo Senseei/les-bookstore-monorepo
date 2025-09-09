@@ -2,12 +2,10 @@ import React from 'react'
 
 import * as S from './styles'
 
-export interface InputProps {
+export type InputProps = {
   children?: React.ReactNode
-  value?: string
-  placeholder?: string
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'search'
-  size?: 'sm' | 'md' | 'lg'
+  customSize?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'filled' | 'outline'
   disabled?: boolean
   error?: boolean
@@ -18,16 +16,11 @@ export interface InputProps {
   helperText?: string
   errorMessage?: string
   required?: boolean
-  onChange?: (value: string) => void
-  onFocus?: () => void
-  onBlur?: () => void
-}
+} & React.ComponentProps<'input'>
 
 export const Input = ({
-  value = '',
-  placeholder,
   type = 'text',
-  size = 'md',
+  customSize = 'md',
   variant = 'default',
   disabled = false,
   error = false,
@@ -38,17 +31,8 @@ export const Input = ({
   helperText,
   errorMessage,
   required = false,
-  onChange,
-  onFocus,
-  onBlur,
   ...props
 }: InputProps) => {
-  const handleChange = (e: { target: { value: string } }) => {
-    if (onChange) {
-      onChange(e.target.value)
-    }
-  }
-
   return (
     <S.InputContainer fullWidth={fullWidth}>
       {label && (
@@ -59,7 +43,7 @@ export const Input = ({
       )}
 
       <S.InputWrapper
-        size={size}
+        size={customSize}
         variant={variant}
         error={error}
         disabled={disabled}
@@ -67,15 +51,10 @@ export const Input = ({
         {startIcon && <S.InputIcon position="start">{startIcon}</S.InputIcon>}
 
         <S.StyledInput
-          value={value}
-          placeholder={placeholder}
           type={type}
           disabled={disabled}
           hasStartIcon={!!startIcon}
           hasEndIcon={!!endIcon}
-          onChange={handleChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
           {...props}
         />
 
