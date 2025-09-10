@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { Alert } from '@/components/Alert'
-import type { ToastMessage } from '@/providers/toast/types'
+import type { ToastMessage } from '@/providers/toast'
 
 import * as S from './styles'
 
