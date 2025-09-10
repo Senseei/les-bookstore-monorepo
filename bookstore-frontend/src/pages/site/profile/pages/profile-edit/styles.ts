@@ -23,6 +23,13 @@ export const Subtitle = styled.p`
   color: ${({ theme }) => theme.COLORS.NEUTRAL_600};
 `
 
+export const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+`
+
 export const LoadingText = styled.p`
   font-size: 1.125rem;
   color: ${({ theme }) => theme.COLORS.NEUTRAL_600};
@@ -76,6 +83,19 @@ export const FormTitle = styled.h2`
   color: ${({ theme }) => theme.COLORS.NEUTRAL_800};
   margin-bottom: 24px;
   text-align: center;
+`
+
+export const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+`
+
+export const FormActions = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
 `
 
 export const ActionsContainer = styled.div`

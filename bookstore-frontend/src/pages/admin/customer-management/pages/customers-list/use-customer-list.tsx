@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import type { MinUserDTO } from '@/dtos/user/min-user'
-import { useToast } from '@/hooks/use-toast'
-import { useUser } from '@/hooks/use-user'
+import { useUser } from '@/hooks'
+import { useToast } from '@/providers/toast/use-toast'
 
-import type { Customer } from '../components/customers-list-section/types'
+import type { Customer } from './components/customers-list-section/types'
 
 interface CustomerListState {
   searchTerm: string

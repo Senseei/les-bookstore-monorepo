@@ -19,6 +19,7 @@ export const ProfileEdit = () => {
     customer,
     loading,
     saving,
+    hasLoadError,
 
     // Edição de perfil
     formData,
@@ -93,13 +94,23 @@ export const ProfileEdit = () => {
     )
   }
 
-  if (!customer) {
+  if (hasLoadError || (!customer && !loading)) {
     return (
       <S.Container>
         <S.ErrorContainer>
           <S.ErrorText>Erro ao carregar perfil</S.ErrorText>
           <Button onClick={loadProfile}>Tentar Novamente</Button>
         </S.ErrorContainer>
+      </S.Container>
+    )
+  }
+
+  if (!customer) {
+    return (
+      <S.Container>
+        <S.LoadingContainer>
+          <S.LoadingText>Carregando perfil...</S.LoadingText>
+        </S.LoadingContainer>
       </S.Container>
     )
   }

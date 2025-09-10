@@ -1,16 +1,14 @@
 import { useCallback, useState } from 'react'
 
-export interface ToastMessage {
-  id: string
-  variant: 'success' | 'error' | 'warning' | 'info'
-  message: string
-  duration?: number
-}
+import { ToastContainer } from '../../components'
+import { ToastContext } from './toast-context'
+import type {
+  ToastContextValue,
+  ToastMessage,
+  ToastProviderProps,
+} from './types'
 
-/**
- * Simple toast hook for managing alert messages
- */
-export const useToast = () => {
+export const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<ToastMessage[]>([])
 
   const addToast = useCallback(
@@ -67,7 +65,7 @@ export const useToast = () => {
     [addToast],
   )
 
-  return {
+  const contextValue: ToastContextValue = {
     toasts,
     addToast,
     removeToast,
@@ -77,4 +75,11 @@ export const useToast = () => {
     showWarning,
     showInfo,
   }
+
+  return (
+    <ToastContext.Provider value={contextValue}>
+      {children}
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
+    </ToastContext.Provider>
+  )
 }

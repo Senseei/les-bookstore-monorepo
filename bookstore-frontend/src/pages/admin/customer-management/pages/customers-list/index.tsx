@@ -6,17 +6,14 @@ import {
   CardHeader,
   CardTitle,
   Select,
-  ToastContainer,
 } from '@/components'
-import { useToast } from '@/hooks/use-toast'
 import { PageHeader } from '@/pages/admin/layout/components'
 
 import { CustomersListSection, SearchAndFilters } from './components'
-import { useCustomerList } from './hooks'
 import * as S from './styles'
+import { useCustomerList } from './use-customer-list'
 
 export const CustomersList = () => {
-  const { toasts, removeToast } = useToast()
   const {
     customers,
     totalCustomers,
@@ -124,9 +121,6 @@ export const CustomersList = () => {
           </CardContent>
         </Card>
       )}
-
-      {/* Toast Container for error notifications */}
-      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
     </S.CustomerContainer>
   )
 }

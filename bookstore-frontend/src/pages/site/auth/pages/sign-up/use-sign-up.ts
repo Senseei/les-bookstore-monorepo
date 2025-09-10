@@ -2,7 +2,8 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth } from '@/hooks'
+import { useToast } from '@/providers/toast/use-toast'
 import { ROUTES } from '@/routes/constants'
 import {
   formatCPF,
@@ -16,10 +17,7 @@ import type { SignUpFormData } from './types'
 
 type InputChangeEvent = React.ChangeEvent<{ value: string }>
 
-export const useSignUp = (
-  showSuccess: (message: string, duration?: number) => void,
-  showError: (message: string, duration?: number) => void,
-) => {
+export const useSignUp = () => {
   const {
     register,
     handleSubmit,
@@ -30,6 +28,7 @@ export const useSignUp = (
   } = useForm<SignUpFormData>()
 
   const { signUp, isLoading, error } = useAuth()
+  const { showSuccess, showError } = useToast()
   const navigate = useNavigate()
 
   const password = watch('password')
