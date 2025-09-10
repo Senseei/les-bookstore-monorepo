@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { Button, Input, Select } from '@/components'
 import { formatDate } from '@/utils/input-masks'
 
-import * as S from '../styles'
-import type { Customer } from '../types'
+import type { Customer } from '../../types'
+import * as S from './styles'
 
 interface ProfileEditFormProps {
   customer: Customer
