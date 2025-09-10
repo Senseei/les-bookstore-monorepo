@@ -1,7 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useForm } from 'react-hook-form'
 
 import { Button, Input, Select } from '@/components'
-import { formatDate } from '@/utils/input-masks'
+import { formatCPF, formatDate, formatPhone } from '@/utils/input-masks'
+import {
+  birthDateValidationRules,
+  cpfValidationRules,
+  emailValidationRules,
+  personNameValidationRules,
+  phoneValidationRules,
+} from '@/utils/validation-rules'
 
 import type { Customer } from '../../types'
 import * as S from './styles'
@@ -13,81 +21,119 @@ interface ProfileEditFormProps {
   loading?: boolean
 }
 
+interface ProfileFormData {
+  name: string
+  email: string
+  phone: string
+  cpf: string
+  birthDate: string
+  gender: 'Masculino' | 'Feminino' | 'Outro'
+}
+
+type InputChangeEvent = React.ChangeEvent<{ value: string }>
+
 export const ProfileEditForm = ({
   customer,
   onSave,
   onCancel,
   loading = false,
 }: ProfileEditFormProps) => {
-  const [formData, setFormData] = useState({
-    name: customer.name,
-    email: customer.email,
-    phone: customer.phone,
-    cpf: customer.cpf || '',
-    birthDate: customer.birthDate || '',
-    gender: customer.gender || 'Masculino',
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<ProfileFormData>({
+    defaultValues: {
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      cpf: customer.cpf || '',
+      birthDate: customer.birthDate || '',
+      gender: customer.gender || 'Masculino',
+    },
   })
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
+  const genderValue = watch('gender')
+
+  const onSubmit = (data: ProfileFormData) => {
+    onSave(data)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave(formData)
-  }
+  // Helper functions for masked inputs
+  const registerCPF = (validationRules: object) => ({
+    ...register('cpf', validationRules),
+    onChange: (e: InputChangeEvent) => {
+      const maskedValue = formatCPF(e.target.value)
+      setValue('cpf', maskedValue, { shouldValidate: true })
+    },
+  })
+
+  const registerPhone = (validationRules: object) => ({
+    ...register('phone', validationRules),
+    onChange: (e: InputChangeEvent) => {
+      const maskedValue = formatPhone(e.target.value)
+      setValue('phone', maskedValue, { shouldValidate: true })
+    },
+  })
+
+  const registerBirthDate = (validationRules: object) => ({
+    ...register('birthDate', validationRules),
+    onChange: (e: InputChangeEvent) => {
+      const maskedValue = formatDate(e.target.value)
+      setValue('birthDate', maskedValue, { shouldValidate: true })
+    },
+  })
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <S.FormGrid>
         <Input
           label="Nome Completo"
-          value={formData.name}
-          onChange={(e) => handleInputChange('name', e.target.value)}
-          required
+          {...register('name', personNameValidationRules)}
+          error={!!errors.name}
+          errorMessage={errors.name?.message}
         />
 
         <Input
           label="Email"
           type="email"
-          value={formData.email}
-          onChange={(e) => handleInputChange('email', e.target.value)}
-          required
+          {...register('email', emailValidationRules)}
+          error={!!errors.email}
+          errorMessage={errors.email?.message}
         />
 
         <Input
           label="CPF"
-          value={formData.cpf}
-          onChange={(e) => handleInputChange('cpf', e.target.value)}
-          required
+          {...registerCPF(cpfValidationRules)}
+          error={!!errors.cpf}
+          errorMessage={errors.cpf?.message}
         />
 
         <Input
           label="Data de Nascimento"
-          value={formData.birthDate}
-          onChange={(e) => {
-            const maskedValue = formatDate(e.target.value)
-            handleInputChange('birthDate', maskedValue)
-          }}
+          {...registerBirthDate(birthDateValidationRules)}
           placeholder="DD/MM/AAAA"
-          required
+          error={!!errors.birthDate}
+          errorMessage={errors.birthDate?.message}
         />
 
         <Input
           label="Telefone"
-          value={formData.phone}
-          onChange={(e) => handleInputChange('phone', e.target.value)}
+          {...registerPhone(phoneValidationRules)}
           placeholder="(11) 99999-9999"
-          required
+          error={!!errors.phone}
+          errorMessage={errors.phone?.message}
         />
 
         <Select
           label="Gênero"
-          value={formData.gender}
-          onChange={(value) => handleInputChange('gender', value)}
+          value={genderValue}
+          onChange={(value) =>
+            setValue('gender', value as 'Masculino' | 'Feminino' | 'Outro')
+          }
+          error={!!errors.gender}
           options={[
             { value: 'Masculino', label: 'Masculino' },
             { value: 'Feminino', label: 'Feminino' },
