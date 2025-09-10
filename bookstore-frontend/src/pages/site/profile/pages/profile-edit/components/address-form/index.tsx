@@ -7,7 +7,11 @@ import {
   residenceTypeOptions,
   stateOptions,
 } from '@/utils/constants'
-import { formatZipCode } from '@/utils/input-masks'
+import {
+  convertFromMaskedFormat,
+  convertToMaskedFormat,
+  formatZipCode,
+} from '@/utils/input-masks'
 import {
   addressValidationRules,
   zipCodeValidationRules,
@@ -55,7 +59,7 @@ export const AddressForm = ({
       type: address?.type || 'house',
       purpose: address?.purpose || 'both',
       addressName: address?.addressName || '',
-      postalCode: address?.postalCode || '',
+      postalCode: convertToMaskedFormat.zipCode(address?.postalCode || ''),
       street: address?.street || '',
       number: address?.number || '',
       complement: address?.complement || '',
@@ -70,7 +74,12 @@ export const AddressForm = ({
   const stateValue = watch('state')
 
   const onSubmit = (data: AddressFormData) => {
-    onSave(data as Omit<Address, 'id'>)
+    // Convert masked data back to backend format
+    const convertedData = {
+      ...data,
+      postalCode: convertFromMaskedFormat.zipCode(data.postalCode),
+    }
+    onSave(convertedData as Omit<Address, 'id'>)
   }
 
   // Helper function for ZIP code input

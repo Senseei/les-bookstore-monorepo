@@ -1,12 +1,12 @@
 import React from 'react'
 import { useParams } from 'react-router'
 
-import { Button, Input, Select } from '@/components'
-import { formatDate } from '@/utils/input-masks'
+import { Button } from '@/components'
 
 import { AddressForm } from './components/address-form'
 import { AddressList } from './components/address-list'
 import { PasswordForm } from './components/password-form'
+import { ProfileEditForm } from './components/profile-edit-form'
 import * as S from './styles'
 import type { Address, PasswordChangeData } from './types'
 import { useProfileEdit } from './use-profile-edit'
@@ -21,9 +21,7 @@ export const ProfileEdit = () => {
     saving,
     hasLoadError,
 
-    // Edição de perfil
-    formData,
-    setFormData,
+    // Função para salvar perfil
     saveProfile,
 
     // Gerenciamento de endereços
@@ -45,18 +43,6 @@ export const ProfileEdit = () => {
   // Estados de controle de UI
   const [showPasswordForm, setShowPasswordForm] = React.useState(false)
   const [showAddressForm, setShowAddressForm] = React.useState(false)
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await saveProfile()
-  }
 
   const handleAddAddress = () => {
     startAddingAddress()
@@ -140,71 +126,11 @@ export const ProfileEdit = () => {
         />
       ) : (
         <>
-          <S.FormContainer>
-            <S.FormTitle>Informações Pessoais</S.FormTitle>
-
-            <form onSubmit={handleSubmit}>
-              <S.FormGrid>
-                <Input
-                  label="Nome Completo"
-                  value={formData.name || ''}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  required
-                />
-
-                <Input
-                  label="Email"
-                  type="email"
-                  value={formData.email || ''}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  required
-                />
-
-                <Input
-                  label="CPF"
-                  value={formData.cpf || ''}
-                  onChange={(e) => handleInputChange('cpf', e.target.value)}
-                  required
-                  disabled
-                />
-
-                <Input
-                  label="Data de Nascimento"
-                  value={formData.birthDate || ''}
-                  onChange={(e) => {
-                    const maskedValue = formatDate(e.target.value)
-                    handleInputChange('birthDate', maskedValue)
-                  }}
-                  placeholder="DD/MM/AAAA"
-                  required
-                />
-
-                <Select
-                  label="Gênero"
-                  value={formData.gender || ''}
-                  onChange={(value) => handleInputChange('gender', value)}
-                  options={[
-                    { value: 'Masculino', label: 'Masculino' },
-                    { value: 'Feminino', label: 'Feminino' },
-                    { value: 'Outro', label: 'Outro' },
-                  ]}
-                />
-
-                <Input
-                  label="Telefone"
-                  value={formData.phone || ''}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="(11) 99999-9999"
-                />
-              </S.FormGrid>
-
-              <S.FormActions>
-                <Button type="submit" loading={saving}>
-                  Salvar Alterações
-                </Button>
-              </S.FormActions>
-            </form>
-          </S.FormContainer>
+          <ProfileEditForm
+            customer={customer}
+            onSave={saveProfile}
+            loading={saving}
+          />
 
           <S.ActionsContainer>
             <S.ActionButton onClick={() => setShowPasswordForm(true)}>

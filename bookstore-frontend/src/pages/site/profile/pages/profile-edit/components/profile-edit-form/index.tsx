@@ -2,7 +2,13 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Button, Input, Select } from '@/components'
-import { formatCPF, formatDate, formatPhone } from '@/utils/input-masks'
+import {
+  convertFromMaskedFormat,
+  convertToMaskedFormat,
+  formatCPF,
+  formatDate,
+  formatPhone,
+} from '@/utils/input-masks'
 import {
   birthDateValidationRules,
   cpfValidationRules,
@@ -17,7 +23,7 @@ import * as S from './styles'
 interface ProfileEditFormProps {
   customer: Customer
   onSave: (data: Partial<Customer>) => void
-  onCancel: () => void
+  onCancel?: () => void
   loading?: boolean
 }
 
@@ -35,7 +41,7 @@ type InputChangeEvent = React.ChangeEvent<{ value: string }>
 export const ProfileEditForm = ({
   customer,
   onSave,
-  onCancel,
+  onCancel: _onCancel,
   loading = false,
 }: ProfileEditFormProps) => {
   const {
@@ -48,9 +54,9 @@ export const ProfileEditForm = ({
     defaultValues: {
       name: customer.name,
       email: customer.email,
-      phone: customer.phone,
-      cpf: customer.cpf || '',
-      birthDate: customer.birthDate || '',
+      phone: convertToMaskedFormat.phone(customer.phone),
+      cpf: convertToMaskedFormat.cpf(customer.cpf || ''),
+      birthDate: convertToMaskedFormat.date(customer.birthDate || ''),
       gender: customer.gender || 'Masculino',
     },
   })
@@ -58,7 +64,15 @@ export const ProfileEditForm = ({
   const genderValue = watch('gender')
 
   const onSubmit = (data: ProfileFormData) => {
-    onSave(data)
+    // Convert masked data back to backend format
+    const convertedData = {
+      id: customer.id, // Include the customer ID
+      ...data,
+      phone: convertFromMaskedFormat.phone(data.phone),
+      cpf: convertFromMaskedFormat.cpf(data.cpf),
+      birthDate: convertFromMaskedFormat.date(data.birthDate),
+    }
+    onSave(convertedData)
   }
 
   // Helper functions for masked inputs
@@ -87,69 +101,69 @@ export const ProfileEditForm = ({
   })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <S.FormGrid>
-        <Input
-          label="Nome Completo"
-          {...register('name', personNameValidationRules)}
-          error={!!errors.name}
-          errorMessage={errors.name?.message}
-        />
+    <S.Container>
+      <S.FormTitle>Informações Pessoais</S.FormTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <S.FormGrid>
+          <Input
+            label="Nome Completo"
+            {...register('name', personNameValidationRules)}
+            error={!!errors.name}
+            errorMessage={errors.name?.message}
+          />
 
-        <Input
-          label="Email"
-          type="email"
-          {...register('email', emailValidationRules)}
-          error={!!errors.email}
-          errorMessage={errors.email?.message}
-        />
+          <Input
+            label="Email"
+            type="email"
+            {...register('email', emailValidationRules)}
+            error={!!errors.email}
+            errorMessage={errors.email?.message}
+          />
 
-        <Input
-          label="CPF"
-          {...registerCPF(cpfValidationRules)}
-          error={!!errors.cpf}
-          errorMessage={errors.cpf?.message}
-        />
+          <Input
+            label="CPF"
+            {...registerCPF(cpfValidationRules)}
+            error={!!errors.cpf}
+            errorMessage={errors.cpf?.message}
+          />
 
-        <Input
-          label="Data de Nascimento"
-          {...registerBirthDate(birthDateValidationRules)}
-          placeholder="DD/MM/AAAA"
-          error={!!errors.birthDate}
-          errorMessage={errors.birthDate?.message}
-        />
+          <Input
+            label="Data de Nascimento"
+            {...registerBirthDate(birthDateValidationRules)}
+            placeholder="DD/MM/AAAA"
+            error={!!errors.birthDate}
+            errorMessage={errors.birthDate?.message}
+          />
 
-        <Input
-          label="Telefone"
-          {...registerPhone(phoneValidationRules)}
-          placeholder="(11) 99999-9999"
-          error={!!errors.phone}
-          errorMessage={errors.phone?.message}
-        />
+          <Input
+            label="Telefone"
+            {...registerPhone(phoneValidationRules)}
+            placeholder="(11) 99999-9999"
+            error={!!errors.phone}
+            errorMessage={errors.phone?.message}
+          />
 
-        <Select
-          label="Gênero"
-          value={genderValue}
-          onChange={(value) =>
-            setValue('gender', value as 'Masculino' | 'Feminino' | 'Outro')
-          }
-          error={!!errors.gender}
-          options={[
-            { value: 'Masculino', label: 'Masculino' },
-            { value: 'Feminino', label: 'Feminino' },
-            { value: 'Outro', label: 'Outro' },
-          ]}
-        />
-      </S.FormGrid>
+          <Select
+            label="Gênero"
+            value={genderValue}
+            onChange={(value) =>
+              setValue('gender', value as 'Masculino' | 'Feminino' | 'Outro')
+            }
+            error={!!errors.gender}
+            options={[
+              { value: 'Masculino', label: 'Masculino' },
+              { value: 'Feminino', label: 'Feminino' },
+              { value: 'Outro', label: 'Outro' },
+            ]}
+          />
+        </S.FormGrid>
 
-      <S.FormActions>
-        <Button variant="ghost" onClick={onCancel} disabled={loading}>
-          Cancelar
-        </Button>
-        <Button type="submit" loading={loading}>
-          Salvar Alterações
-        </Button>
-      </S.FormActions>
-    </form>
+        <S.FormActions>
+          <Button type="submit" loading={loading}>
+            Salvar Alterações
+          </Button>
+        </S.FormActions>
+      </form>
+    </S.Container>
   )
 }

@@ -14,12 +14,7 @@ export interface UseProfileEditReturn {
   hasLoadError: boolean
 
   // Edição de perfil
-  isEditing: boolean
-  formData: Partial<Customer>
-  setFormData: (data: Partial<Customer>) => void
-  startEditing: () => void
-  cancelEditing: () => void
-  saveProfile: () => Promise<void>
+  saveProfile: (profileData?: Partial<Customer>) => Promise<void>
 
   // Gerenciamento de endereços
   editingAddress: Address | null
@@ -50,10 +45,6 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
   const [loading, setLoading] = useState(false)
   const [hasLoadError, setHasLoadError] = useState(false)
   const [hasInitialLoad, setHasInitialLoad] = useState(false)
-
-  // Estados de edição de perfil
-  const [isEditing, setIsEditing] = useState(false)
-  const [formData, setFormData] = useState<Partial<Customer>>({})
 
   // Estados de endereços
   const [editingAddress, setEditingAddress] = useState<Address | null>(null)
@@ -86,7 +77,6 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
       const result = await userHook.getUserById(userId)
 
       if (result.success && result.data) {
-        setFormData(result.data as unknown as Partial<Customer>)
         setHasLoadError(false)
         if (!hasInitialLoad) {
           setHasInitialLoad(true)
@@ -110,38 +100,27 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     }
   }, [userId]) // Removed loadProfile from dependencies to prevent infinite loops
 
-  const startEditing = useCallback(() => {
-    if (customer) {
-      setFormData({ ...customer })
-      setIsEditing(true)
-    }
-  }, [customer])
+  const saveProfile = useCallback(
+    async (profileData?: Partial<Customer>) => {
+      if (!customer || !profileData?.id) return
 
-  const cancelEditing = useCallback(() => {
-    setIsEditing(false)
-    setFormData(customer || {})
-  }, [customer])
+      try {
+        const result = await userHook.updateUser(
+          profileData.id,
+          profileData as UpdateUserData,
+        )
 
-  const saveProfile = useCallback(async () => {
-    if (!customer || !formData.id) return
-
-    try {
-      const result = await userHook.updateUser(
-        formData.id,
-        formData as UpdateUserData,
-      )
-
-      if (result.success) {
-        setFormData(result.data as unknown as Partial<Customer>)
-        setIsEditing(false)
-        toast.showSuccess('Perfil atualizado com sucesso!')
-      } else {
-        toast.showError(result.error || 'Erro ao atualizar perfil')
+        if (result.success) {
+          toast.showSuccess('Perfil atualizado com sucesso!')
+        } else {
+          toast.showError(result.error || 'Erro ao atualizar perfil')
+        }
+      } catch {
+        toast.showError('Erro ao atualizar perfil')
       }
-    } catch {
-      toast.showError('Erro ao atualizar perfil')
-    }
-  }, [customer, formData, userHook, toast])
+    },
+    [customer, userHook, toast],
+  )
 
   // Funções de endereços
   const startAddingAddress = useCallback(() => {
@@ -313,11 +292,6 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     hasLoadError,
 
     // Edição de perfil
-    isEditing,
-    formData,
-    setFormData,
-    startEditing,
-    cancelEditing,
     saveProfile,
 
     // Gerenciamento de endereços
