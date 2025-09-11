@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { useToast } from '@/hooks/use-toast'
+import { useAddress, useUser } from '@/hooks'
+import { useToast } from '@/providers'
+import type { CreateAddressData, UpdateUserData } from '@/services/user.service'
 
-import { addressService } from './services/address.service'
-import { userService } from './services/user.service'
 import type { Address, Customer, PasswordChangeData } from './types'
 
 export interface UseProfileEditReturn {
@@ -11,14 +11,10 @@ export interface UseProfileEditReturn {
   customer: Customer | null
   loading: boolean
   saving: boolean
+  hasLoadError: boolean
 
   // Edição de perfil
-  isEditing: boolean
-  formData: Partial<Customer>
-  setFormData: (data: Partial<Customer>) => void
-  startEditing: () => void
-  cancelEditing: () => void
-  saveProfile: () => Promise<void>
+  saveProfile: (profileData?: Partial<Customer>) => Promise<void>
 
   // Gerenciamento de endereços
   editingAddress: Address | null
@@ -35,22 +31,20 @@ export interface UseProfileEditReturn {
   setPasswordFormData: (data: PasswordChangeData) => void
   changePassword: () => Promise<void>
 
-  // Inativação de conta
-  inactivateAccount: () => Promise<void>
-
   // Funções de carregamento
   loadProfile: () => Promise<void>
 }
 
 export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
-  // Estados principais
-  const [customer, setCustomer] = useState<Customer | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
+  // Entity hooks
+  const userHook = useUser()
+  const addressHook = useAddress()
+  const toast = useToast()
 
-  // Estados de edição de perfil
-  const [isEditing, setIsEditing] = useState(false)
-  const [formData, setFormData] = useState<Partial<Customer>>({})
+  // Estados principais
+  const [loading, setLoading] = useState(false)
+  const [hasLoadError, setHasLoadError] = useState(false)
+  const [hasInitialLoad, setHasInitialLoad] = useState(false)
 
   // Estados de endereços
   const [editingAddress, setEditingAddress] = useState<Address | null>(null)
@@ -63,7 +57,9 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     confirmPassword: '',
   })
 
-  const toast = useToast()
+  // Get customer data from user hook
+  const customer = userHook.user as Customer | null
+  const saving = userHook.isSaving || addressHook.isAddressSaving
 
   // Carregamento inicial do perfil
   const loadProfile = useCallback(async () => {
@@ -75,68 +71,56 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     }
 
     setLoading(true)
+    setHasLoadError(false) // Reset error state when starting a new load
 
     try {
-      const userData = await userService.getUserById(userId)
-      setCustomer(userData)
-      setFormData(userData)
-    } catch (error: unknown) {
-      // Verificar se é erro de usuário inativo
-      const axiosError = error as { response?: { status?: number } }
-      if (axiosError?.response?.status === 403) {
-        toast.showError('Esta conta foi inativada e não pode ser acessada.')
-        // Redirecionar para página inicial após 3 segundos
-        window.setTimeout(() => {
-          window.location.href = '/'
-        }, 3000)
-      } else if (axiosError?.response?.status === 404) {
-        toast.showError('Usuário não encontrado.')
+      const result = await userHook.getUserById(userId)
+
+      if (result.success && result.data) {
+        setHasLoadError(false)
+        if (!hasInitialLoad) {
+          setHasInitialLoad(true)
+        }
       } else {
-        toast.showError('Erro ao carregar dados do perfil')
+        setHasLoadError(true)
+        toast.showError(result.error || 'Erro ao carregar dados do perfil')
       }
+    } catch {
+      setHasLoadError(true)
+      toast.showError('Erro ao carregar dados do perfil')
     } finally {
       setLoading(false)
     }
-  }, [userId])
+  }, [userId, userHook, toast, hasInitialLoad])
 
   useEffect(() => {
-    if (userId) {
+    if (userId && !hasInitialLoad) {
+      setHasInitialLoad(true)
       loadProfile()
     }
-  }, [userId])
+  }, [userId]) // Removed loadProfile from dependencies to prevent infinite loops
 
-  const startEditing = useCallback(() => {
-    if (customer) {
-      setFormData({ ...customer })
-      setIsEditing(true)
-    }
-  }, [customer])
+  const saveProfile = useCallback(
+    async (profileData?: Partial<Customer>) => {
+      if (!customer || !profileData?.id) return
 
-  const cancelEditing = useCallback(() => {
-    setIsEditing(false)
-    setFormData(customer || {})
-  }, [customer])
+      try {
+        const result = await userHook.updateUser(
+          profileData.id,
+          profileData as UpdateUserData,
+        )
 
-  const saveProfile = useCallback(async () => {
-    if (!customer || !formData.id) return
-
-    setSaving(true)
-
-    try {
-      const updatedCustomer = await userService.updateUser(
-        formData.id,
-        formData,
-      )
-      setCustomer(updatedCustomer)
-      setFormData(updatedCustomer)
-      setIsEditing(false)
-      toast.showSuccess('Perfil atualizado com sucesso!')
-    } catch {
-      toast.showError('Erro ao atualizar perfil')
-    } finally {
-      setSaving(false)
-    }
-  }, [customer, formData, toast])
+        if (result.success) {
+          toast.showSuccess('Perfil atualizado com sucesso!')
+        } else {
+          toast.showError(result.error || 'Erro ao atualizar perfil')
+        }
+      } catch {
+        toast.showError('Erro ao atualizar perfil')
+      }
+    },
+    [customer, userHook, toast],
+  )
 
   // Funções de endereços
   const startAddingAddress = useCallback(() => {
@@ -171,57 +155,34 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
       const dataToSave = addressDataParam || addressFormData
       if (!dataToSave) return
 
-      setSaving(true)
-
       try {
         if (editingAddress) {
-          const updatedAddress = await addressService.updateAddress(
+          const result = await addressHook.updateAddress(
             customer.id,
             editingAddress.id,
-            dataToSave,
+            dataToSave as CreateAddressData,
           )
 
-          setCustomer((prev) => {
-            if (!prev) return null
-
-            const newState = {
-              ...prev,
-              addresses:
-                prev.addresses?.map((addr) =>
-                  addr.id === editingAddress.id ? updatedAddress : addr,
-                ) || [],
-            }
-
-            return newState
-          })
-
-          toast.showSuccess('Endereço atualizado com sucesso!')
+          if (result.success) {
+            // Reload user data to get updated addresses
+            await userHook.getUserById(customer.id)
+            toast.showSuccess('Endereço atualizado com sucesso!')
+          } else {
+            toast.showError(result.error || 'Erro ao atualizar endereço')
+          }
         } else {
-          const newAddress = await addressService.createAddress(
+          const result = await addressHook.createAddress(
             customer.id,
-            dataToSave as {
-              type: 'house' | 'apartment' | 'condo' | 'work' | 'rural'
-              addressName: string
-              postalCode: string
-              street: string
-              number: string
-              complement?: string
-              district: string
-              city: string
-              state: string
-            },
+            dataToSave as CreateAddressData,
           )
 
-          setCustomer((prev) => {
-            if (!prev) return null
-
-            return {
-              ...prev,
-              addresses: [...(prev.addresses || []), newAddress],
-            }
-          })
-
-          toast.showSuccess('Endereço adicionado com sucesso!')
+          if (result.success) {
+            // Reload user data to get updated addresses
+            await userHook.getUserById(customer.id)
+            toast.showSuccess('Endereço adicionado com sucesso!')
+          } else {
+            toast.showError(result.error || 'Erro ao adicionar endereço')
+          }
         }
 
         cancelAddressEditing()
@@ -231,11 +192,17 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
             ? 'Erro ao atualizar endereço'
             : 'Erro ao adicionar endereço',
         )
-      } finally {
-        setSaving(false)
       }
     },
-    [customer, addressFormData, editingAddress, cancelAddressEditing, toast],
+    [
+      customer,
+      addressFormData,
+      editingAddress,
+      cancelAddressEditing,
+      toast,
+      addressHook,
+      userHook,
+    ],
   )
 
   const removeAddress = useCallback(
@@ -257,28 +224,21 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
         return
       }
 
-      setSaving(true)
-
       try {
-        await addressService.deleteAddress(customer.id, addressId)
+        const result = await addressHook.deleteAddress(customer.id, addressId)
 
-        setCustomer((prev) => {
-          if (!prev) return null
-
-          return {
-            ...prev,
-            addresses: prev.addresses?.filter((addr) => addr.id !== addressId),
-          }
-        })
-
-        toast.showSuccess('Endereço removido com sucesso!')
+        if (result.success) {
+          // Reload user data to get updated addresses
+          await userHook.getUserById(customer.id)
+          toast.showSuccess('Endereço removido com sucesso!')
+        } else {
+          toast.showError(result.error || 'Erro ao remover endereço')
+        }
       } catch {
         toast.showError('Erro ao remover endereço')
-      } finally {
-        setSaving(false)
       }
     },
-    [customer, toast],
+    [customer, toast, addressHook, userHook],
   )
 
   // Função de alteração de senha
@@ -301,58 +261,37 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
       return
     }
 
-    setSaving(true)
-
     try {
-      await userService.changePassword(customer.id, passwordFormData)
+      const result = await userHook.changeUserPassword(
+        customer.id,
+        passwordFormData,
+      )
 
-      setPasswordFormData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      })
-
-      toast.showSuccess('Senha alterada com sucesso!')
+      if (result.success) {
+        setPasswordFormData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        })
+        toast.showSuccess('Senha alterada com sucesso!')
+      } else {
+        toast.showError(
+          result.error || 'Erro ao alterar senha. Verifique a senha atual.',
+        )
+      }
     } catch {
       toast.showError('Erro ao alterar senha. Verifique a senha atual.')
-    } finally {
-      setSaving(false)
     }
-  }, [customer, passwordFormData, toast])
-
-  // Função para inativar conta
-  const inactivateAccount = useCallback(async () => {
-    if (!customer) {
-      toast.showError('Usuário não encontrado')
-      return
-    }
-
-    setSaving(true)
-
-    try {
-      await userService.inactivateUser(customer.id)
-      toast.showSuccess('Conta inativada com sucesso!')
-      // Redirecionar para página inicial ou login
-      window.location.href = '/'
-    } catch {
-      toast.showError('Erro ao inativar conta. Tente novamente.')
-    } finally {
-      setSaving(false)
-    }
-  }, [customer, toast])
+  }, [customer, passwordFormData, toast, userHook])
 
   return {
     // Estado principal
     customer,
     loading,
     saving,
+    hasLoadError,
 
     // Edição de perfil
-    isEditing,
-    formData,
-    setFormData,
-    startEditing,
-    cancelEditing,
     saveProfile,
 
     // Gerenciamento de endereços
@@ -369,9 +308,6 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     passwordFormData,
     setPasswordFormData,
     changePassword,
-
-    // Inativação de conta
-    inactivateAccount,
 
     // Funções de carregamento
     loadProfile,

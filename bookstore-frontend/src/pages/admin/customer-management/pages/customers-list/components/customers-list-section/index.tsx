@@ -9,13 +9,13 @@ interface CustomersListSectionProps {
 export const CustomersListSection = ({
   customers,
 }: CustomersListSectionProps) => {
-  const handleViewDetails = (customerId: number) => {
+  const handleViewDetails = (customerId: string) => {
     // TODO: Navigate to customer details
     // eslint-disable-next-line no-console
     console.log('View details for customer:', customerId)
   }
 
-  const handleMoreOptions = (customerId: number) => {
+  const handleMoreOptions = (customerId: string) => {
     // TODO: Show options menu
     // eslint-disable-next-line no-console
     console.log('More options for customer:', customerId)

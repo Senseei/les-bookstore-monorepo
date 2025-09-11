@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useForm } from 'react-hook-form'
 
 import { Button, Input, Select } from '@/components'
 import {
@@ -6,6 +7,15 @@ import {
   residenceTypeOptions,
   stateOptions,
 } from '@/utils/constants'
+import {
+  convertFromMaskedFormat,
+  convertToMaskedFormat,
+  formatZipCode,
+} from '@/utils/input-masks'
+import {
+  addressValidationRules,
+  zipCodeValidationRules,
+} from '@/utils/validation-rules'
 
 import type { Address } from '../../types'
 import * as S from './styles'
@@ -17,36 +27,69 @@ interface AddressFormProps {
   loading?: boolean
 }
 
+interface AddressFormData {
+  type: string
+  purpose: string
+  addressName: string
+  postalCode: string
+  street: string
+  number: string
+  complement: string
+  district: string
+  city: string
+  state: string
+}
+
+type InputChangeEvent = React.ChangeEvent<{ value: string }>
+
 export const AddressForm = ({
   address,
   onSave,
   onCancel,
   loading = false,
 }: AddressFormProps) => {
-  const [formData, setFormData] = useState({
-    type: address?.type || 'house',
-    purpose: address?.purpose || 'both',
-    addressName: address?.addressName || '',
-    postalCode: address?.postalCode || '',
-    street: address?.street || '',
-    number: address?.number || '',
-    complement: address?.complement || '',
-    district: address?.district || '',
-    city: address?.city || '',
-    state: address?.state || '',
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<AddressFormData>({
+    defaultValues: {
+      type: address?.type || 'house',
+      purpose: address?.purpose || 'both',
+      addressName: address?.addressName || '',
+      postalCode: convertToMaskedFormat.zipCode(address?.postalCode || ''),
+      street: address?.street || '',
+      number: address?.number || '',
+      complement: address?.complement || '',
+      district: address?.district || '',
+      city: address?.city || '',
+      state: address?.state || '',
+    },
   })
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
+  const typeValue = watch('type')
+  const purposeValue = watch('purpose')
+  const stateValue = watch('state')
+
+  const onSubmit = (data: AddressFormData) => {
+    // Convert masked data back to backend format
+    const convertedData = {
+      ...data,
+      postalCode: convertFromMaskedFormat.zipCode(data.postalCode),
+    }
+    onSave(convertedData as Omit<Address, 'id'>)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave(formData as Omit<Address, 'id'>)
-  }
+  // Helper function for ZIP code input
+  const registerZipCode = (validationRules: object) => ({
+    ...register('postalCode', validationRules),
+    onChange: (e: InputChangeEvent) => {
+      const maskedValue = formatZipCode(e.target.value)
+      setValue('postalCode', maskedValue, { shouldValidate: true })
+    },
+  })
 
   return (
     <S.Container>
@@ -54,81 +97,88 @@ export const AddressForm = ({
         {address ? 'Editar Endereço' : 'Adicionar Endereço'}
       </S.FormTitle>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <S.FormGrid>
           <Input
             label="Nome do Endereço"
-            value={formData.addressName}
-            onChange={(e) => handleInputChange('addressName', e.target.value)}
-            required
+            {...register(
+              'addressName',
+              addressValidationRules.addressIdentifier,
+            )}
             placeholder="Ex: Casa, Trabalho, Casa da Mãe"
+            error={!!errors.addressName}
+            errorMessage={errors.addressName?.message}
           />
 
           <Select
             label="Tipo de Endereço"
-            value={formData.type}
-            onChange={(value) => handleInputChange('type', value)}
+            value={typeValue}
+            onChange={(value) => setValue('type', value)}
             options={residenceTypeOptions}
+            error={!!errors.type}
           />
 
           <Select
             label="Finalidade do Endereço"
-            value={formData.purpose}
-            onChange={(value) => handleInputChange('purpose', value)}
+            value={purposeValue}
+            onChange={(value) => setValue('purpose', value)}
             options={addressPurposeOptions}
+            error={!!errors.purpose}
           />
 
           <Input
             label="CEP"
-            value={formData.postalCode}
-            onChange={(e) => handleInputChange('postalCode', e.target.value)}
-            required
+            {...registerZipCode(zipCodeValidationRules)}
             placeholder="00000-000"
+            error={!!errors.postalCode}
+            errorMessage={errors.postalCode?.message}
           />
 
           <Input
             label="Logradouro"
-            value={formData.street}
-            onChange={(e) => handleInputChange('street', e.target.value)}
-            required
+            {...register('street', addressValidationRules.street)}
             placeholder="Nome da rua/avenida"
+            error={!!errors.street}
+            errorMessage={errors.street?.message}
           />
 
           <Input
             label="Número"
-            value={formData.number}
-            onChange={(e) => handleInputChange('number', e.target.value)}
-            required
+            {...register('number', addressValidationRules.number)}
             placeholder="123"
+            error={!!errors.number}
+            errorMessage={errors.number?.message}
           />
 
           <Input
             label="Complemento"
-            value={formData.complement}
-            onChange={(e) => handleInputChange('complement', e.target.value)}
+            {...register('complement', addressValidationRules.complement)}
             placeholder="Apto 45, Bloco B, Casa 2"
+            error={!!errors.complement}
+            errorMessage={errors.complement?.message}
           />
 
           <Input
             label="Bairro"
-            value={formData.district}
-            onChange={(e) => handleInputChange('district', e.target.value)}
-            required
+            {...register('district', addressValidationRules.neighborhood)}
+            error={!!errors.district}
+            errorMessage={errors.district?.message}
           />
 
           <Input
             label="Cidade"
-            value={formData.city}
-            onChange={(e) => handleInputChange('city', e.target.value)}
-            required
+            {...register('city', addressValidationRules.city)}
+            error={!!errors.city}
+            errorMessage={errors.city?.message}
           />
 
           <Select
             label="Estado"
-            value={formData.state}
-            onChange={(value) => handleInputChange('state', value)}
+            value={stateValue}
+            onChange={(value) => setValue('state', value)}
             placeholder="Selecione o estado"
             options={stateOptions}
+            error={!!errors.state}
           />
         </S.FormGrid>
 

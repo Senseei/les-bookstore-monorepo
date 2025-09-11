@@ -9,14 +9,12 @@ import type { Customer } from '../types'
 interface ProfileEditFormProps {
   customer: Customer
   onSave: (data: Partial<Customer>) => void
-  onCancel: () => void
   loading?: boolean
 }
 
 export const ProfileEditForm = ({
   customer,
   onSave,
-  onCancel,
   loading = false,
 }: ProfileEditFormProps) => {
   const [formData, setFormData] = useState({
@@ -97,9 +95,6 @@ export const ProfileEditForm = ({
       </S.FormGrid>
 
       <S.FormActions>
-        <Button variant="ghost" onClick={onCancel} disabled={loading}>
-          Cancelar
-        </Button>
         <Button type="submit" loading={loading}>
           Salvar Alterações
         </Button>

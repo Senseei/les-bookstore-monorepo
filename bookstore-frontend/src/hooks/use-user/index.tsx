@@ -1,7 +1,13 @@
 import { useCallback, useState } from 'react'
 
 import type { MinUserDTO } from '@/dtos/user/min-user'
-import type { GetUsersParams } from '@/services/user.service'
+import type { UserDTO } from '@/dtos/user/user'
+import type {
+  CreateAddressData,
+  GetUsersParams,
+  PasswordChangeData,
+  UpdateUserData,
+} from '@/services/user.service'
 import { UserService } from '@/services/user.service'
 
 interface UserState {
@@ -10,6 +16,13 @@ interface UserState {
   currentPage: number
   pageSize: number
   isLoading: boolean
+  error: string | null
+}
+
+interface SingleUserState {
+  user: UserDTO | null
+  isLoading: boolean
+  isSaving: boolean
   error: string | null
 }
 
@@ -24,6 +37,13 @@ export const useUser = () => {
     currentPage: 1,
     pageSize: 10,
     isLoading: false,
+    error: null,
+  })
+
+  const [singleUserState, setSingleUserState] = useState<SingleUserState>({
+    user: null,
+    isLoading: false,
+    isSaving: false,
     error: null,
   })
 
@@ -63,14 +83,228 @@ export const useUser = () => {
   }, [])
 
   /**
+   * Get user by ID
+   */
+  const getUserById = useCallback(async (id: string) => {
+    setSingleUserState((prev) => ({ ...prev, isLoading: true, error: null }))
+
+    try {
+      const user = await UserService.getUserById(id)
+
+      setSingleUserState((prev) => ({
+        ...prev,
+        user,
+        isLoading: false,
+        error: null,
+      }))
+
+      return { success: true, data: user }
+    } catch {
+      const errorMessage = 'Erro ao buscar usuário'
+
+      setSingleUserState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: errorMessage,
+      }))
+
+      return { success: false, error: errorMessage }
+    }
+  }, [])
+
+  /**
+   * Update user
+   */
+  const updateUser = useCallback(
+    async (id: string, userData: UpdateUserData) => {
+      setSingleUserState((prev) => ({ ...prev, isSaving: true }))
+
+      try {
+        const updatedUser = await UserService.updateUser(id, userData)
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          user: updatedUser,
+          isSaving: false,
+        }))
+
+        return { success: true, data: updatedUser }
+      } catch {
+        const errorMessage = 'Erro ao atualizar usuário'
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          isSaving: false,
+          error: errorMessage,
+        }))
+
+        return { success: false, error: errorMessage }
+      }
+    },
+    [],
+  )
+
+  /**
+   * Change user password
+   */
+  const changeUserPassword = useCallback(
+    async (id: string, passwordData: PasswordChangeData) => {
+      setSingleUserState((prev) => ({ ...prev, isSaving: true }))
+
+      try {
+        await UserService.changePassword(id, passwordData)
+
+        setSingleUserState((prev) => ({ ...prev, isSaving: false }))
+
+        return { success: true }
+      } catch {
+        const errorMessage = 'Erro ao alterar senha'
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          isSaving: false,
+          error: errorMessage,
+        }))
+
+        return { success: false, error: errorMessage }
+      }
+    },
+    [],
+  )
+
+  /**
+   * Create user address
+   */
+  const createUserAddress = useCallback(
+    async (userId: string, addressData: CreateAddressData) => {
+      setSingleUserState((prev) => ({ ...prev, isSaving: true }))
+
+      try {
+        const newAddress = await UserService.createAddress(userId, addressData)
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          user: prev.user
+            ? {
+                ...prev.user,
+                addresses: [...prev.user.addresses, newAddress],
+              }
+            : null,
+          isSaving: false,
+        }))
+
+        return { success: true, data: newAddress }
+      } catch {
+        const errorMessage = 'Erro ao criar endereço'
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          isSaving: false,
+          error: errorMessage,
+        }))
+
+        return { success: false, error: errorMessage }
+      }
+    },
+    [],
+  )
+
+  /**
+   * Update user address
+   */
+  const updateUserAddress = useCallback(
+    async (
+      userId: string,
+      addressId: string,
+      addressData: Partial<CreateAddressData>,
+    ) => {
+      setSingleUserState((prev) => ({ ...prev, isSaving: true }))
+
+      try {
+        const updatedAddress = await UserService.updateAddress(
+          userId,
+          addressId,
+          addressData,
+        )
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          user: prev.user
+            ? {
+                ...prev.user,
+                addresses: prev.user.addresses.map((addr) =>
+                  addr.id === addressId ? updatedAddress : addr,
+                ),
+              }
+            : null,
+          isSaving: false,
+        }))
+
+        return { success: true, data: updatedAddress }
+      } catch {
+        const errorMessage = 'Erro ao atualizar endereço'
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          isSaving: false,
+          error: errorMessage,
+        }))
+
+        return { success: false, error: errorMessage }
+      }
+    },
+    [],
+  )
+
+  /**
+   * Delete user address
+   */
+  const deleteUserAddress = useCallback(
+    async (userId: string, addressId: string) => {
+      setSingleUserState((prev) => ({ ...prev, isSaving: true }))
+
+      try {
+        await UserService.deleteAddress(userId, addressId)
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          user: prev.user
+            ? {
+                ...prev.user,
+                addresses: prev.user.addresses.filter(
+                  (addr) => addr.id !== addressId,
+                ),
+              }
+            : null,
+          isSaving: false,
+        }))
+
+        return { success: true }
+      } catch {
+        const errorMessage = 'Erro ao deletar endereço'
+
+        setSingleUserState((prev) => ({
+          ...prev,
+          isSaving: false,
+          error: errorMessage,
+        }))
+
+        return { success: false, error: errorMessage }
+      }
+    },
+    [],
+  )
+
+  /**
    * Clear user error
    */
   const clearError = useCallback(() => {
     setUserState((prev) => ({ ...prev, error: null }))
+    setSingleUserState((prev) => ({ ...prev, error: null }))
   }, [])
 
   return {
-    // State
+    // List state
     users: userState.users,
     totalCount: userState.totalCount,
     currentPage: userState.currentPage,
@@ -78,8 +312,22 @@ export const useUser = () => {
     isLoading: userState.isLoading,
     error: userState.error,
 
-    // Actions
+    // Single user state
+    user: singleUserState.user,
+    isUserLoading: singleUserState.isLoading,
+    isSaving: singleUserState.isSaving,
+    userError: singleUserState.error,
+
+    // List actions
     getAllUsers,
     clearError,
+
+    // Single user actions
+    getUserById,
+    updateUser,
+    changeUserPassword,
+    createUserAddress,
+    updateUserAddress,
+    deleteUserAddress,
   }
 }
