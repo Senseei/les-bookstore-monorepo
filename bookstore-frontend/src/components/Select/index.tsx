@@ -45,6 +45,7 @@ export const Select = ({
           value={value || ''}
           onChange={handleChange}
           disabled={disabled}
+          aria-label={label || placeholder}
         >
           <option value="" disabled>
             {placeholder}

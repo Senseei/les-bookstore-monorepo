@@ -4,14 +4,14 @@ import * as S from './styles'
 
 interface ContactInfoProps {
   email: string
-  phoneAreaCode: string
+  // phoneAreaCode: string
   phoneNumber: string
   address: string
 }
 
 export const ContactInfo = ({
   email,
-  phoneAreaCode,
+  // phoneAreaCode,
   phoneNumber,
   address,
 }: ContactInfoProps) => {
@@ -24,7 +24,8 @@ export const ContactInfo = ({
       <S.ContactItem>
         <Phone size={16} />
         <span>
-          +55 ({phoneAreaCode}) {phoneNumber}
+          {/* +55 ({phoneAreaCode}) {phoneNumber} */}
+          +55 {phoneNumber}
         </span>
       </S.ContactItem>
       <S.ContactItem>

@@ -1,4 +1,4 @@
-import type { AddressTypeValue } from '@/utils/types'
+import type { AddressPurposeValue, AddressTypeValue } from '@/utils/types'
 
 export type AddressDTO = {
   id: string
@@ -11,6 +11,7 @@ export type AddressDTO = {
   district: string
   city: string
   state: string
+  purpose?: AddressPurposeValue
   createdAt: Date
   updatedAt: Date
 }

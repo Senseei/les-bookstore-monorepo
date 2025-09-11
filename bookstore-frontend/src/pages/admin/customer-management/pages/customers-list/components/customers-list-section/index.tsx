@@ -15,12 +15,6 @@ export const CustomersListSection = ({
     console.log('View details for customer:', customerId)
   }
 
-  const handleEditCustomer = (customerId: number) => {
-    // TODO: Navigate to customer edit
-    // eslint-disable-next-line no-console
-    console.log('Edit customer:', customerId)
-  }
-
   const handleMoreOptions = (customerId: number) => {
     // TODO: Show options menu
     // eslint-disable-next-line no-console
@@ -36,7 +30,6 @@ export const CustomersListSection = ({
               key={customer.id}
               customer={customer}
               onViewDetails={handleViewDetails}
-              onEditCustomer={handleEditCustomer}
               onMoreOptions={handleMoreOptions}
             />
           ))}

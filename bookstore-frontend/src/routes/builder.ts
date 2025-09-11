@@ -60,8 +60,6 @@ export const route = {
   admin: () => new RouteBuilder().admin(),
   adminCustomers: () => new RouteBuilder().admin().customers(),
   adminCustomersNew: () => new RouteBuilder().admin().customers().new(),
-  adminCustomerEdit: (id?: string) =>
-    new RouteBuilder().admin().customers().id(id).edit(),
   adminCustomerView: (id?: string) =>
     new RouteBuilder().admin().customers().id(id),
 
@@ -79,5 +77,5 @@ export const route = {
 
 // Example usage:
 // route.adminCustomersNew().build() → '/admin/customers/new'
-// route.adminCustomerEdit('123').build() → '/admin/customers/123/edit'
-// route.adminCustomerEdit().pattern() → '/admin/customers/:id/edit'
+// route.adminCustomerView('123').build() → '/admin/customers/123'
+// route.adminCustomerView().pattern() → '/admin/customers/:id'

@@ -76,3 +76,75 @@ export const hasMinimumDigits = (value: string, minDigits: number): boolean => {
   const digits = removeMask(value)
   return digits.length >= minDigits
 }
+
+// Convert backend data to masked format
+export const convertToMaskedFormat = {
+  // Convert ISO date (2003-01-15T00:00:00Z) to DD/MM/YYYY
+  date: (isoDate: string): string => {
+    if (!isoDate) return ''
+    try {
+      const date = new Date(isoDate)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      const year = date.getFullYear().toString()
+      return `${day}/${month}/${year}`
+    } catch {
+      return ''
+    }
+  },
+
+  // Apply CPF mask to raw CPF data
+  cpf: (rawCpf: string): string => {
+    if (!rawCpf) return ''
+    return formatCPF(rawCpf)
+  },
+
+  // Apply phone mask to raw phone data
+  phone: (rawPhone: string): string => {
+    if (!rawPhone) return ''
+    return formatPhone(rawPhone)
+  },
+
+  // Apply ZIP code mask to raw postal code data
+  zipCode: (rawZipCode: string): string => {
+    if (!rawZipCode) return ''
+    return formatZipCode(rawZipCode)
+  },
+}
+
+// Convert masked format back to backend format
+export const convertFromMaskedFormat = {
+  // Convert DD/MM/YYYY to ISO date format
+  date: (maskedDate: string): string => {
+    if (!maskedDate) return ''
+    try {
+      const [day, month, year] = maskedDate.split('/')
+      if (day && month && year) {
+        const date = new Date(
+          parseInt(year),
+          parseInt(month) - 1,
+          parseInt(day),
+        )
+        return date.toISOString()
+      }
+      return ''
+    } catch {
+      return ''
+    }
+  },
+
+  // Remove CPF mask for backend
+  cpf: (maskedCpf: string): string => {
+    return removeMask(maskedCpf)
+  },
+
+  // Remove phone mask for backend
+  phone: (maskedPhone: string): string => {
+    return removeMask(maskedPhone)
+  },
+
+  // Remove ZIP code mask for backend
+  zipCode: (maskedZipCode: string): string => {
+    return removeMask(maskedZipCode)
+  },
+}
