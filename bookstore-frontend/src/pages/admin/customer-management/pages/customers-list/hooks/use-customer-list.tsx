@@ -28,9 +28,9 @@ const mapUserToCustomer = (user: MinUserDTO): Customer => {
     : null
 
   return {
-    id: Number(user.id), // Convert string to number for compatibility
+    id: user.id, // Convert string to number for compatibility
     name: user.name,
-    customerId: `CUST-${user.id.padStart(3, '0')}`, // Generate customer ID format
+    customerId: user.id,
     email: user.email,
     status: user.status,
     ranking: user.ranking,
