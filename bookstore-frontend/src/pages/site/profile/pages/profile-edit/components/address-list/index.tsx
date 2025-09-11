@@ -1,3 +1,5 @@
+import { House, Warning } from 'phosphor-react'
+
 import { Button } from '@/components'
 
 import type { Address } from '../../types'
@@ -25,14 +27,17 @@ export const AddressList = ({
         <S.Title>Seus Endereços</S.Title>
         {!hasResidential && (
           <S.RequiredMessage>
-            ⚠️ É obrigatório ter pelo menos um endereço residencial
+            <Warning size={16} /> É obrigatório ter pelo menos um endereço
+            residencial
           </S.RequiredMessage>
         )}
       </S.Header>
 
       {addresses.length === 0 ? (
         <S.EmptyState>
-          <S.EmptyIcon>🏠</S.EmptyIcon>
+          <S.EmptyIcon>
+            <House size={48} />
+          </S.EmptyIcon>
           <S.EmptyTitle>Nenhum endereço cadastrado</S.EmptyTitle>
           <S.EmptyDescription>
             Adicione seu primeiro endereço para continuar

@@ -1,3 +1,4 @@
+import { House, Lock } from 'phosphor-react'
 import React from 'react'
 import { useParams } from 'react-router'
 
@@ -134,10 +135,10 @@ export const ProfileEdit = () => {
 
           <S.ActionsContainer>
             <S.ActionButton onClick={() => setShowPasswordForm(true)}>
-              🔒 Alterar Senha
+              <Lock size={20} /> Alterar Senha
             </S.ActionButton>
             <S.ActionButton onClick={handleAddAddress}>
-              🏠 Adicionar Endereço
+              <House size={20} /> Adicionar Endereço
             </S.ActionButton>
           </S.ActionsContainer>
 

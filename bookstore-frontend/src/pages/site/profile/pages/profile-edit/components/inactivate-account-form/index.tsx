@@ -1,3 +1,4 @@
+import { Warning } from 'phosphor-react'
 import { useState } from 'react'
 
 import { Button } from '@/components'
@@ -25,9 +26,9 @@ export const InactivateAccountForm = ({
       <S.Container>
         <S.FormTitle>Confirmar Inativação da Conta</S.FormTitle>
         <S.WarningText>
-          ⚠️ <strong>Atenção:</strong> Esta ação irá inativar permanentemente
-          sua conta. Você não poderá mais acessar o sistema com essas
-          credenciais.
+          <Warning size={16} /> <strong>Atenção:</strong> Esta ação irá inativar
+          permanentemente sua conta. Você não poderá mais acessar o sistema com
+          essas credenciais.
         </S.WarningText>
         <S.WarningText>Tem certeza de que deseja prosseguir?</S.WarningText>
 
