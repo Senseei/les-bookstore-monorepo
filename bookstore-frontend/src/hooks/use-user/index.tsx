@@ -67,10 +67,8 @@ export const useUser = () => {
       }))
 
       return { success: true, data: response }
-    } catch (error: unknown) {
-      const axiosError = error as { response?: { data?: { message?: string } } }
-      const errorMessage =
-        axiosError.response?.data?.message || 'Erro ao buscar usuários'
+    } catch {
+      const errorMessage = 'Erro ao buscar usuários'
 
       setUserState((prev) => ({
         ...prev,
