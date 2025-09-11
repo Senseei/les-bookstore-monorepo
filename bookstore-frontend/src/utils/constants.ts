@@ -1,10 +1,11 @@
 import type {
+  AddressPurposeValue,
   AddressTypeValue,
   BrazilianState,
   BrazilianStateCode,
   Gender,
 } from './types'
-import { AddressType } from './types'
+import { AddressPurpose, AddressType } from './types'
 
 // Gender options for Select component
 export const genderOptions: {
@@ -26,6 +27,16 @@ export const residenceTypeOptions: {
   { value: AddressType.CONDO, label: 'Condomínio' },
   { value: AddressType.WORK, label: 'Trabalho' },
   { value: AddressType.RURAL, label: 'Rural' },
+]
+
+// Address purpose options for Select component
+export const addressPurposeOptions: {
+  value: AddressPurposeValue
+  label: string
+}[] = [
+  { value: AddressPurpose.BILLING, label: 'Cobrança' },
+  { value: AddressPurpose.DELIVERY, label: 'Entrega' },
+  { value: AddressPurpose.BOTH, label: 'Cobrança e Entrega' },
 ]
 
 // Brazilian states data

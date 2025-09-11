@@ -5,32 +5,28 @@ import type {
   UseFormRegister,
 } from 'react-hook-form'
 
-import type {
-  AddressTypeValue,
-  BrazilianStateCode,
-  Gender,
-} from '@/utils/types'
+import type { Gender } from '@/utils/types'
 
 export interface SignUpFormData {
   name: string
+  gender: Gender
+  birthDate: string
   cpf: string
+  phone: string
   email: string
   password: string
   confirmPassword: string
-  gender: Gender
-  birthDate: string
-  phone: string
-  // Address - nested structure to match backend
+
   address: {
-    identifier: string // addressName in backend
-    residenceType: AddressTypeValue | '' // type in backend
+    identifier: string
+    zipCode: string
     street: string
     number: string
-    complement: string
-    neighborhood: string // district in backend
+    complement?: string
+    neighborhood: string
     city: string
-    state: BrazilianStateCode
-    zipCode: string // postalCode in backend
+    state: string
+    residenceType: string
   }
 }
 

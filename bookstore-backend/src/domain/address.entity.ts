@@ -1,12 +1,16 @@
 import { DomainEntity } from './domain.entity';
 import { AddressType } from '@domain/enums/address-type.enum';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { AddressPurpose } from '@domain/enums/address-purpose.enum';
+import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('tb_addresses')
 export class Address extends DomainEntity {
   @Column({ type: 'enum', enum: AddressType })
   type: AddressType;
+
+  @Column({ type: 'enum', enum: AddressPurpose })
+  purpose: AddressPurpose;
 
   @Column()
   addressName: string;
@@ -32,11 +36,13 @@ export class Address extends DomainEntity {
   @Column()
   state: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.addresses)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   constructor(props: {
     type: AddressType;
+    purpose: AddressPurpose;
     addressName: string;
     postalCode: string;
     street: string;
@@ -49,6 +55,7 @@ export class Address extends DomainEntity {
     super();
     if (props) {
       this.type = props.type;
+      this.purpose = props.purpose;
       this.addressName = props.addressName;
       this.postalCode = props.postalCode;
       this.street = props.street;
@@ -77,6 +84,7 @@ export class Address extends DomainEntity {
 
   public override update(props: {
     type: AddressType;
+    purpose: AddressPurpose;
     addressName: string;
     postalCode: string;
     street: string;
@@ -87,6 +95,7 @@ export class Address extends DomainEntity {
     state: string;
   }) {
     this.type = props.type;
+    this.purpose = props.purpose;
     this.addressName = props.addressName;
     this.postalCode = props.postalCode;
     this.street = props.street;

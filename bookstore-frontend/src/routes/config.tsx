@@ -1,4 +1,10 @@
-import { AdminLayout, CustomersList, SignUp, SiteLayout } from '@/pages'
+import {
+  AdminLayout,
+  CustomersList,
+  ProfileEdit,
+  SignUp,
+  SiteLayout,
+} from '@/pages'
 
 import { PATHS, ROUTES } from './constants'
 
@@ -11,10 +17,6 @@ export const adminRoutes = [
   {
     path: `${PATHS.CUSTOMERS}/${PATHS.NEW}`, // 'customers/new' - composed from segments
     element: <div>New Customer Form</div>,
-  },
-  {
-    path: `${PATHS.CUSTOMERS}/:id/${PATHS.EDIT}`, // 'customers/:id/edit' - pattern from segments
-    element: <div>Edit Customer Form</div>,
   },
   {
     path: PATHS.BOOKS, // 'books' - reusable segment
@@ -44,6 +46,14 @@ export const routeConfig = [
       {
         path: ROUTES.REGISTER.slice(1), // Remove leading slash for child route
         element: <SignUp />,
+      },
+      {
+        path: ROUTES.PROFILE_EDIT.slice(1), // Remove leading slash for child route
+        element: <ProfileEdit />,
+      },
+      {
+        path: 'profile/edit/:id', // Rota com parâmetro para editar usuário específico
+        element: <ProfileEdit />,
       },
     ],
   },
