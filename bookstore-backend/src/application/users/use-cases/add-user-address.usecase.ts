@@ -13,7 +13,7 @@ export class AddUserAddress {
 
   async execute(userId: string, dto: CreateAddressDTO): Promise<Address> {
     // Verificar se o usuário existe
-    const user = await this.usersService.findByIdOrThrow(userId);
+    const user = await this.usersService.findActiveUserById(userId);
 
     // Criar novo endereço
     const address = new Address({

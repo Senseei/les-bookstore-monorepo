@@ -12,8 +12,8 @@ import * as S from './styles'
 
 interface CustomerCardProps {
   customer: Customer
-  onViewDetails: (customerId: number) => void
-  onMoreOptions: (customerId: number) => void
+  onViewDetails: (customerId: string) => void
+  onMoreOptions: (customerId: string) => void
 }
 
 export const CustomerCard = ({

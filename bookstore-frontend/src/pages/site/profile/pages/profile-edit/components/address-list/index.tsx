@@ -16,9 +16,7 @@ export const AddressList = ({
   onDelete,
   loading = false,
 }: AddressListProps) => {
-  const residentialAddresses = addresses.filter(
-    (addr) => addr.type === 'Residencial',
-  )
+  const residentialAddresses = addresses.filter((addr) => addr.type === 'house')
   const hasResidential = residentialAddresses.length > 0
 
   return (
@@ -75,7 +73,7 @@ export const AddressList = ({
                   onClick={() => onDelete(address.id)}
                   disabled={
                     loading ||
-                    (address.type === 'Residencial' &&
+                    (address.type === 'house' &&
                       residentialAddresses.length === 1)
                   }
                 >

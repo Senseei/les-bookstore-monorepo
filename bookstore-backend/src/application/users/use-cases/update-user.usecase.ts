@@ -12,7 +12,7 @@ export class UpdateUser {
   ) {}
 
   public async execute(id: string, dto: UpdateUserDTO): Promise<User> {
-    const user = await this.usersService.findByIdOrThrow(id);
+    const user = await this.usersService.findActiveUserById(id);
 
     await this.userValidator.validate(dto, id);
 

@@ -21,4 +21,8 @@ export class UsersRepositoryImpl
   public async findByCpf(cpf: string): Promise<User | null> {
     return await this.repository.findOneBy({ cpf });
   }
+
+  public async findActiveById(id: string): Promise<User | null> {
+    return await this.repository.findOneBy({ id, active: true });
+  }
 }
