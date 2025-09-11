@@ -23,7 +23,6 @@ export const mapFormDataToNewUserDTO = (
     // Address - nested structure with field name mapping
     address: {
       type: formData.address.residenceType as string, // Map residenceType -> type
-      purpose: 'both', // Default: primary address is for both billing and delivery
       addressName: formData.address.identifier.trim(), // Map identifier -> addressName
       postalCode: removeMask(formData.address.zipCode), // Map zipCode -> postalCode
       street: formData.address.street.trim(),

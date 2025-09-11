@@ -42,7 +42,7 @@ export const SearchAndFilters = ({
             <Input
               placeholder="Pesquisar por nome, email, CPF, código do cliente ou telefone..."
               value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={onSearchChange}
               fullWidth
             />
           </S.SearchInputWithIcon>

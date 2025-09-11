@@ -7,14 +7,6 @@ import { UserDTO } from './dtos/user.dto';
 import { PaginationParamsDTO } from '@presentation/dtos/pagination-params.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { UpdateUser } from '@application/users/use-cases/update-user.usecase';
-import { AddUserAddress } from '@application/users/use-cases/add-user-address.usecase';
-import { UpdateUserAddress } from '@application/users/use-cases/update-user-address.usecase';
-import { RemoveUserAddress } from '@application/users/use-cases/remove-user-address.usecase';
-import { GetUserAddresses } from '@application/users/use-cases/get-user-addresses.usecase';
-import { CreateAddressDTO } from './dtos/create-address.dto';
-import { UpdateAddressDTO } from './dtos/update-address.dto';
-import { AddressDTO } from './dtos/address.dto';
-import { MinUserDTO } from './dtos/min-user.dto';
 
 @Injectable()
 export class UsersWebService {
@@ -22,21 +14,12 @@ export class UsersWebService {
     private readonly usersService: UsersService,
     private readonly changeUserPassword: ChangeUserPassword,
     private readonly updateUser: UpdateUser,
-    private readonly addUserAddress: AddUserAddress,
-    private readonly updateUserAddress: UpdateUserAddress,
-    private readonly removeUserAddress: RemoveUserAddress,
-    private readonly getUserAddresses: GetUserAddresses,
   ) {}
-
-  public async findById(id: string): Promise<UserDTO> {
-    const user = await this.usersService.findByIdOrThrow(id);
-    return new UserDTO(user);
-  }
 
   public async findAll(
     params: PaginationParamsDTO,
     filters: Record<string, any> = {},
-  ): Promise<PaginatedResultDTO<MinUserDTO>> {
+  ): Promise<PaginatedResultDTO<UserDTO>> {
     const result = await this.usersService.findAll(
       params.page,
       params.limit,
@@ -45,7 +28,7 @@ export class UsersWebService {
     );
 
     return new PaginatedResultDTO(
-      result.items.map((item) => new MinUserDTO(item)),
+      result.items.map((item) => new UserDTO(item)),
       result.count,
       params.limit,
       params.page,
@@ -65,39 +48,5 @@ export class UsersWebService {
 
   public async inactivate(id: string): Promise<void> {
     await this.usersService.inactivate(id);
-  }
-
-  // Métodos para gerenciamento de endereços
-  public async getAddressesByUserId(userId: string): Promise<AddressDTO[]> {
-    const addresses = await this.getUserAddresses.execute(userId);
-    return addresses.map((address) => new AddressDTO(address));
-  }
-
-  public async createUserAddress(
-    userId: string,
-    dto: CreateAddressDTO,
-  ): Promise<AddressDTO> {
-    const address = await this.addUserAddress.execute(userId, dto);
-    return new AddressDTO(address);
-  }
-
-  public async updateAddress(
-    userId: string,
-    addressId: string,
-    dto: UpdateAddressDTO,
-  ): Promise<AddressDTO> {
-    const address = await this.updateUserAddress.execute(
-      userId,
-      addressId,
-      dto,
-    );
-    return new AddressDTO(address);
-  }
-
-  public async deleteUserAddress(
-    userId: string,
-    addressId: string,
-  ): Promise<void> {
-    await this.removeUserAddress.execute(userId, addressId);
   }
 }
