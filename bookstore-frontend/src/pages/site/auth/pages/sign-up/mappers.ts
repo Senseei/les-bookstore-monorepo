@@ -24,7 +24,7 @@ export const mapFormDataToNewUserDTO = (
     address: {
       type: formData.address.residenceType as string, // Map residenceType -> type
       purpose: 'both', // Default: primary address is for both billing and delivery
-      addressName: formData.address.identifier?.trim() || '', // Map identifier -> addressName
+      addressName: formData.address.identifier.trim(), // Map identifier -> addressName
       postalCode: removeMask(formData.address.zipCode), // Map zipCode -> postalCode
       street: formData.address.street.trim(),
       number: formData.address.number.trim(),

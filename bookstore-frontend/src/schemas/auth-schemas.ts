@@ -42,7 +42,7 @@ export const signUpSchema = z
       city: addressText,
       state: brazilianState,
       residenceType,
-      identifier: optionalAddressText,
+      identifier: addressText,
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {

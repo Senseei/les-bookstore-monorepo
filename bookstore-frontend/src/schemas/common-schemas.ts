@@ -47,17 +47,14 @@ export const residenceType = z
   )
 
 // Brazilian State validation - reusing constants
-export const brazilianState = z
-  .string()
-  .optional()
-  .refine(
-    (value) => {
-      if (value === undefined || value === '') return true
-      const validStates = brazilianStatesData.map((state) => state.code)
-      return validStates.includes(value as BrazilianStateCode)
-    },
-    { message: 'Selecione um estado válido' },
-  )
+export const brazilianState = z.string().refine(
+  (value) => {
+    if (value === undefined || value === '') return true
+    const validStates = brazilianStatesData.map((state) => state.code)
+    return validStates.includes(value as BrazilianStateCode)
+  },
+  { message: 'Selecione um estado válido' },
+)
 
 // Brazilian specific validations
 export const brazilianPhone = z
