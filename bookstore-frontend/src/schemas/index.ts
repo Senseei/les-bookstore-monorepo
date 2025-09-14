@@ -7,4 +7,5 @@
 
 export * from './auth-schemas'
 export * from './common-schemas'
+export * from './profile-schemas'
 export * from './user-schemas'

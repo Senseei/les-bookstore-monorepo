@@ -1,10 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import { Button, Input } from '@/components'
+import { Button, Form, FormField, FormSection } from '@/components'
 import {
-  confirmPasswordValidationRules,
-  passwordValidationRules,
-} from '@/utils/validation-rules'
+  type PasswordChangeFormData,
+  passwordChangeSchema,
+} from '@/schemas/profile-schemas'
 
 import type { PasswordChangeData } from '../../types'
 import * as S from './styles'
@@ -15,23 +16,14 @@ interface PasswordFormProps {
   loading?: boolean
 }
 
-interface PasswordFormData {
-  currentPassword: string
-  newPassword: string
-  confirmPassword: string
-}
-
 export const PasswordForm = ({
   onSave,
   onCancel,
   loading = false,
 }: PasswordFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<PasswordFormData>({
+  const form = useForm<PasswordChangeFormData>({
+    resolver: zodResolver(passwordChangeSchema),
+    mode: 'onChange',
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -39,54 +31,46 @@ export const PasswordForm = ({
     },
   })
 
-  const newPasswordValue = watch('newPassword')
-
-  const onSubmit = (data: PasswordFormData) => {
+  const onSubmit = (data: PasswordChangeFormData) => {
     onSave(data)
-  }
-
-  // Validation rule for current password
-  const currentPasswordRules = {
-    required: 'Senha atual é obrigatória',
   }
 
   return (
     <S.Container>
       <S.FormTitle>Alterar Senha</S.FormTitle>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <S.FormField>
-          <Input
-            label="Senha Atual"
-            type="password"
-            {...register('currentPassword', currentPasswordRules)}
-            error={!!errors.currentPassword}
-            errorMessage={errors.currentPassword?.message}
-          />
-        </S.FormField>
+      <Form form={form} onSubmit={onSubmit}>
+        <FormSection>
+          <S.FormField>
+            <FormField
+              form={form}
+              name="currentPassword"
+              type="password"
+              label="Senha Atual"
+              placeholder="Digite sua senha atual"
+            />
+          </S.FormField>
 
-        <S.FormField>
-          <Input
-            label="Nova Senha"
-            type="password"
-            {...register('newPassword', passwordValidationRules)}
-            error={!!errors.newPassword}
-            errorMessage={errors.newPassword?.message}
-          />
-        </S.FormField>
+          <S.FormField>
+            <FormField
+              form={form}
+              name="newPassword"
+              type="password"
+              label="Nova Senha"
+              placeholder="Digite sua nova senha"
+            />
+          </S.FormField>
 
-        <S.FormField>
-          <Input
-            label="Confirmar Nova Senha"
-            type="password"
-            {...register(
-              'confirmPassword',
-              confirmPasswordValidationRules(newPasswordValue),
-            )}
-            error={!!errors.confirmPassword}
-            errorMessage={errors.confirmPassword?.message}
-          />
-        </S.FormField>
+          <S.FormField>
+            <FormField
+              form={form}
+              name="confirmPassword"
+              type="password"
+              label="Confirmar Nova Senha"
+              placeholder="Confirme sua nova senha"
+            />
+          </S.FormField>
+        </FormSection>
 
         <S.RequirementsList>
           <S.RequirementsTitle>Sua nova senha deve conter:</S.RequirementsTitle>
@@ -111,7 +95,7 @@ export const PasswordForm = ({
             Alterar Senha
           </Button>
         </S.FormActions>
-      </form>
+      </Form>
     </S.Container>
   )
 }

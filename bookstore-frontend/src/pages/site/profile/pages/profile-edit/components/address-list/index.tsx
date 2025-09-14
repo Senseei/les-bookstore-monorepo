@@ -1,6 +1,7 @@
 import { House, Warning } from 'phosphor-react'
 
 import { Button } from '@/components'
+import { convertToMaskedFormat } from '@/utils'
 
 import type { Address } from '../../types'
 import * as S from './styles'
@@ -60,7 +61,9 @@ export const AddressList = ({
                 <S.AddressLine>
                   {address.district} - {address.city}/{address.state}
                 </S.AddressLine>
-                <S.AddressLine>CEP: {address.postalCode}</S.AddressLine>
+                <S.AddressLine>
+                  CEP: {convertToMaskedFormat.zipCode(address.postalCode)}
+                </S.AddressLine>
               </S.AddressInfo>
 
               <S.AddressActions>

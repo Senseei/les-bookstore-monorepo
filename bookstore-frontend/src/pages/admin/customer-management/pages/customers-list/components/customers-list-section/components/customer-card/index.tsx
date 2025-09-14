@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components'
+import { convertToMaskedFormat } from '@/utils'
 
 import type { Customer } from '../../types'
 import {
@@ -38,7 +39,7 @@ export const CustomerCard = ({
         <ContactInfo
           email={customer.email}
           // phoneAreaCode={customer.phoneAreaCode}
-          phoneNumber={customer.phoneNumber}
+          phoneNumber={convertToMaskedFormat.phone(customer.phoneNumber)}
           address={customer.address}
         />
 

@@ -83,11 +83,16 @@ export const convertToMaskedFormat = {
   date: (isoDate: string): string => {
     if (!isoDate) return ''
     try {
-      const date = new Date(isoDate)
-      const day = date.getDate().toString().padStart(2, '0')
-      const month = (date.getMonth() + 1).toString().padStart(2, '0')
-      const year = date.getFullYear().toString()
-      return `${day}/${month}/${year}`
+      // Extract date parts directly from ISO string to avoid timezone issues
+      if (isoDate.includes('T')) {
+        const datePart = isoDate.split('T')[0] // Get "2003-01-15" part
+        const [year, month, day] = datePart.split('-')
+        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`
+      } else {
+        // If it's just a date string like "2003-01-15"
+        const [year, month, day] = isoDate.split('-')
+        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`
+      }
     } catch {
       return ''
     }
