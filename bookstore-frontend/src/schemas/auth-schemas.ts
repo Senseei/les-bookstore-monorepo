@@ -5,12 +5,14 @@ import {
   birthDate,
   brazilianCPF,
   brazilianPhone,
+  brazilianState,
   brazilianZipCode,
   email,
   gender,
   optionalAddressText,
   password,
   personName,
+  residenceType,
 } from './common-schemas'
 
 /**
@@ -38,17 +40,8 @@ export const signUpSchema = z
       complement: optionalAddressText,
       neighborhood: addressText,
       city: addressText,
-      state: z
-        .string()
-        .min(2, 'Estado é obrigatório')
-        .max(2, 'Estado deve ter 2 caracteres'),
-      residenceType: z
-        .string()
-        .optional()
-        .refine(
-          (value) => value && value.length > 0,
-          'Tipo de residência é obrigatório',
-        ),
+      state: brazilianState,
+      residenceType,
       identifier: optionalAddressText,
     }),
   })

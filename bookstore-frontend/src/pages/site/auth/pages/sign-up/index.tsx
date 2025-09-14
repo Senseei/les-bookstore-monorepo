@@ -1,5 +1,9 @@
 import { Alert, Button, Card, Form, FormField, FormSection } from '@/components'
-import { genderOptions, residenceTypeOptions } from '@/utils/constants'
+import {
+  genderOptions,
+  residenceTypeOptions,
+  stateOptions,
+} from '@/utils/constants'
 
 import { Header } from './components'
 import * as S from './styles'
@@ -141,9 +145,10 @@ export const SignUp = () => {
               <FormField
                 form={form}
                 name="address.state"
-                type="text"
+                type="select"
                 label="Estado"
-                placeholder="SP"
+                placeholder="Selecione o estado"
+                options={stateOptions}
               />
 
               <FormField

@@ -1,5 +1,16 @@
 import { z } from 'zod'
 
+import {
+  brazilianStatesData,
+  genderOptions,
+  residenceTypeOptions,
+} from '../utils/constants'
+import type {
+  AddressTypeValue,
+  BrazilianStateCode,
+  Gender,
+} from '../utils/types'
+
 /**
  * Common validation schemas that can be reused across the application
  */
@@ -9,13 +20,43 @@ export const requiredString = z.string().min(1, 'Campo obrigatório')
 
 export const optionalString = z.string().optional()
 
-// Gender validation with proper typing
+// Gender validation - reusing constants
 export const gender = z
   .string()
   .optional()
   .refine(
-    (value) => value && ['male', 'female', 'other'].includes(value),
-    'Gênero é obrigatório',
+    (value) => {
+      if (value === undefined || value === '') return true
+      const validGenders = genderOptions.map((option) => option.value)
+      return validGenders.includes(value as Gender)
+    },
+    { message: 'Selecione um gênero válido' },
+  )
+
+// Residence Type validation - reusing constants
+export const residenceType = z
+  .string()
+  .optional()
+  .refine(
+    (value) => {
+      if (value === undefined || value === '') return true
+      const validTypes = residenceTypeOptions.map((option) => option.value)
+      return validTypes.includes(value as AddressTypeValue)
+    },
+    { message: 'Selecione um tipo de residência válido' },
+  )
+
+// Brazilian State validation - reusing constants
+export const brazilianState = z
+  .string()
+  .optional()
+  .refine(
+    (value) => {
+      if (value === undefined || value === '') return true
+      const validStates = brazilianStatesData.map((state) => state.code)
+      return validStates.includes(value as BrazilianStateCode)
+    },
+    { message: 'Selecione um estado válido' },
   )
 
 // Brazilian specific validations
