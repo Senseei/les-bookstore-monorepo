@@ -9,6 +9,15 @@ export const requiredString = z.string().min(1, 'Campo obrigatório')
 
 export const optionalString = z.string().optional()
 
+// Gender validation with proper typing
+export const gender = z
+  .string()
+  .optional()
+  .refine(
+    (value) => value && ['male', 'female', 'other'].includes(value),
+    'Gênero é obrigatório',
+  )
+
 // Brazilian specific validations
 export const brazilianPhone = z
   .string()

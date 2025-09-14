@@ -13,13 +13,6 @@ export const ContentWrapper = styled.div`
   margin: 0 auto;
 `
 
-export const Form = styled.form`
-  padding: ${({ theme }) => theme.SPACING.XXL};
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.SPACING.XXL};
-`
-
 export const ErrorMessage = styled.div`
   padding: ${({ theme }) => theme.SPACING.LG};
   background-color: ${({ theme }) => theme.COLORS.ERROR_LIGHTER};

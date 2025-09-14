@@ -7,6 +7,7 @@ import {
   brazilianPhone,
   brazilianZipCode,
   email,
+  gender,
   optionalAddressText,
   password,
   personName,
@@ -24,7 +25,7 @@ export const signUpSchema = z
     email,
     cpf: brazilianCPF,
     phone: brazilianPhone,
-    gender: z.string().min(1, 'Gênero é obrigatório'),
+    gender,
     birthDate,
     password,
     confirmPassword: z.string().min(1, 'Confirmação de senha é obrigatória'),
@@ -41,7 +42,13 @@ export const signUpSchema = z
         .string()
         .min(2, 'Estado é obrigatório')
         .max(2, 'Estado deve ter 2 caracteres'),
-      residenceType: z.string().min(1, 'Tipo de residência é obrigatório'),
+      residenceType: z
+        .string()
+        .optional()
+        .refine(
+          (value) => value && value.length > 0,
+          'Tipo de residência é obrigatório',
+        ),
       identifier: optionalAddressText,
     }),
   })

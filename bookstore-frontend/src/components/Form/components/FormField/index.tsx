@@ -1,6 +1,6 @@
 import React from 'react'
 import type { FieldValues, Path, UseFormReturn } from 'react-hook-form'
-import { Controller } from 'react-hook-form'
+import { Controller, get } from 'react-hook-form'
 
 import { Input, Select } from '@/components'
 import type { SelectOption } from '@/components/Select'
@@ -51,8 +51,10 @@ export const FormField = <T extends FieldValues>({
     formState: { errors },
   } = form
 
-  const error = errors[name]
-  const errorMessage = error?.message as string | undefined
+  // Use get function to properly access nested field errors
+  const error = get(errors, name)
+  const errorMessage =
+    error?.message || (typeof error === 'string' ? error : undefined)
 
   // For masked inputs, create a special register function
   const createMaskedRegister = (maskFunction: (value: string) => string) => ({
@@ -95,7 +97,7 @@ export const FormField = <T extends FieldValues>({
       className={className}
       disabled={disabled}
       error={!!error}
-      helperText={errorMessage}
+      errorMessage={errorMessage}
       type={
         type === 'password' ? 'password' : type === 'email' ? 'email' : 'text'
       }

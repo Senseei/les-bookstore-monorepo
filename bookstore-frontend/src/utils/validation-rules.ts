@@ -182,3 +182,17 @@ export const addressValidationRules = {
     },
   },
 } as const
+
+/**
+ * Validation rules for address text fields (street, neighborhood, city)
+ * Allows numbers for street addresses like "Rua das Flores 123"
+ */
+export const addressTextValidationRules = {
+  required: 'Campo obrigatório',
+  validate: (value: string) =>
+    validatePersonName(value, {
+      allowNumbers: true,
+      minLength: 2,
+      maxLength: 100,
+    }),
+} as const

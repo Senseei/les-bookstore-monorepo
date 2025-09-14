@@ -49,7 +49,7 @@ export const routeConfig = [
         element: <div>Home Page</div>,
       },
       {
-        path: ROUTES.REGISTER.slice(1), // Remove leading slash for child route
+        path: ROUTES.SIGNUP.slice(1), // Remove leading slash for child route
         element: <SignUp />,
       },
       {
