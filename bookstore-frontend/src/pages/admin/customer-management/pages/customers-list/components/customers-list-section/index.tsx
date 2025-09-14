@@ -9,12 +9,6 @@ interface CustomersListSectionProps {
 export const CustomersListSection = ({
   customers,
 }: CustomersListSectionProps) => {
-  const handleViewDetails = (customerId: string) => {
-    // TODO: Navigate to customer details
-    // eslint-disable-next-line no-console
-    console.log('View details for customer:', customerId)
-  }
-
   const handleMoreOptions = (customerId: string) => {
     // TODO: Show options menu
     // eslint-disable-next-line no-console
@@ -29,7 +23,6 @@ export const CustomersListSection = ({
             <CustomerCard
               key={customer.id}
               customer={customer}
-              onViewDetails={handleViewDetails}
               onMoreOptions={handleMoreOptions}
             />
           ))}

@@ -12,13 +12,11 @@ import * as S from './styles'
 
 interface CustomerCardProps {
   customer: Customer
-  onViewDetails: (customerId: string) => void
   onMoreOptions: (customerId: string) => void
 }
 
 export const CustomerCard = ({
   customer,
-  onViewDetails,
   onMoreOptions,
 }: CustomerCardProps) => {
   return (
@@ -46,7 +44,7 @@ export const CustomerCard = ({
 
         <LastOrder lastOrder={customer.lastOrder} />
 
-        <ActionButtons onViewDetails={() => onViewDetails(customer.id)} />
+        <ActionButtons customerId={customer.id} />
       </CardContent>
     </Card>
   )

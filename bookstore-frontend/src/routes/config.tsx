@@ -1,5 +1,6 @@
 import {
   AdminLayout,
+  CustomerDetails,
   CustomersList,
   ProfileEdit,
   SignUp,
@@ -13,6 +14,10 @@ export const adminRoutes = [
   {
     path: PATHS.CUSTOMERS, // 'customers' - reusable segment
     element: <CustomersList />,
+  },
+  {
+    path: `${PATHS.CUSTOMERS}/:id`, // 'customers/:id' - customer details
+    element: <CustomerDetails />,
   },
   {
     path: `${PATHS.CUSTOMERS}/${PATHS.NEW}`, // 'customers/new' - composed from segments
