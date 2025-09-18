@@ -13,12 +13,14 @@ import * as S from './styles'
 
 interface CustomerCardProps {
   customer: Customer
-  onMoreOptions: (customerId: string) => void
+  onInactivateUser?: (
+    userId: string,
+  ) => Promise<{ success: boolean; error?: string }>
 }
 
 export const CustomerCard = ({
   customer,
-  onMoreOptions,
+  onInactivateUser,
 }: CustomerCardProps) => {
   return (
     <Card>
@@ -31,7 +33,8 @@ export const CustomerCard = ({
           />
           <CustomerActions
             status={customer.status}
-            onMoreOptions={() => onMoreOptions(customer.id)}
+            customerId={customer.id}
+            onInactivateUser={onInactivateUser}
           />
         </S.CustomerCardHeader>
       </CardHeader>

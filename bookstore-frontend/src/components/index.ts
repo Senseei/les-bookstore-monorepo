@@ -9,6 +9,7 @@ export {
   CardHeader,
   CardTitle,
 } from './Card'
+export { DropdownMenu } from './DropdownMenu'
 export { Form, FormField, FormSection } from './Form'
 export { Input } from './Input'
 export { NavigationButton } from './NavigationButton'
