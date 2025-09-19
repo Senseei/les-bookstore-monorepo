@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "docker:up": "docker compose up -d --build",
+    "docker:up": "docker compose up -d --build --force-recreate",
     "docker:logs": "docker compose logs -f",
     "docker:up:logs": "yarn docker:up && yarn docker:logs",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
