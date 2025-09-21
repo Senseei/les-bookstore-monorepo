@@ -16,6 +16,7 @@ export type InputProps = {
   helperText?: string
   errorMessage?: string
   required?: boolean
+  'data-testid'?: string
 } & React.ComponentProps<'input'>
 
 export const Input = ({
@@ -31,6 +32,7 @@ export const Input = ({
   helperText,
   errorMessage,
   required = false,
+  'data-testid': dataTestId,
   ...props
 }: InputProps) => {
   return (
@@ -55,6 +57,7 @@ export const Input = ({
           disabled={disabled}
           hasStartIcon={!!startIcon}
           hasEndIcon={!!endIcon}
+          data-testid={dataTestId}
           {...props}
         />
 
