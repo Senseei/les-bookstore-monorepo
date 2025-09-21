@@ -1,17 +1,20 @@
-import { Button } from '@/components'
+import { NavigationButton } from '@/components'
 
 import * as S from './styles'
 
 interface ActionButtonsProps {
-  onViewDetails: () => void
+  customerId: string
 }
 
-export const ActionButtons = ({ onViewDetails }: ActionButtonsProps) => {
+export const ActionButtons = ({ customerId }: ActionButtonsProps) => {
   return (
     <S.ActionButtons>
-      <Button variant="outline" size="sm" onClick={onViewDetails}>
+      <NavigationButton
+        to={`/admin/customers/${customerId}`}
+        variant="secondary"
+      >
         Ver Detalhes
-      </Button>
+      </NavigationButton>
     </S.ActionButtons>
   )
 }

@@ -1,21 +1,16 @@
-import React from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import { Button, Input, Select } from '@/components'
+import { Button, Form, FormField, FormSection } from '@/components'
+import {
+  type ProfileEditFormData,
+  profileEditSchema,
+} from '@/schemas/profile-schemas'
+import { genderOptions } from '@/utils/constants'
 import {
   convertFromMaskedFormat,
   convertToMaskedFormat,
-  formatCPF,
-  formatDate,
-  formatPhone,
 } from '@/utils/input-masks'
-import {
-  birthDateValidationRules,
-  cpfValidationRules,
-  emailValidationRules,
-  personNameValidationRules,
-  phoneValidationRules,
-} from '@/utils/validation-rules'
 
 import type { Customer } from '../../types'
 import * as S from './styles'
@@ -27,143 +22,103 @@ interface ProfileEditFormProps {
   loading?: boolean
 }
 
-interface ProfileFormData {
-  name: string
-  email: string
-  phone: string
-  cpf: string
-  birthDate: string
-  gender: 'Masculino' | 'Feminino' | 'Outro'
-}
-
-type InputChangeEvent = React.ChangeEvent<{ value: string }>
-
 export const ProfileEditForm = ({
   customer,
   onSave,
   onCancel: _onCancel,
   loading = false,
 }: ProfileEditFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useForm<ProfileFormData>({
+  const form = useForm<ProfileEditFormData>({
+    resolver: zodResolver(profileEditSchema),
+    mode: 'onChange',
     defaultValues: {
       name: customer.name,
       email: customer.email,
-      phone: convertToMaskedFormat.phone(customer.phone),
-      cpf: convertToMaskedFormat.cpf(customer.cpf || ''),
-      birthDate: convertToMaskedFormat.date(customer.birthDate || ''),
-      gender: customer.gender || 'Masculino',
+      phone: customer.phone ? convertToMaskedFormat.phone(customer.phone) : '',
+      cpf: customer.cpf ? convertToMaskedFormat.cpf(customer.cpf) : '',
+      birthDate: customer.birthDate
+        ? convertToMaskedFormat.date(customer.birthDate)
+        : '',
+      gender: customer.gender || '',
     },
   })
 
-  const genderValue = watch('gender')
-
-  const onSubmit = (data: ProfileFormData) => {
-    // Convert masked data back to backend format
+  const onSubmit = (data: ProfileEditFormData) => {
+    // Convert masked data back to backend format, preserving customer ID
     const convertedData = {
-      id: customer.id, // Include the customer ID
+      id: customer.id,
       ...data,
       phone: convertFromMaskedFormat.phone(data.phone),
       cpf: convertFromMaskedFormat.cpf(data.cpf),
       birthDate: convertFromMaskedFormat.date(data.birthDate),
-    }
+    } as Partial<Customer>
     onSave(convertedData)
   }
-
-  // Helper functions for masked inputs
-  const registerCPF = (validationRules: object) => ({
-    ...register('cpf', validationRules),
-    onChange: (e: InputChangeEvent) => {
-      const maskedValue = formatCPF(e.target.value)
-      setValue('cpf', maskedValue, { shouldValidate: true })
-    },
-  })
-
-  const registerPhone = (validationRules: object) => ({
-    ...register('phone', validationRules),
-    onChange: (e: InputChangeEvent) => {
-      const maskedValue = formatPhone(e.target.value)
-      setValue('phone', maskedValue, { shouldValidate: true })
-    },
-  })
-
-  const registerBirthDate = (validationRules: object) => ({
-    ...register('birthDate', validationRules),
-    onChange: (e: InputChangeEvent) => {
-      const maskedValue = formatDate(e.target.value)
-      setValue('birthDate', maskedValue, { shouldValidate: true })
-    },
-  })
 
   return (
     <S.Container>
       <S.FormTitle>Informações Pessoais</S.FormTitle>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <S.FormGrid>
-          <Input
-            label="Nome Completo"
-            {...register('name', personNameValidationRules)}
-            error={!!errors.name}
-            errorMessage={errors.name?.message}
-          />
 
-          <Input
-            label="Email"
-            type="email"
-            {...register('email', emailValidationRules)}
-            error={!!errors.email}
-            errorMessage={errors.email?.message}
-          />
+      <Form form={form} onSubmit={onSubmit}>
+        <FormSection>
+          <S.FormGrid>
+            <FormField
+              form={form}
+              name="name"
+              type="text"
+              label="Nome Completo"
+              placeholder="Digite seu nome completo"
+            />
 
-          <Input
-            label="CPF"
-            {...registerCPF(cpfValidationRules)}
-            error={!!errors.cpf}
-            errorMessage={errors.cpf?.message}
-          />
+            <FormField
+              form={form}
+              name="email"
+              type="email"
+              label="Email"
+              placeholder="Digite seu email"
+            />
 
-          <Input
-            label="Data de Nascimento"
-            {...registerBirthDate(birthDateValidationRules)}
-            placeholder="DD/MM/AAAA"
-            error={!!errors.birthDate}
-            errorMessage={errors.birthDate?.message}
-          />
+            <FormField
+              form={form}
+              name="cpf"
+              type="cpf"
+              label="CPF"
+              placeholder="000.000.000-00"
+            />
 
-          <Input
-            label="Telefone"
-            {...registerPhone(phoneValidationRules)}
-            placeholder="(11) 99999-9999"
-            error={!!errors.phone}
-            errorMessage={errors.phone?.message}
-          />
+            <FormField
+              form={form}
+              name="birthDate"
+              type="date"
+              label="Data de Nascimento"
+              placeholder="DD/MM/AAAA"
+            />
 
-          <Select
-            label="Gênero"
-            value={genderValue}
-            onChange={(value) =>
-              setValue('gender', value as 'Masculino' | 'Feminino' | 'Outro')
-            }
-            error={!!errors.gender}
-            options={[
-              { value: 'Masculino', label: 'Masculino' },
-              { value: 'Feminino', label: 'Feminino' },
-              { value: 'Outro', label: 'Outro' },
-            ]}
-          />
-        </S.FormGrid>
+            <FormField
+              form={form}
+              name="phone"
+              type="phone"
+              label="Telefone"
+              placeholder="(11) 99999-9999"
+            />
+
+            <FormField
+              form={form}
+              name="gender"
+              type="select"
+              label="Gênero"
+              placeholder="Selecione seu gênero"
+              options={genderOptions}
+            />
+          </S.FormGrid>
+        </FormSection>
 
         <S.FormActions>
           <Button type="submit" loading={loading}>
             Salvar Alterações
           </Button>
         </S.FormActions>
-      </form>
+      </Form>
     </S.Container>
   )
 }

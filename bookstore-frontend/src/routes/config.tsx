@@ -1,5 +1,6 @@
 import {
   AdminLayout,
+  CustomerDetails,
   CustomersList,
   ProfileEdit,
   SignUp,
@@ -13,6 +14,10 @@ export const adminRoutes = [
   {
     path: PATHS.CUSTOMERS, // 'customers' - reusable segment
     element: <CustomersList />,
+  },
+  {
+    path: `${PATHS.CUSTOMERS}/:id`, // 'customers/:id' - customer details
+    element: <CustomerDetails />,
   },
   {
     path: `${PATHS.CUSTOMERS}/${PATHS.NEW}`, // 'customers/new' - composed from segments
@@ -44,7 +49,7 @@ export const routeConfig = [
         element: <div>Home Page</div>,
       },
       {
-        path: ROUTES.REGISTER.slice(1), // Remove leading slash for child route
+        path: ROUTES.SIGNUP.slice(1), // Remove leading slash for child route
         element: <SignUp />,
       },
       {

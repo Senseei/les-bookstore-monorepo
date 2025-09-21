@@ -1,7 +1,7 @@
 import type { NewUserDTO } from '@/dtos/user'
+import type { SignUpFormData } from '@/schemas'
 import { removeMask } from '@/utils/input-masks'
-
-import type { SignUpFormData } from './types'
+import type { Gender } from '@/utils/types'
 
 /**
  * Maps SignUpFormData to NewUserDTO for backend API
@@ -17,7 +17,7 @@ export const mapFormDataToNewUserDTO = (
     name: formData.name.trim(),
     cpf: removeMask(formData.cpf),
     phone: removeMask(formData.phone),
-    gender: formData.gender,
+    gender: formData.gender as Gender,
     birthDate: parseFormDateToDate(formData.birthDate),
 
     // Address - nested structure with field name mapping

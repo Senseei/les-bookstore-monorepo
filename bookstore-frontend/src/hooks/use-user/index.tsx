@@ -294,6 +294,38 @@ export const useUser = () => {
   )
 
   /**
+   * Inactivate user
+   */
+  const inactivateUser = useCallback(async (userId: string) => {
+    setUserState((prev) => ({ ...prev, isLoading: true, error: null }))
+
+    try {
+      await UserService.inactivateUser(userId)
+
+      // Update user list to mark user as inactive
+      setUserState((prev) => ({
+        ...prev,
+        users: prev.users.map((user) =>
+          user.id === userId ? { ...user, status: 'Inativo' } : user,
+        ),
+        isLoading: false,
+      }))
+
+      return { success: true }
+    } catch {
+      const errorMessage = 'Erro ao inativar usuário'
+
+      setUserState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: errorMessage,
+      }))
+
+      return { success: false, error: errorMessage }
+    }
+  }, [])
+
+  /**
    * Clear user error
    */
   const clearError = useCallback(() => {
@@ -327,5 +359,6 @@ export const useUser = () => {
     createUserAddress,
     updateUserAddress,
     deleteUserAddress,
+    inactivateUser,
   }
 }

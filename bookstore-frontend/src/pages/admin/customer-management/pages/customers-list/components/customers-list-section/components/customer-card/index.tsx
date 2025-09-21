@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components'
+import { convertToMaskedFormat } from '@/utils'
 
 import type { Customer } from '../../types'
 import {
@@ -12,14 +13,14 @@ import * as S from './styles'
 
 interface CustomerCardProps {
   customer: Customer
-  onViewDetails: (customerId: string) => void
-  onMoreOptions: (customerId: string) => void
+  onInactivateUser?: (
+    userId: string,
+  ) => Promise<{ success: boolean; error?: string }>
 }
 
 export const CustomerCard = ({
   customer,
-  onViewDetails,
-  onMoreOptions,
+  onInactivateUser,
 }: CustomerCardProps) => {
   return (
     <Card>
@@ -32,7 +33,8 @@ export const CustomerCard = ({
           />
           <CustomerActions
             status={customer.status}
-            onMoreOptions={() => onMoreOptions(customer.id)}
+            customerId={customer.id}
+            onInactivateUser={onInactivateUser}
           />
         </S.CustomerCardHeader>
       </CardHeader>
@@ -40,13 +42,13 @@ export const CustomerCard = ({
         <ContactInfo
           email={customer.email}
           // phoneAreaCode={customer.phoneAreaCode}
-          phoneNumber={customer.phoneNumber}
+          phoneNumber={convertToMaskedFormat.phone(customer.phoneNumber)}
           address={customer.address}
         />
 
         <LastOrder lastOrder={customer.lastOrder} />
 
-        <ActionButtons onViewDetails={() => onViewDetails(customer.id)} />
+        <ActionButtons customerId={customer.id} />
       </CardContent>
     </Card>
   )

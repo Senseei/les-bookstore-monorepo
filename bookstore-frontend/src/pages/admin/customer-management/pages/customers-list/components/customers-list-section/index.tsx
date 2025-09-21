@@ -4,23 +4,15 @@ import type { Customer } from './types'
 
 interface CustomersListSectionProps {
   customers: Customer[]
+  onInactivateUser?: (
+    userId: string,
+  ) => Promise<{ success: boolean; error?: string }>
 }
 
 export const CustomersListSection = ({
   customers,
+  onInactivateUser,
 }: CustomersListSectionProps) => {
-  const handleViewDetails = (customerId: string) => {
-    // TODO: Navigate to customer details
-    // eslint-disable-next-line no-console
-    console.log('View details for customer:', customerId)
-  }
-
-  const handleMoreOptions = (customerId: string) => {
-    // TODO: Show options menu
-    // eslint-disable-next-line no-console
-    console.log('More options for customer:', customerId)
-  }
-
   return (
     <>
       {customers.length > 0 ? (
@@ -29,8 +21,7 @@ export const CustomersListSection = ({
             <CustomerCard
               key={customer.id}
               customer={customer}
-              onViewDetails={handleViewDetails}
-              onMoreOptions={handleMoreOptions}
+              onInactivateUser={onInactivateUser}
             />
           ))}
         </S.CustomerGrid>

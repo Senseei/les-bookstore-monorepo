@@ -41,9 +41,12 @@ export const useAuth = () => {
       }))
 
       return { success: true, data: response }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as {
+        response?: { data?: { message?: string } }
+      }
       const errorMessage =
-        error.response?.data?.message || 'Erro ao criar conta'
+        axiosError.response?.data?.message || 'Erro ao criar conta'
 
       setAuthState((prev) => ({
         ...prev,
@@ -58,7 +61,7 @@ export const useAuth = () => {
   /**
    * Sign in user
    */
-  const signIn = async (credentials: { email: string; password: string }) => {
+  const signIn = async (_credentials: { email: string; password: string }) => {
     // TODO
   }
 

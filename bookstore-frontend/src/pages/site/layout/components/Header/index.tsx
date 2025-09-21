@@ -144,7 +144,7 @@ export const Header = () => {
                     Entrar
                   </Button>
                 </Link>
-                <Link to="/register">
+                <Link to="/sign-up">
                   <Button variant="primary" size="sm">
                     Cadastrar
                   </Button>

@@ -45,8 +45,15 @@ const mapUserToCustomer = (user: MinUserDTO): Customer => {
  * Manages customer list page state and logic with pagination
  */
 export const useCustomerList = () => {
-  const { users, totalCount, isLoading, error, getAllUsers, clearError } =
-    useUser()
+  const {
+    users,
+    totalCount,
+    isLoading,
+    error,
+    getAllUsers,
+    clearError,
+    inactivateUser,
+  } = useUser()
   const { addToast } = useToast()
 
   const [state, setState] = useState<CustomerListState>({
@@ -171,5 +178,6 @@ export const useCustomerList = () => {
     setPageSize,
     clearFilters,
     toggleFilters,
+    inactivateUser,
   }
 }

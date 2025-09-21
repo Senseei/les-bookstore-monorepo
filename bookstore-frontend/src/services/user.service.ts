@@ -148,4 +148,11 @@ export class UserService {
     )
     return response.data
   }
+
+  /**
+   * Inactivate user
+   */
+  static async inactivateUser(userId: string): Promise<void> {
+    await AxiosApp.delete(`/users/${userId}`)
+  }
 }

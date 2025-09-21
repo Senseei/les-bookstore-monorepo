@@ -1,2 +1,5 @@
+export { AddressForm } from './address-form'
+export { AddressList } from './address-list'
 export { LoadingState } from './loading-state'
+export { PasswordForm } from './password-form'
 export { ProfileEditForm } from './profile-edit-form'

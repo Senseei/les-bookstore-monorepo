@@ -4,10 +4,12 @@ import { useParams } from 'react-router'
 
 import { Button } from '@/components'
 
-import { AddressForm } from './components/address-form'
-import { AddressList } from './components/address-list'
-import { PasswordForm } from './components/password-form'
-import { ProfileEditForm } from './components/profile-edit-form'
+import {
+  AddressForm,
+  AddressList,
+  PasswordForm,
+  ProfileEditForm,
+} from './components'
 import * as S from './styles'
 import type { Address, PasswordChangeData } from './types'
 import { useProfileEdit } from './use-profile-edit'

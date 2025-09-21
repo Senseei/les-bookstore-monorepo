@@ -32,6 +32,7 @@ export const CustomersList = () => {
     setPageSize,
     clearFilters,
     toggleFilters,
+    inactivateUser,
   } = useCustomerList()
 
   return (
@@ -74,7 +75,10 @@ export const CustomersList = () => {
           </CardContent>
         </Card>
       ) : (
-        <CustomersListSection customers={customers} />
+        <CustomersListSection
+          customers={customers}
+          onInactivateUser={inactivateUser}
+        />
       )}
 
       {/* Pagination Controls */}

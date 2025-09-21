@@ -25,7 +25,7 @@ export const ROUTES = {
   // Public routes
   HOME: BASE_ROUTES.ROOT,
   LOGIN: '/login',
-  REGISTER: '/register',
+  SIGNUP: '/sign-up',
   PROFILE: '/profile',
   PROFILE_EDIT: '/profile/edit',
   PROFILE_EDIT_USER: '/profile/edit/:id', // Para admin editar qualquer usuário
