@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "@testing-library/cypress"],
+    "moduleResolution": "node",
+    "allowJs": true,
+    "noEmit": true,
+    "isolatedModules": false,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": false
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx",
+    "../node_modules/cypress/types"
+  ],
+  "exclude": []
+}
