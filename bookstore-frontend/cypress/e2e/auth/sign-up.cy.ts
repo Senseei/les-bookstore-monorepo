@@ -22,7 +22,7 @@ describe('Sign Up Form', () => {
       cy.get('[data-testid="birth-date-input"]').should('be.visible')
       cy.get('[data-testid="password-input"]').should('be.visible')
       cy.get('[data-testid="confirm-password-input"]').should('be.visible')
-      
+
       // Address fields
       cy.get('[data-testid="zip-code-input"]').should('be.visible')
       cy.get('[data-testid="street-input"]').should('be.visible')
@@ -33,7 +33,7 @@ describe('Sign Up Form', () => {
       cy.get('[data-testid="state-select"]').should('be.visible')
       cy.get('[data-testid="residence-type-select"]').should('be.visible')
       cy.get('[data-testid="address-identifier-input"]').should('be.visible')
-      
+
       // Submit button
       cy.get('[data-testid="submit-button"]').should('be.visible')
     })
@@ -57,7 +57,9 @@ describe('Sign Up Form', () => {
       cy.contains(/senha deve ter pelo menos/i).should('be.visible')
       cy.contains(/confirmação de senha é obrigatória/i).should('be.visible')
       cy.contains(/cep é obrigatório/i).should('be.visible')
-      cy.contains(/Campo deve ter pelo menos 2 caracteres/i).should('be.visible')
+      cy.contains(/Campo deve ter pelo menos 2 caracteres/i).should(
+        'be.visible',
+      )
     })
 
     it('should validate each required field individually', () => {
@@ -71,7 +73,9 @@ describe('Sign Up Form', () => {
 
       // Test CPF field
       cy.get('[data-testid="cpf-input"]').type('1')
-      cy.contains(/CPF deve estar no formato 000.000.000-00/i).should('be.visible')
+      cy.contains(/CPF deve estar no formato 000.000.000-00/i).should(
+        'be.visible',
+      )
 
       cy.get('[data-testid="cpf-input"]').clear().type('A')
       cy.contains(/CPF é obrigatório/i).should('be.visible')
@@ -88,19 +92,29 @@ describe('Sign Up Form', () => {
       cy.contains(/data de nascimento é obrigatória/i).should('be.visible')
 
       cy.get('[data-testid="birth-date-input"]').clear().type('11')
-      cy.contains(/Data deve estar no formato DD\/MM\/AAAA/i).should('be.visible')
+      cy.contains(/Data deve estar no formato DD\/MM\/AAAA/i).should(
+        'be.visible',
+      )
       // Test password field
       cy.get('[data-testid="password-input"]').type('A')
-      cy.contains(/Senha deve ter pelo menos 8 caracteres/i).should('be.visible')
+      cy.contains(/Senha deve ter pelo menos 8 caracteres/i).should(
+        'be.visible',
+      )
 
       cy.get('[data-testid="password-input"]').clear().type('11111111')
-      cy.contains(/Senha deve conter pelo menos uma letra maiúscula/i).should('be.visible')
+      cy.contains(/Senha deve conter pelo menos uma letra maiúscula/i).should(
+        'be.visible',
+      )
 
       cy.get('[data-testid="password-input"]').clear().type('1111111A')
-      cy.contains(/Senha deve conter pelo menos uma letra minúscula/i).should('be.visible')
+      cy.contains(/Senha deve conter pelo menos uma letra minúscula/i).should(
+        'be.visible',
+      )
 
       cy.get('[data-testid="password-input"]').clear().type('111111Aa')
-      cy.contains(/Senha deve conter pelo menos um caractere especial/i).should('be.visible')
+      cy.contains(/Senha deve conter pelo menos um caractere especial/i).should(
+        'be.visible',
+      )
 
       // Test confirm password field
       cy.get('[data-testid="confirm-password-input"]').type('A').clear()
@@ -121,8 +135,6 @@ describe('Sign Up Form', () => {
       cy.contains(/cep deve estar no formato/i).should('not.exist')
     })
   })
-
-  
   describe('Field Masking and Input Formatting', () => {
     it('should apply CPF mask while typing', () => {
       cy.get('[data-testid="cpf-input"]').type('12345678909')
@@ -131,7 +143,10 @@ describe('Sign Up Form', () => {
 
     it('should apply phone mask while typing', () => {
       cy.get('[data-testid="phone-input"]').type('11999999999')
-      cy.get('[data-testid="phone-input"]').should('have.value', '(11) 99999-9999')
+      cy.get('[data-testid="phone-input"]').should(
+        'have.value',
+        '(11) 99999-9999',
+      )
     })
 
     it('should apply CEP mask while typing', () => {
@@ -141,7 +156,10 @@ describe('Sign Up Form', () => {
 
     it('should apply date mask while typing', () => {
       cy.get('[data-testid="birth-date-input"]').type('01012005')
-      cy.get('[data-testid="birth-date-input"]').should('have.value', '01/01/2005')
+      cy.get('[data-testid="birth-date-input"]').should(
+        'have.value',
+        '01/01/2005',
+      )
     })
   })
 
@@ -158,7 +176,10 @@ describe('Sign Up Form', () => {
 
     it('should validate residence type selection', () => {
       cy.get('[data-testid="residence-type-select"]').select('house')
-      cy.get('[data-testid="residence-type-select"]').should('have.value', 'house')
+      cy.get('[data-testid="residence-type-select"]').should(
+        'have.value',
+        'house',
+      )
     })
   })
 
@@ -180,18 +201,18 @@ describe('Sign Up Form', () => {
       city: 'São Paulo',
       state: 'SP',
       residenceType: 'apartment',
-      identifier: 'Casa Principal'
+      identifier: 'Casa Principal',
     }
 
     beforeEach(() => {
       // Mock the API response for successful registration
       cy.intercept('POST', '**/auth/signup', {
         statusCode: 201,
-        body: { 
-          success: true, 
+        body: {
+          success: true,
           message: 'User created successfully',
-          user: { id: '1', email: validUserData.email }
-        }
+          user: { id: '1', email: validUserData.email },
+        },
       }).as('signupRequest')
     })
 
@@ -204,18 +225,26 @@ describe('Sign Up Form', () => {
       cy.get('[data-testid="gender-select"]').select(validUserData.gender)
       cy.get('[data-testid="birth-date-input"]').type(validUserData.birthDate)
       cy.get('[data-testid="password-input"]').type(validUserData.password)
-      cy.get('[data-testid="confirm-password-input"]').type(validUserData.confirmPassword)
-      
+      cy.get('[data-testid="confirm-password-input"]').type(
+        validUserData.confirmPassword,
+      )
+
       // Address fields
       cy.get('[data-testid="zip-code-input"]').type(validUserData.zipCode)
       cy.get('[data-testid="street-input"]').type(validUserData.street)
       cy.get('[data-testid="number-input"]').type(validUserData.number)
       cy.get('[data-testid="complement-input"]').type(validUserData.complement)
-      cy.get('[data-testid="neighborhood-input"]').type(validUserData.neighborhood)
+      cy.get('[data-testid="neighborhood-input"]').type(
+        validUserData.neighborhood,
+      )
       cy.get('[data-testid="city-input"]').type(validUserData.city)
       cy.get('[data-testid="state-select"]').select(validUserData.state)
-      cy.get('[data-testid="residence-type-select"]').select(validUserData.residenceType)
-      cy.get('[data-testid="address-identifier-input"]').type(validUserData.identifier)
+      cy.get('[data-testid="residence-type-select"]').select(
+        validUserData.residenceType,
+      )
+      cy.get('[data-testid="address-identifier-input"]').type(
+        validUserData.identifier,
+      )
 
       // Submit form
       cy.get('[data-testid="submit-button"]').click()
@@ -224,16 +253,21 @@ describe('Sign Up Form', () => {
       cy.wait('@signupRequest').then((interception) => {
         expect(interception.request.body).to.include({
           name: validUserData.name,
-          email: validUserData.email
+          email: validUserData.email,
         })
       })
 
       // Verify success snackbar/toast message appears
       cy.get('[data-testid="toast-success"]').should('be.visible')
-      cy.get('[data-testid="toast-success"]').should('contain', 'Conta criada com sucesso! Redirecionando...')
-      
+      cy.get('[data-testid="toast-success"]').should(
+        'contain',
+        'Conta criada com sucesso! Redirecionando...',
+      )
+
       // Alternative: Also check by text content
-      cy.contains('Conta criada com sucesso! Redirecionando...').should('be.visible')
+      cy.contains('Conta criada com sucesso! Redirecionando...').should(
+        'be.visible',
+      )
     })
 
     it('should show loading state during submission', () => {
@@ -241,7 +275,7 @@ describe('Sign Up Form', () => {
       cy.intercept('POST', '**/auth/signup', {
         statusCode: 201,
         body: { success: true },
-        delay: 2000
+        delay: 2000,
       }).as('signupRequestSlow')
 
       // Fill minimum required fields
@@ -251,14 +285,20 @@ describe('Sign Up Form', () => {
       cy.get('[data-testid="phone-input"]').type(validUserData.phone)
       cy.get('[data-testid="birth-date-input"]').type(validUserData.birthDate)
       cy.get('[data-testid="password-input"]').type(validUserData.password)
-      cy.get('[data-testid="confirm-password-input"]').type(validUserData.confirmPassword)
+      cy.get('[data-testid="confirm-password-input"]').type(
+        validUserData.confirmPassword,
+      )
       cy.get('[data-testid="zip-code-input"]').type(validUserData.zipCode)
       cy.get('[data-testid="street-input"]').type(validUserData.street)
       cy.get('[data-testid="number-input"]').type(validUserData.number)
-      cy.get('[data-testid="neighborhood-input"]').type(validUserData.neighborhood)
+      cy.get('[data-testid="neighborhood-input"]').type(
+        validUserData.neighborhood,
+      )
       cy.get('[data-testid="city-input"]').type(validUserData.city)
       cy.get('[data-testid="state-select"]').select(validUserData.state)
-      cy.get('[data-testid="address-identifier-input"]').type(validUserData.identifier)
+      cy.get('[data-testid="address-identifier-input"]').type(
+        validUserData.identifier,
+      )
 
       // Submit form
       cy.get('[data-testid="submit-button"]').click()
@@ -268,7 +308,10 @@ describe('Sign Up Form', () => {
 
       // Verify success snackbar/toast message appears after API completion
       cy.get('[data-testid="toast-success"]').should('be.visible')
-      cy.get('[data-testid="toast-success"]').should('contain', 'Conta criada com sucesso! Redirecionando...')
+      cy.get('[data-testid="toast-success"]').should(
+        'contain',
+        'Conta criada com sucesso! Redirecionando...',
+      )
     })
   })
 
@@ -277,10 +320,10 @@ describe('Sign Up Form', () => {
       // Mock API error response
       cy.intercept('POST', '**/auth/signup', {
         statusCode: 400,
-        body: { 
-          success: false, 
-          message: 'Email already exists' 
-        }
+        body: {
+          success: false,
+          message: 'Email already exists',
+        },
       }).as('signupError')
 
       // Fill form with valid data
@@ -304,11 +347,14 @@ describe('Sign Up Form', () => {
 
       // Wait for API call and verify error handling
       cy.wait('@signupError')
-      
+
       // Verify error toast appears
       cy.get('[data-testid="toast-error"]').should('be.visible')
-      cy.get('[data-testid="toast-error"]').should('contain', 'Email already exists')
-      
+      cy.get('[data-testid="toast-error"]').should(
+        'contain',
+        'Email already exists',
+      )
+
       // Alternative: Check by text content
       cy.contains('Email already exists').should('be.visible')
     })
@@ -316,9 +362,21 @@ describe('Sign Up Form', () => {
 
   describe('Accessibility', () => {
     it('should have proper ARIA labels', () => {
-      cy.get('[data-testid="gender-select"]').should('have.attr', 'aria-label', 'Gênero')
-      cy.get('[data-testid="state-select"]').should('have.attr', 'aria-label', 'Estado')
-      cy.get('[data-testid="submit-button"]').should('have.attr', 'type', 'submit')
+      cy.get('[data-testid="gender-select"]').should(
+        'have.attr',
+        'aria-label',
+        'Gênero',
+      )
+      cy.get('[data-testid="state-select"]').should(
+        'have.attr',
+        'aria-label',
+        'Estado',
+      )
+      cy.get('[data-testid="submit-button"]').should(
+        'have.attr',
+        'type',
+        'submit',
+      )
     })
   })
 })
