@@ -1,10 +1,6 @@
 /// <reference types="cypress" />
 
-import {
-  generateValidCPF,
-  generateValidCPFNumbers,
-  isValidCPF,
-} from '../../support/cpf-utils'
+import { generateValidCPF } from '../../support/cpf-utils'
 
 describe('Profile Edit - No Authentication Required (Fixed)', () => {
   let testUser: any
