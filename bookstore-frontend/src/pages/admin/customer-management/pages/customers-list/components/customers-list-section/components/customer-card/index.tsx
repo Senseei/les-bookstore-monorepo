@@ -23,7 +23,7 @@ export const CustomerCard = ({
   onInactivateUser,
 }: CustomerCardProps) => {
   return (
-    <Card>
+    <Card data-testid="customer-card">
       <CardHeader>
         <S.CustomerCardHeader>
           <CustomerHeader

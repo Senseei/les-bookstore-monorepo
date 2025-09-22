@@ -12,84 +12,10 @@ describe('Profile Edit - No Authentication Required (Fixed)', () => {
   const timestamp = Date.now().toString().slice(-6) // Get last 6 digits
 
   before(() => {
-    // Generate a fresh valid CPF for each test run
-    const validCPF = generateValidCPFNumbers()
-    cy.log('Generated valid CPF:', validCPF, 'Is valid:', isValidCPF(validCPF))
-
-    // Use shorter email and simpler data to avoid database constraints
-    const userData = {
-      name: 'Test User',
-      email: `${timestamp}@email.com`,
-      cpf: validCPF, // Use generated valid CPF (numbers only for API)
-      phone: '11998887777',
-      gender: 'male',
-      birthDate: '1985-03-15',
-      password: 'TestPassword123@',
-      confirmPassword: 'TestPassword123@',
-      address: {
-        type: 'house',
-        purpose: 'both',
-        addressName: 'Casa Principal',
-        street: 'Rua Teste',
-        number: '123',
-        complement: 'Casa',
-        district: 'Centro',
-        city: 'São Paulo',
-        state: 'SP',
-        postalCode: '01234567', // 8 digits without dash
-      },
-    }
-
-    cy.request({
-      method: 'POST',
-      url: `${API_URL}/api/auth/signup`,
-      body: userData,
-      failOnStatusCode: false,
-    }).then((response) => {
-      cy.log('Signup response:', response.status, response.body)
-
-      if (response.status === 201) {
-        // Use the real user ID from the database
-        testUser = {
-          ...userData,
-          id: response.body.id || response.body.user?.id,
-        }
-        cy.log(
-          '✅ User created successfully with real database ID:',
-          testUser.id,
-        )
-      } else {
-        // Use a properly formatted UUID for mock user that matches database expectations
-        const mockUuid = '12345678-1234-1234-1234-123456789012'
-        testUser = {
-          id: mockUuid,
-          name: userData.name,
-          email: userData.email,
-          phone: userData.phone,
-          cpf: userData.cpf,
-          gender: userData.gender,
-          birthDate: '1985-03-15',
-          addresses: [
-            {
-              id: 'addr-mock-123',
-              addressName: 'Residencial',
-              type: 'house',
-              purpose: 'both',
-              street: 'Avenida Professor Mariano Salvarani',
-              number: '521',
-              complement: 'Casa 1',
-              district: 'Jardim Camila',
-              city: 'Mogi das Cruzes',
-              state: 'SP',
-              postalCode: '08720340',
-            },
-          ],
-        }
-        cy.log(
-          '⚠️ API failed, using mock user with proper UUID format:',
-          testUser.id,
-        )
-      }
+    // Create a real user for testing inactivation
+    cy.createRealUser().then((user) => {
+      testUser = user
+      cy.log('User created successfully for inactivation test:', testUser.id)
     })
   })
 
@@ -530,7 +456,7 @@ describe('Profile Edit - No Authentication Required (Fixed)', () => {
       cy.contains('Rua das Flores Atualizada, 456').should('be.visible')
       cy.contains('Apto 10').should('be.visible')
       cy.contains('Centro Novo - São Paulo/SP').should('be.visible')
-      cy.contains('01234-567').should('be.visible')
+      cy.contains('08720-340').should('be.visible')
 
       cy.log('✅ Address information displayed in card format')
     })

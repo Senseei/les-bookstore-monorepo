@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { generateValidCPFNumbers } from './cpf-utils'
+
 // ***********************************************
 // Custom commands for profile editing tests
 // ***********************************************
@@ -38,10 +40,11 @@ Cypress.Commands.add('createRealUser', (userData = {}) => {
 
     // Generate unique but short email to avoid database constraints
     const timestamp = Date.now().toString().slice(-6) // Get last 6 digits
+    const validCPF = generateValidCPFNumbers()
     const uniqueUser = {
       ...user,
       email: `t${timestamp}@ex.com`, // Very short email to fit varchar(11) constraint
-      cpf: '616.008.770-36', // Use the valid CPF provided
+      cpf: validCPF, // Use the valid CPF provided
     }
 
     // Fixed: Use the correct API endpoint with /api prefix and proper data structure

@@ -68,6 +68,7 @@ export const CustomerActions = ({
   // Only show inactivate option if user is active and the function is available
   if (status === 'Ativo' && onInactivateUser) {
     dropdownItems.push({
+      'data-testid': 'inactivate-user-button',
       id: 'inactivate',
       label: 'Inativar Cliente',
       icon: <UserMinus size={16} />,
@@ -85,13 +86,18 @@ export const CustomerActions = ({
   if (showConfirmation) {
     return (
       <S.CustomerActions>
-        <Badge variant={getStatusVariant(status)} size="sm">
+        <Badge
+          data-testid="customer-status-badge"
+          variant={getStatusVariant(status)}
+          size="sm"
+        >
           {status}
         </Badge>
         <S.ConfirmationContainer>
           <S.ConfirmationText>Inativar cliente?</S.ConfirmationText>
           <S.ConfirmationActions>
             <Button
+              data-testid="cancel-inactivation-button"
               variant="ghost"
               size="sm"
               onClick={handleCancelInactivate}
@@ -100,6 +106,7 @@ export const CustomerActions = ({
               Cancelar
             </Button>
             <Button
+              data-testid="confirm-inactivation-button"
               variant="danger"
               size="sm"
               onClick={handleConfirmInactivate}
@@ -125,7 +132,12 @@ export const CustomerActions = ({
           align="right"
         />
       ) : (
-        <Button variant="ghost" size="sm" disabled>
+        <Button
+          data-testid="customer-actions-button"
+          variant="ghost"
+          size="sm"
+          disabled
+        >
           <DotsThreeOutline size={16} />
         </Button>
       )}
