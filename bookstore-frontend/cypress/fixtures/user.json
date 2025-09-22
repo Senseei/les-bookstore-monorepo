@@ -1,25 +1,42 @@
 {
-  "id": "02b511a3-c6ee-4871-812d-c2a6de9d1210",
-  "name": "Test User",
-  "email": "test@example.com",
-  "phone": "(11) 98765-4321",
-  "gender": "male",
-  "birthDate": "01/01/1990",
-  "cpf": "123.456.789-00",
-  "active": true,
-  "addresses": [
-    {
-      "id": "5d9fe565-ccf8-4e05-82dd-964664e9008b",
-      "type": "house",
-      "purpose": "both",
-      "addressName": "Residencial",
-      "street": "Avenida Professor Mariano Salvarani",
-      "number": "521",
-      "district": "Jardim Camila",
-      "city": "Mogi das Cruzes",
-      "state": "SP",
-      "postalCode": "08720-340",
-      "complement": null
-    }
-  ]
+  "existing": {
+    "id": "02b511a3-c6ee-4871-812d-c2a6de9d1210",
+    "name": "João Silva Santos",
+    "email": "joao.silva@example.com",
+    "phone": "11998887777",
+    "gender": "male",
+    "birthDate": "1985-03-15",
+    "cpf": "616.008.770-36",
+    "active": true,
+    "addresses": [
+      {
+        "id": "5d9fe565-ccf8-4e05-82dd-964664e9008b",
+        "type": "house",
+        "purpose": "both",
+        "addressName": "Residencial",
+        "street": "Avenida Professor Mariano Salvarani",
+        "number": "521",
+        "district": "Jardim Camila",
+        "city": "Mogi das Cruzes",
+        "state": "SP",
+        "postalCode": "08720340",
+        "complement": "Casa 1"
+      }
+    ]
+  },
+  "updated": {
+    "name": "João Silva Santos Editado",
+    "email": "joao.editado@example.com",
+    "phone": "11987654321",
+    "gender": "female",
+    "birthDate": "1990-12-25",
+    "cpf": "98765432100"
+  },
+  "invalid": {
+    "name": "A",
+    "email": "invalid-email",
+    "phone": "123",
+    "cpf": "123",
+    "birthDate": "invalid-date"
+  }
 }

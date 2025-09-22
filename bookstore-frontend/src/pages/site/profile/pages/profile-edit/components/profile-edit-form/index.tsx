@@ -68,6 +68,7 @@ export const ProfileEditForm = ({
               type="text"
               label="Nome Completo"
               placeholder="Digite seu nome completo"
+              data-testid="profile-name-input"
             />
 
             <FormField
@@ -76,6 +77,7 @@ export const ProfileEditForm = ({
               type="email"
               label="Email"
               placeholder="Digite seu email"
+              data-testid="profile-email-input"
             />
 
             <FormField
@@ -84,6 +86,7 @@ export const ProfileEditForm = ({
               type="cpf"
               label="CPF"
               placeholder="000.000.000-00"
+              data-testid="profile-cpf-input"
             />
 
             <FormField
@@ -92,6 +95,7 @@ export const ProfileEditForm = ({
               type="date"
               label="Data de Nascimento"
               placeholder="DD/MM/AAAA"
+              data-testid="profile-birth-date-input"
             />
 
             <FormField
@@ -100,6 +104,7 @@ export const ProfileEditForm = ({
               type="phone"
               label="Telefone"
               placeholder="(11) 99999-9999"
+              data-testid="profile-phone-input"
             />
 
             <FormField
@@ -109,12 +114,17 @@ export const ProfileEditForm = ({
               label="Gênero"
               placeholder="Selecione seu gênero"
               options={genderOptions}
+              data-testid="profile-gender-select"
             />
           </S.FormGrid>
         </FormSection>
 
         <S.FormActions>
-          <Button type="submit" loading={loading}>
+          <Button
+            type="submit"
+            loading={loading}
+            data-testid="profile-save-button"
+          >
             Salvar Alterações
           </Button>
         </S.FormActions>
