@@ -1,31 +1,35 @@
-import { ChangeUserPassword } from '@application/users/use-cases/change-user-password.usecase';
-import { UsersService } from '@application/users/use-cases/users.service';
+import { AddressService, UsersService } from '@application/users/services';
+import {
+  AddUserAddress,
+  ChangeUserPassword,
+  RemoveUserAddress,
+  UpdateUser,
+  UpdateUserAddress,
+} from '@application/users/use-cases';
 import { Injectable } from '@nestjs/common';
-import { ChangePasswordDTO } from './dtos/change-password.dto';
 import { PaginatedResultDTO } from '@presentation/dtos/paginated-result.dto';
-import { UserDTO } from './dtos/user.dto';
 import { PaginationParamsDTO } from '@presentation/dtos/pagination-params.dto';
-import { UpdateUserDTO } from './dtos/update-user.dto';
-import { UpdateUser } from '@application/users/use-cases/update-user.usecase';
-import { AddUserAddress } from '@application/users/use-cases/add-user-address.usecase';
-import { UpdateUserAddress } from '@application/users/use-cases/update-user-address.usecase';
-import { RemoveUserAddress } from '@application/users/use-cases/remove-user-address.usecase';
-import { GetUserAddresses } from '@application/users/use-cases/get-user-addresses.usecase';
-import { CreateAddressDTO } from './dtos/create-address.dto';
-import { UpdateAddressDTO } from './dtos/update-address.dto';
-import { AddressDTO } from './dtos/address.dto';
-import { MinUserDTO } from './dtos/min-user.dto';
+
+import {
+  AddressDTO,
+  ChangePasswordDTO,
+  CreateAddressDTO,
+  MinUserDTO,
+  UpdateAddressDTO,
+  UpdateUserDTO,
+  UserDTO,
+} from './dtos';
 
 @Injectable()
 export class UsersWebService {
   constructor(
     private readonly usersService: UsersService,
+    private readonly addressService: AddressService,
     private readonly changeUserPassword: ChangeUserPassword,
     private readonly updateUser: UpdateUser,
     private readonly addUserAddress: AddUserAddress,
     private readonly updateUserAddress: UpdateUserAddress,
     private readonly removeUserAddress: RemoveUserAddress,
-    private readonly getUserAddresses: GetUserAddresses,
   ) {}
 
   public async findById(id: string): Promise<UserDTO> {
@@ -69,7 +73,7 @@ export class UsersWebService {
 
   // Métodos para gerenciamento de endereços
   public async getAddressesByUserId(userId: string): Promise<AddressDTO[]> {
-    const addresses = await this.getUserAddresses.execute(userId);
+    const addresses = await this.addressService.findByUserId(userId);
     return addresses.map((address) => new AddressDTO(address));
   }
 

@@ -1,8 +1,9 @@
-import { DomainEntity } from './domain.entity';
-import { AddressType } from '@domain/enums/address-type.enum';
-import { AddressPurpose } from '@domain/enums/address-purpose.enum';
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './user.entity';
+import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
+import { AddressType } from '@domain/user/enums/address-type.enum';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+
+import { DomainEntity } from '../domain.entity';
+import { CustomerDetails } from './customer-details.entity';
 
 @Entity('tb_addresses')
 export class Address extends DomainEntity {
@@ -36,9 +37,12 @@ export class Address extends DomainEntity {
   @Column()
   state: string;
 
-  @ManyToOne(() => User, (user) => user.addresses)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @ManyToOne(
+    () => CustomerDetails,
+    (customerDetails) => customerDetails.addresses,
+  )
+  @JoinColumn({ name: 'customer_details_id' })
+  customerDetails: CustomerDetails;
 
   constructor(props: {
     type: AddressType;

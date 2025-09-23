@@ -1,8 +1,9 @@
+import { AddressesRepository } from '@application/users/address.repository';
+import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Address } from '@domain/address.entity';
-import { AddressesRepository } from '@application/users/address.repository';
+
 import { CRUDRepository } from './base.repository';
 
 @Injectable()

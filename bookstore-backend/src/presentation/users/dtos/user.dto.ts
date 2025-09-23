@@ -1,5 +1,6 @@
-import { User } from '@domain/user.entity';
-import { Gender } from '@domain/enums/gender.enum';
+import { Gender } from '@domain/user/enums/gender.enum';
+import { User } from '@domain/user/user.entity';
+
 import { AddressDTO } from './address.dto';
 
 export class UserDTO {
@@ -23,7 +24,9 @@ export class UserDTO {
     this.phone = user.phone;
     this.gender = user.gender;
     this.birthDate = user.birthDate;
-    this.addresses = user.addresses.map((address) => new AddressDTO(address));
+    this.addresses = user.customerDetails.addresses.map(
+      (address) => new AddressDTO(address),
+    );
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
     this.active = user.active;

@@ -1,6 +1,8 @@
-import { DomainEntity } from '@domain/domain.entity';
-import { EntityNotFoundException } from './exceptions/entity-not-found.exception';
 import { BaseRepository } from '@application/base.repository';
+import { DomainEntity } from '@domain/domain.entity';
+
+import { EntityNotFoundException } from './exceptions/entity-not-found.exception';
+import { UnactiveException } from './exceptions/unactive.exception';
 import { PaginatedResult } from './paginated-result';
 
 export abstract class BaseService<E extends DomainEntity> {
@@ -23,12 +25,10 @@ export abstract class BaseService<E extends DomainEntity> {
   }
 
   public async findActiveByIdOrThrow(id: string): Promise<E> {
-    const entity = await this.commonRepository.findById(id);
-    if (!entity) {
-      throw new EntityNotFoundException('Entity', id);
-    }
+    const entity = await this.findByIdOrThrow(id);
+
     if (!entity.active) {
-      throw new Error('Entity is inactive');
+      throw new UnactiveException('Entity', id);
     }
     return entity;
   }

@@ -1,17 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { Address } from '@domain/address.entity';
-import { AddressPurpose } from '@domain/enums/address-purpose.enum';
 import { InvalidBodyException } from '@application/exceptions/invalid-body.exception';
+import { Address } from '@domain/user/address.entity';
+import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AddressValidator {
-  /**
-   * RN0021 - Cadastro de endereço de cobrança
-   * Para todo cliente cadastrado é obrigatório o registro de ao menos um endereço de cobrança.
-   *
-   * RN0022 - Cadastro de endereço de entrega
-   * Para todo cliente cadastrado é obrigatório o registro de ao menos um endereço de entrega.
-   */
   validateRequiredAddressTypes(addresses: Address[]): void {
     const hasBillingAddress = addresses.some(
       (address) =>

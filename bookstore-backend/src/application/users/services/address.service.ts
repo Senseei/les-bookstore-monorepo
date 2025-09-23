@@ -1,7 +1,7 @@
 import { BaseService } from '@application/base.service';
-import { Inject, Injectable } from '@nestjs/common';
-import { Address } from '@domain/address.entity';
 import { AddressesRepository } from '@application/users/address.repository';
+import { Address } from '@domain/user/address.entity';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AddressService extends BaseService<Address> {

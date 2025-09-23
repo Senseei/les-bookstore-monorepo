@@ -1,5 +1,5 @@
-import { Address } from '@domain/address.entity';
 import { BaseRepository } from '@application/base.repository';
+import { Address } from '@domain/user/address.entity';
 
 export interface AddressesRepository extends BaseRepository<Address> {
   findByUserId(userId: string): Promise<Address[]>;

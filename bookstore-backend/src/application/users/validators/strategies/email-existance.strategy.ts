@@ -1,9 +1,10 @@
-import { UsersService } from '@application/users/use-cases/users.service';
-import { UserValidationStrategy } from './user.strategy';
-import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
-import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
 import { InvalidBodyException } from '@application/exceptions/invalid-body.exception';
+import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
+import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
+import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
+
+import { UserValidationStrategy } from './user.strategy';
 
 @Injectable()
 export class EmailExistenceStrategy implements UserValidationStrategy {

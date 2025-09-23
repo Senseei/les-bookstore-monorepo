@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import { EntityNotFoundException } from '@application/exceptions/entity-not-found.exception';
-import { AddressService } from './address.service';
+import { Injectable } from '@nestjs/common';
+
+import { AddressService } from '../services';
 import { AddressValidator } from '../validators/address.validator';
 
+// TODO REFATORAR
 @Injectable()
 export class RemoveUserAddress {
   constructor(

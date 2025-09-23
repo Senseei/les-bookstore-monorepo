@@ -1,19 +1,16 @@
+import { DuplicatedEntityException } from '@application/exceptions/duplicated-entity.exception';
+import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
-import { Address } from '@domain/address.entity';
 import { CreateAddressDTO } from '@presentation/users/dtos/create-address.dto';
-import { AddressService } from './address.service';
-import { UsersService } from './users.service';
+
+import { UsersService } from '../services';
 
 @Injectable()
 export class AddUserAddress {
-  constructor(
-    private readonly addressService: AddressService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async execute(userId: string, dto: CreateAddressDTO): Promise<Address> {
-    // Verificar se o usuário existe
-    const user = await this.usersService.findActiveUserById(userId);
+    const user = await this.usersService.findActiveByIdOrThrow(userId);
 
     // Criar novo endereço
     const address = new Address({
@@ -29,10 +26,15 @@ export class AddUserAddress {
       state: dto.state,
     });
 
-    // Associar o endereço ao usuário
-    address.user = user;
+    if (user.customerDetails.hasAddress(address)) {
+      throw new DuplicatedEntityException('Address already exists.');
+    }
 
-    // Salvar o endereço
-    return await this.addressService.save(address);
+    user.customerDetails.addresses.push(address);
+
+    // Salvar usuário com o novo endereço
+    await this.usersService.save(user);
+
+    return user.customerDetails.addresses.find((a) => a.equals(address))!;
   }
 }

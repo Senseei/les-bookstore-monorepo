@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Address } from '@domain/address.entity';
 import { EntityNotFoundException } from '@application/exceptions/entity-not-found.exception';
+import { Address } from '@domain/user/address.entity';
+import { Injectable } from '@nestjs/common';
 import { UpdateAddressDTO } from '@presentation/users/dtos/update-address.dto';
-import { AddressService } from './address.service';
+
+import { AddressService } from '../services';
 
 @Injectable()
 export class UpdateUserAddress {
@@ -14,6 +15,7 @@ export class UpdateUserAddress {
     dto: UpdateAddressDTO,
   ): Promise<Address> {
     // Buscar o endereço do usuário
+    // TODO REFATORAR, NAO FAZ SENTIDO BUSCAR POR 2 IDS
     const address = await this.addressService.findByUserIdAndAddressId(
       userId,
       addressId,
@@ -23,22 +25,8 @@ export class UpdateUserAddress {
       throw new EntityNotFoundException('Address', addressId);
     }
 
-    // Atualizar apenas os campos fornecidos
-    const updateData = {
-      type: dto.type ?? address.type,
-      purpose: dto.purpose ?? address.purpose,
-      addressName: dto.addressName ?? address.addressName,
-      postalCode: dto.postalCode ?? address.postalCode,
-      street: dto.street ?? address.street,
-      number: dto.number ?? address.number,
-      complement: dto.complement ?? address.complement,
-      district: dto.district ?? address.district,
-      city: dto.city ?? address.city,
-      state: dto.state ?? address.state,
-    };
-
     // Aplicar as atualizações
-    address.update(updateData);
+    address.update(dto);
 
     // Salvar as mudanças
     return await this.addressService.save(address);
