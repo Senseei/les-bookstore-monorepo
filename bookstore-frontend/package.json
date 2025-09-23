@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint": "eslint .",
     "preview": "vite preview",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "test:e2e": "cypress run",
-    "test:e2e:dev": "cypress open --e2e"
+    "test:e2e": "yarn cy:run",
+    "test:e2e:open": "yarn cy:open",
+    "test:e2e:setup": "cd ../bookstore-backend && yarn test:e2e:setup"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
