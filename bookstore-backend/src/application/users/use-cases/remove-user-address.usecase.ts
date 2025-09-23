@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { CannotRemoveAddressException } from '../exceptions/cannot-remove-address.exception';
 import { UsersService } from '../services';
 
+// TODO REFATORAR
 @Injectable()
 export class RemoveUserAddress {
   constructor(private readonly usersService: UsersService) {}
