@@ -1,4 +1,4 @@
-import { AddressService, UsersService } from '@application/users/services';
+import { UsersService } from '@application/users/services';
 import {
   AddUserAddress,
   ChangeUserPassword,
@@ -16,10 +16,7 @@ import {
 import { UserValidator } from '@application/users/validators/user.validator';
 import { Address } from '@domain/user/address.entity';
 import { User } from '@domain/user/user.entity';
-import {
-  AddressessRepositoryImpl,
-  UsersRepositoryImpl,
-} from '@infrastructure/persistence/typeorm/repositories';
+import { UsersRepositoryImpl } from '@infrastructure/persistence/typeorm/repositories';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from '@presentation/users/users.controller';
@@ -54,15 +51,10 @@ const VALIDATION_STRATEGIES = [EmailExistenceStrategy, CpfExistenceStrategy];
       provide: 'UsersRepository',
       useClass: UsersRepositoryImpl,
     },
-    {
-      provide: 'AddressesRepository',
-      useClass: AddressessRepositoryImpl,
-    },
     UsersService,
-    AddressService,
     UsersWebService,
     ...USE_CASES,
   ],
-  exports: [UsersService, AddressService, ...USE_CASES],
+  exports: [UsersService, ...USE_CASES],
 })
 export class UsersModule {}

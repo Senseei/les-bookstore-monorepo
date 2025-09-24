@@ -54,4 +54,9 @@ export abstract class BaseService<E extends DomainEntity> {
     entity.inactivate();
     await this.save(entity);
   }
+
+  public async delete(id: string): Promise<void> {
+    const entity = await this.findByIdOrThrow(id);
+    await this.commonRepository.delete(entity);
+  }
 }

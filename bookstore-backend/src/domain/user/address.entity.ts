@@ -41,7 +41,7 @@ export class Address extends DomainEntity {
     () => CustomerDetails,
     (customerDetails) => customerDetails.addresses,
   )
-  @JoinColumn({ name: 'customer_details_id' })
+  @JoinColumn()
   customerDetails: CustomerDetails;
 
   constructor(props: {

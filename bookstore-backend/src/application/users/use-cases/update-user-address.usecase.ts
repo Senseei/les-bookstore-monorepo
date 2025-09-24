@@ -3,32 +3,28 @@ import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { UpdateAddressDTO } from '@presentation/users/dtos/update-address.dto';
 
-import { AddressService } from '../services';
+import { UsersService } from '../services';
 
 @Injectable()
 export class UpdateUserAddress {
-  constructor(private readonly addressService: AddressService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async execute(
     userId: string,
     addressId: string,
     dto: UpdateAddressDTO,
   ): Promise<Address> {
-    // Buscar o endereço do usuário
-    // TODO REFATORAR, NAO FAZ SENTIDO BUSCAR POR 2 IDS
-    const address = await this.addressService.findByUserIdAndAddressId(
-      userId,
-      addressId,
-    );
+    const user = await this.usersService.findActiveByIdOrThrow(userId);
+
+    const address = user.customerDetails.getAddress(addressId);
 
     if (!address) {
       throw new EntityNotFoundException('Address', addressId);
     }
 
-    // Aplicar as atualizações
     address.update(dto);
 
-    // Salvar as mudanças
-    return await this.addressService.save(address);
+    await this.usersService.save(user);
+    return address;
   }
 }

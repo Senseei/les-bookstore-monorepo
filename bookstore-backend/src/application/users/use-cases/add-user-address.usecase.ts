@@ -1,4 +1,3 @@
-import { DuplicatedEntityException } from '@application/exceptions/duplicated-entity.exception';
 import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDTO } from '@presentation/users/dtos/create-address.dto';
@@ -26,14 +25,10 @@ export class AddUserAddress {
       state: dto.state,
     });
 
-    if (user.customerDetails.hasAddress(address)) {
-      throw new DuplicatedEntityException('Address already exists.');
+    if (!user.customerDetails.hasAddress(address)) {
+      user.customerDetails.addresses.push(address);
+      await this.usersService.save(user);
     }
-
-    user.customerDetails.addresses.push(address);
-
-    // Salvar usuário com o novo endereço
-    await this.usersService.save(user);
 
     return user.customerDetails.addresses.find((a) => a.equals(address))!;
   }

@@ -1,4 +1,4 @@
-import { AddressService, UsersService } from '@application/users/services';
+import { UsersService } from '@application/users/services';
 import {
   AddUserAddress,
   ChangeUserPassword,
@@ -24,7 +24,6 @@ import {
 export class UsersWebService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly addressService: AddressService,
     private readonly changeUserPassword: ChangeUserPassword,
     private readonly updateUser: UpdateUser,
     private readonly addUserAddress: AddUserAddress,
@@ -71,10 +70,11 @@ export class UsersWebService {
     await this.usersService.inactivate(id);
   }
 
-  // Métodos para gerenciamento de endereços
   public async getAddressesByUserId(userId: string): Promise<AddressDTO[]> {
-    const addresses = await this.addressService.findByUserId(userId);
-    return addresses.map((address) => new AddressDTO(address));
+    const user = await this.usersService.findActiveByIdOrThrow(userId);
+    return user.customerDetails.addresses.map(
+      (address) => new AddressDTO(address),
+    );
   }
 
   public async createUserAddress(

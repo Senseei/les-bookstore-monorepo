@@ -1,35 +1,81 @@
 import { EntityNotFoundException } from '@application/exceptions/entity-not-found.exception';
+import { Address } from '@domain/user/address.entity';
+import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
 import { Injectable } from '@nestjs/common';
 
-import { AddressService } from '../services';
-import { AddressValidator } from '../validators/address.validator';
+import { CannotRemoveAddressException } from '../exceptions/cannot-remove-address.exception';
+import { UsersService } from '../services';
 
-// TODO REFATORAR
 @Injectable()
 export class RemoveUserAddress {
-  constructor(
-    private readonly addressService: AddressService,
-    private readonly addressValidator: AddressValidator,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async execute(userId: string, addressId: string): Promise<void> {
-    // Buscar o endereço do usuário
-    const address = await this.addressService.findByUserIdAndAddressId(
-      userId,
-      addressId,
-    );
+    const user = await this.usersService.findActiveByIdOrThrow(userId);
+
+    const address = user.customerDetails.getAddress(addressId);
 
     if (!address) {
       throw new EntityNotFoundException('Address', addressId);
     }
 
-    // Buscar todos os endereços do usuário
-    const userAddresses = await this.addressService.findByUserId(userId);
+    this.validateAddressRemoval(user.customerDetails.addresses, address);
 
-    // Validar se a remoção não viola as regras de negócio RN0021 e RN0022
-    this.addressValidator.validateAddressRemoval(userAddresses, address);
+    user.customerDetails.addresses.slice(
+      user.customerDetails.addresses.findIndex((a) => a.equals(address)),
+      1,
+    );
 
-    // Remover o endereço
-    await this.addressService.deleteByUserIdAndAddressId(userId, addressId);
+    await this.usersService.save(user);
+  }
+
+  private validateAddressRemoval(
+    addresses: Address[],
+    addressToRemove: Address,
+  ): void {
+    const remainingAddresses = addresses.filter(
+      (address) => address.id !== addressToRemove.id,
+    );
+
+    // Verifica se após a remoção ainda haverá os endereços obrigatórios
+    const willHaveBillingAddress = remainingAddresses.some(
+      (address) =>
+        address.purpose === AddressPurpose.BILLING ||
+        address.purpose === AddressPurpose.BOTH,
+    );
+
+    const willHaveDeliveryAddress = remainingAddresses.some(
+      (address) =>
+        address.purpose === AddressPurpose.DELIVERY ||
+        address.purpose === AddressPurpose.BOTH,
+    );
+
+    const errors: string[] = [];
+
+    // Verifica se o endereço a ser removido é necessário para cobrança
+    const isRequiredForBilling =
+      addressToRemove.purpose === AddressPurpose.BILLING ||
+      addressToRemove.purpose === AddressPurpose.BOTH;
+
+    // Verifica se o endereço a ser removido é necessário para entrega
+    const isRequiredForDelivery =
+      addressToRemove.purpose === AddressPurpose.DELIVERY ||
+      addressToRemove.purpose === AddressPurpose.BOTH;
+
+    if (!willHaveBillingAddress && isRequiredForBilling) {
+      errors.push(
+        'Não é possível remover o último endereço de cobrança. Cadastre outro endereço de cobrança antes de remover este.',
+      );
+    }
+
+    if (!willHaveDeliveryAddress && isRequiredForDelivery) {
+      errors.push(
+        'Não é possível remover o último endereço de entrega. Cadastre outro endereço de entrega antes de remover este.',
+      );
+    }
+
+    if (errors.length > 0) {
+      throw new CannotRemoveAddressException(errors.join(' '));
+    }
   }
 }
