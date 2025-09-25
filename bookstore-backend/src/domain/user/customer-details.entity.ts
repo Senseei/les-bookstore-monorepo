@@ -11,6 +11,7 @@ export class CustomerDetails extends DomainEntity {
 
   @OneToMany(() => Address, (address) => address.customerDetails, {
     cascade: true,
+    eager: true,
   })
   addresses: Address[];
 
