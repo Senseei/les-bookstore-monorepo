@@ -12,6 +12,9 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     specPattern: 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/e2e.ts',
+    env: {
+      API_URL: 'http://localhost:3000', // Backend API URL
+    },
     setupNodeEvents(on, config) {
       on('dev-server:start', async (options) => {
         const viteConfig = defineViteConfig({
