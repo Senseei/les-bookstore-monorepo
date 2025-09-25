@@ -97,11 +97,14 @@ yarn start:test
 
 ### 4. Run Cypress E2E Tests
 
+The frontend needs to be running to execute the tests.
+
 ```bash
 cd ../bookstore-frontend
-yarn test:e2e:open  # Interactive mode with Cypress UI
+npm run dev
+npm test:e2e:open  # Interactive mode with Cypress UI
 # OR
-yarn test:e2e       # Headless mode (runs all tests automatically)
+npm test:e2e       # Headless mode (runs all tests automatically)
 ```
 
 ## Alternative: One-Command Setup
