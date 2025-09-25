@@ -1,9 +1,10 @@
+import { Address } from '@domain/user/address.entity';
+import { User } from '@domain/user/user.entity';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
-import { User } from '@domain/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { Address } from '@domain/address.entity';
+
+import { UsersService } from '../services';
 import { UserValidator } from '../validators/user.validator';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class CreateNewUser {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const user = new User({ ...dto, password: hashedPassword });
 
-    user.addresses.push(new Address(dto.address));
+    user.customerDetails.addresses.push(new Address(dto.address));
 
     return this.usersService.save(user);
   }

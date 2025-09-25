@@ -1,4 +1,5 @@
-import { User } from '@domain/user.entity';
+import { User } from '@domain/user/user.entity';
+
 import { MinAddressDTO } from './min-address.dto';
 
 export class MinUserDTO {
@@ -20,7 +21,7 @@ export class MinUserDTO {
     this.ranking = 5;
     this.phoneNumber = user.phone;
     // TODO refatorar addressess para logica de main address
-    this.address = new MinAddressDTO(user.addresses[0]);
+    this.address = new MinAddressDTO(user.customerDetails.addresses[0]);
     this.lastOrder = lastOrder;
   }
 }

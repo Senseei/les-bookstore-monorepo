@@ -1,4 +1,5 @@
 import { DomainEntity } from '@domain/domain.entity';
+
 import { PaginatedResult } from './paginated-result';
 
 export interface BaseRepository<E extends DomainEntity> {

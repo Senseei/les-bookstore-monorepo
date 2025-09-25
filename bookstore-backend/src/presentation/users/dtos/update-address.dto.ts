@@ -1,46 +1,36 @@
-import { AddressType } from '@domain/enums/address-type.enum';
-import { AddressPurpose } from '@domain/enums/address-purpose.enum';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
+import { AddressType } from '@domain/user/enums/address-type.enum';
 import { IsCep } from '@presentation/decorators/validators/cep.validator';
+import { IsEnum, IsString } from 'class-validator';
 
 export class UpdateAddressDTO {
   @IsEnum(AddressType)
-  @IsOptional()
-  type?: AddressType;
+  type: AddressType;
 
   @IsEnum(AddressPurpose)
-  @IsOptional()
-  purpose?: AddressPurpose;
+  purpose: AddressPurpose;
 
   @IsString()
-  @IsOptional()
-  addressName?: string;
+  addressName: string;
 
   @IsCep()
-  @IsOptional()
-  postalCode?: string;
+  postalCode: string;
 
   @IsString()
-  @IsOptional()
-  street?: string;
+  street: string;
 
   @IsString()
-  @IsOptional()
-  number?: string;
+  number: string;
 
   @IsString()
-  @IsOptional()
-  complement?: string;
+  complement: string;
 
   @IsString()
-  @IsOptional()
-  district?: string;
+  district: string;
 
   @IsString()
-  @IsOptional()
-  city?: string;
+  city: string;
 
   @IsString()
-  @IsOptional()
-  state?: string;
+  state: string;
 }

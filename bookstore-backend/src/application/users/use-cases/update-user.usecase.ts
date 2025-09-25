@@ -1,7 +1,8 @@
+import { User } from '@domain/user/user.entity';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
-import { User } from '@domain/user.entity';
+
+import { UsersService } from '../services';
 import { UserValidator } from '../validators/user.validator';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class UpdateUser {
   ) {}
 
   public async execute(id: string, dto: UpdateUserDTO): Promise<User> {
-    const user = await this.usersService.findActiveUserById(id);
+    const user = await this.usersService.findActiveByIdOrThrow(id);
 
     await this.userValidator.validate(dto, id);
 

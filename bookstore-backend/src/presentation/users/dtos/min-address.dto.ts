@@ -1,4 +1,4 @@
-import { Address } from '@domain/address.entity';
+import { Address } from '@domain/user/address.entity';
 
 export class MinAddressDTO {
   id: string;

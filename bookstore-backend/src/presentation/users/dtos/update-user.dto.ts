@@ -1,4 +1,4 @@
-import { Gender } from '@domain/enums/gender.enum';
+import { Gender } from '@domain/user/enums/gender.enum';
 import { IsBrPhone } from '@presentation/decorators/validators/br-phone.validator';
 import { IsCpf } from '@presentation/decorators/validators/cpf.validator';
 import { Type } from 'class-transformer';

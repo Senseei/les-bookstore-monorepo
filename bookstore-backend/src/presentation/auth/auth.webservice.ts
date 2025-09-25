@@ -1,15 +1,15 @@
-import * as bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '@application/users/services';
+import { CreateNewUser } from '@application/users/use-cases/create-new-user.usecase';
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { UserDTO } from '@presentation/users/dtos/user.dto';
+import * as bcrypt from 'bcryptjs';
 
-import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
-import { JwtToken } from './interfaces/jwt-token.interface';
 import { AuthenticatedUserDTO } from './dtos/authenticated-user.dto';
 import { NewUserDTO } from './dtos/new-user.dto';
-import { UserDTO } from '@presentation/users/dtos/user.dto';
-import { CreateNewUser } from '@application/users/use-cases/create-new-user.usecase';
-import { UsersService } from '@application/users/use-cases/users.service';
 import { InactiveUserException } from './exceptions/inactive-user.exception';
+import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
+import { JwtToken } from './interfaces/jwt-token.interface';
 
 @Injectable()
 export class AuthWebService {

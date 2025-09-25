@@ -1,5 +1,5 @@
 import { BaseRepository } from '@application/base.repository';
-import { User } from '@domain/user.entity';
+import { User } from '@domain/user/user.entity';
 
 export interface UsersRepository extends BaseRepository<User> {
   findByEmail(email: string): Promise<User | null>;

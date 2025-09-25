@@ -1,6 +1,6 @@
-import { Address } from '@domain/address.entity';
-import { AddressType } from '@domain/enums/address-type.enum';
-import { AddressPurpose } from '@domain/enums/address-purpose.enum';
+import { Address } from '@domain/user/address.entity';
+import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
+import { AddressType } from '@domain/user/enums/address-type.enum';
 
 export class AddressDTO {
   id: string;
