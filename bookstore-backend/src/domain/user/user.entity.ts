@@ -1,5 +1,5 @@
 import { Gender } from '@domain/user/enums/gender.enum';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { DomainEntity } from '../domain.entity';
 import { CustomerDetails } from './customer-details.entity';
@@ -28,6 +28,7 @@ export class User extends DomainEntity {
   password: string;
 
   @OneToOne(() => CustomerDetails, { cascade: true, eager: true })
+  @JoinColumn()
   customerDetails: CustomerDetails;
 
   constructor(props: {
@@ -48,7 +49,7 @@ export class User extends DomainEntity {
       this.password = props.password;
       this.gender = props.gender;
       this.birthDate = props.birthDate;
-      this.customerDetails = new CustomerDetails();
+      this.customerDetails = new CustomerDetails({});
     }
   }
 

@@ -15,6 +15,7 @@ import {
 } from '@application/users/validators/strategies';
 import { UserValidator } from '@application/users/validators/user.validator';
 import { Address } from '@domain/user/address.entity';
+import { CustomerDetails } from '@domain/user/customer-details.entity';
 import { User } from '@domain/user/user.entity';
 import { UsersRepositoryImpl } from '@infrastructure/persistence/typeorm/repositories';
 import { Module } from '@nestjs/common';
@@ -33,7 +34,7 @@ const USE_CASES = [
 const VALIDATION_STRATEGIES = [EmailExistenceStrategy, CpfExistenceStrategy];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Address])],
+  imports: [TypeOrmModule.forFeature([User, CustomerDetails, Address])],
   controllers: [UsersController],
   providers: [
     ...VALIDATION_STRATEGIES,
