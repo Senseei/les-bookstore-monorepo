@@ -8,7 +8,7 @@ export const ORMS = {
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const nodeEnv = configService.get('NODE_ENV');
+        const nodeEnv = configService.get<string>('NODE_ENV');
         const isTest = nodeEnv === 'test';
 
         // Debug logging to verify configuration
@@ -30,7 +30,7 @@ export const ORMS = {
           autoLoadEntities: true,
           namingStrategy: new SnakeNamingStrategy(),
           // Always sync in test environment to ensure clean state
-          synchronize: isTest || nodeEnv === 'development',
+          synchronize: nodeEnv !== 'production',
           migrations: [`${__dirname}/migrations/*{.ts,.js}`],
           migrationsRun: !isTest, // Don't run migrations in test (use synchronize instead)
           dropSchema: isTest, // Drop schema on each test run for clean state
