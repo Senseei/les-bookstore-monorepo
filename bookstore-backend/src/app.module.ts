@@ -1,13 +1,27 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './infrastructure/nestjs/modules/database.module';
-import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from '@infrastructure/nestjs/modules/auth.module';
-import { UsersModule } from '@infrastructure/nestjs/modules/users.module';
+import { TestModule } from './presentation/test/test.module';
+import { AuthModule } from './infrastructure/nestjs/modules/auth.module';
+import { UsersModule } from './infrastructure/nestjs/modules/users.module';
+import * as path from 'path';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, AuthModule, UsersModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath:
+        process.env.NODE_ENV === 'test'
+          ? path.resolve(process.cwd(), '.env.test')
+          : path.resolve(process.cwd(), '.env'),
+    }),
+    DatabaseModule,
+    TestModule,
+    AuthModule,
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
