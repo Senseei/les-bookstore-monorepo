@@ -1,0 +1,25 @@
+{
+  "id": "02b511a3-c6ee-4871-812d-c2a6de9d1210",
+  "name": "Test User",
+  "email": "test@example.com",
+  "phone": "(11) 98765-4321",
+  "gender": "male",
+  "birthDate": "01/01/1990",
+  "cpf": "123.456.789-00",
+  "active": true,
+  "addresses": [
+    {
+      "id": "5d9fe565-ccf8-4e05-82dd-964664e9008b",
+      "type": "house",
+      "purpose": "both",
+      "addressName": "Residencial",
+      "street": "Avenida Professor Mariano Salvarani",
+      "number": "521",
+      "district": "Jardim Camila",
+      "city": "Mogi das Cruzes",
+      "state": "SP",
+      "postalCode": "08720-340",
+      "complement": null
+    }
+  ]
+}

@@ -8,6 +8,7 @@ export interface AlertProps {
   children: ReactNode
   onClose?: () => void
   isVisible?: boolean
+  'data-testid'?: string
 }
 
 const getIcon = (variant: AlertProps['variant']) => {
@@ -28,11 +29,12 @@ export const Alert = ({
   children,
   onClose,
   isVisible = true,
+  'data-testid': dataTestId,
 }: AlertProps) => {
   if (!isVisible) return null
 
   return (
-    <S.Alert variant={variant} isVisible={isVisible}>
+    <S.Alert variant={variant} isVisible={isVisible} data-testid={dataTestId}>
       <S.AlertIcon>{getIcon(variant)}</S.AlertIcon>
       <S.AlertMessage>{children}</S.AlertMessage>
       {onClose && (

@@ -16,6 +16,7 @@ interface BaseFormFieldProps<T extends FieldValues> {
   placeholder?: string
   className?: string
   disabled?: boolean
+  'data-testid'?: string
 }
 
 interface InputFormFieldProps<T extends FieldValues>
@@ -43,6 +44,7 @@ export const FormField = <T extends FieldValues>({
   className,
   disabled = false,
   options,
+  'data-testid': dataTestId,
 }: FormFieldProps<T>) => {
   const {
     register,
@@ -81,6 +83,7 @@ export const FormField = <T extends FieldValues>({
             placeholder={placeholder}
             options={options}
             disabled={disabled}
+            data-testid={dataTestId}
           />
         )}
       />
@@ -101,6 +104,7 @@ export const FormField = <T extends FieldValues>({
       type={
         type === 'password' ? 'password' : type === 'email' ? 'email' : 'text'
       }
+      data-testid={dataTestId}
       {...(mask ? createMaskedRegister(mask) : register(name))}
     />
   )
