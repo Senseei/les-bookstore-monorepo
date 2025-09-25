@@ -12,14 +12,14 @@ export class TestController {
   @Get('health')
   @HttpCode(HttpStatus.OK)
   health() {
-    const nodeEnv = this.configService.get('NODE_ENV');
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
     return {
       status: 'ok',
       environment: nodeEnv,
       timestamp: new Date().toISOString(),
       database: {
         connected: this.dataSource.isInitialized,
-        name: this.configService.get('DATABASE_NAME'),
+        name: this.configService.get<string>('DATABASE_NAME'),
       },
     };
   }
@@ -27,7 +27,7 @@ export class TestController {
   @Post('reset-database')
   @HttpCode(HttpStatus.OK)
   async resetDatabase() {
-    const nodeEnv = this.configService.get('NODE_ENV');
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
 
     // Only allow in test environment
     if (nodeEnv !== 'test') {
@@ -59,7 +59,7 @@ export class TestController {
         } catch (error) {
           console.warn(
             `Warning: Could not truncate table ${tableName}:`,
-            error.message,
+            error instanceof Error ? error.message : String(error),
           );
         }
       }
@@ -77,8 +77,8 @@ export class TestController {
         } catch (error) {
           console.warn(
             `Warning: Could not reset sequence for ${tableName}:`,
-            error.message,
-          
+            error instanceof Error ? error.message : String(error),
+          );
         }
       }
 
@@ -102,7 +102,7 @@ export class TestController {
   @Post('seed-test-data')
   @HttpCode(HttpStatus.OK)
   seedTestData() {
-    const nodeEnv = this.configService.get('NODE_ENV');
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
 
     if (nodeEnv !== 'test') {
       return {
