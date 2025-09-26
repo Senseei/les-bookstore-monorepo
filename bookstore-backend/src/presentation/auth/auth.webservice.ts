@@ -36,7 +36,7 @@ export class AuthWebService {
     return new AuthenticatedUserDTO(user.id, user.name, user.email);
   }
 
-  public login(user: AuthenticatedUserDTO): JwtToken {
+  public signIn(user: AuthenticatedUserDTO): JwtToken {
     const payload = { email: user.email, sub: user.id };
     return {
       accessToken: this.jwtService.sign(payload),

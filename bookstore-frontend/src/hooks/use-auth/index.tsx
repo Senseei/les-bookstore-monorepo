@@ -2,13 +2,10 @@ import { useState } from 'react'
 
 import type { NewUserDTO } from '@/dtos/user'
 import { AuthService } from '@/services/auth.service'
-
-interface JWtToken {
-  accessToken: string
-}
+import type { JwtToken } from '@/utils'
 
 interface AuthState {
-  token: JWtToken | null
+  token: JwtToken | null
   isLoading: boolean
   error: string | null
 }
@@ -61,8 +58,35 @@ export const useAuth = () => {
   /**
    * Sign in user
    */
-  const signIn = async (_credentials: { email: string; password: string }) => {
-    // TODO
+  const signIn = async (credentials: { email: string; password: string }) => {
+    setAuthState((prev) => ({ ...prev, isLoading: true, error: null }))
+
+    try {
+      const token = await AuthService.signIn(credentials)
+
+      setAuthState((prev) => ({
+        ...prev,
+        token,
+        isLoading: false,
+        error: null,
+      }))
+
+      return { success: true, data: token }
+    } catch (error: unknown) {
+      const axiosError = error as {
+        response?: { data?: { message?: string } }
+      }
+      const errorMessage =
+        axiosError.response?.data?.message || 'Erro ao fazer login'
+
+      setAuthState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: errorMessage,
+      }))
+
+      return { success: false, error: errorMessage }
+    }
   }
 
   /**

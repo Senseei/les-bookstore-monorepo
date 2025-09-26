@@ -68,3 +68,7 @@ export interface StateOption {
   value: BrazilianStateCode
   label: string
 }
+
+export interface JwtToken {
+  accessToken: string
+}

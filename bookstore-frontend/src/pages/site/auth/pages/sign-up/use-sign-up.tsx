@@ -24,9 +24,6 @@ export const useSignUp = () => {
     // Map form data to DTO for backend
     const newUserData = mapFormDataToNewUserDTO(data)
 
-    // eslint-disable-next-line no-console
-    console.log('New User DTO:', newUserData)
-
     // Send data to backend API
     const result = await signUp(newUserData)
 
@@ -37,7 +34,7 @@ export const useSignUp = () => {
 
       // Redirect to login page after a short delay
       window.setTimeout(() => {
-        navigate(ROUTES.LOGIN)
+        navigate(ROUTES.SIGNIN)
       }, 3000)
     } else {
       // Error is already handled by the useAuth hook

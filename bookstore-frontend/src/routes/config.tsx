@@ -3,6 +3,7 @@ import {
   CustomerDetails,
   CustomersList,
   ProfileEdit,
+  SignIn,
   SignUp,
   SiteLayout,
 } from '@/pages'
@@ -47,6 +48,10 @@ export const routeConfig = [
       {
         path: '',
         element: <div>Home Page</div>,
+      },
+      {
+        path: ROUTES.SIGNIN.slice(1), // Remove leading slash for child route
+        element: <SignIn />,
       },
       {
         path: ROUTES.SIGNUP.slice(1), // Remove leading slash for child route

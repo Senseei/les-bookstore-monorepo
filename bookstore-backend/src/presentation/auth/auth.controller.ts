@@ -10,13 +10,13 @@ import { JwtToken } from './interfaces/jwt-token.interface';
 export class AuthController {
   constructor(private authService: AuthWebService) {}
 
-  @Post('login')
-  public async login(@Body() body: LoginCredentialsDTO): Promise<JwtToken> {
+  @Post('sign-in')
+  public async signIn(@Body() body: LoginCredentialsDTO): Promise<JwtToken> {
     const user = await this.authService.validateUser(body.email, body.password);
-    return this.authService.login(user);
+    return this.authService.signIn(user);
   }
 
-  @Post('signup')
+  @Post('sign-up')
   @HttpCode(201)
   public async signUp(@Body() body: NewUserDTO): Promise<UserDTO> {
     return await this.authService.signUp(body);

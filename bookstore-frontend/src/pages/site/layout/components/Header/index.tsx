@@ -139,7 +139,7 @@ export const Header = () => {
               </S.UserMenuContainer>
             ) : (
               <S.AuthButtons>
-                <Link to="/login">
+                <Link to="/sign-in">
                   <Button variant="ghost" size="sm">
                     Entrar
                   </Button>

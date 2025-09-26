@@ -24,7 +24,7 @@ const ADMIN_ROUTES = {
 export const ROUTES = {
   // Public routes
   HOME: BASE_ROUTES.ROOT,
-  LOGIN: '/login',
+  SIGNIN: '/sign-in', // Added signin route
   SIGNUP: '/sign-up',
   PROFILE: '/profile',
   PROFILE_EDIT: '/profile/edit',
