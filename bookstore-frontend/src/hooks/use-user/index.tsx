@@ -111,6 +111,36 @@ export const useUser = () => {
   }, [])
 
   /**
+   * Get current authenticated user
+   */
+  const getCurrentUser = useCallback(async () => {
+    setSingleUserState((prev) => ({ ...prev, isLoading: true, error: null }))
+
+    try {
+      const user = await UserService.getCurrentUser()
+
+      setSingleUserState((prev) => ({
+        ...prev,
+        user,
+        isLoading: false,
+        error: null,
+      }))
+
+      return { success: true, data: user }
+    } catch {
+      const errorMessage = 'Erro ao buscar dados do usuário'
+
+      setSingleUserState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: errorMessage,
+      }))
+
+      return { success: false, error: errorMessage }
+    }
+  }, [])
+
+  /**
    * Update user
    */
   const updateUser = useCallback(
@@ -354,6 +384,7 @@ export const useUser = () => {
 
     // Single user actions
     getUserById,
+    getCurrentUser,
     updateUser,
     changeUserPassword,
     createUserAddress,

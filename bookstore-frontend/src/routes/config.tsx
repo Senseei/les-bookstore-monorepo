@@ -58,11 +58,7 @@ export const routeConfig = [
         element: <SignUp />,
       },
       {
-        path: ROUTES.PROFILE_EDIT.slice(1), // Remove leading slash for child route
-        element: <ProfileEdit />,
-      },
-      {
-        path: 'profile/edit/:id', // Rota com parâmetro para editar usuário específico
+        path: ROUTES.MY_PROFILE.slice(1), // Remove leading slash for child route
         element: <ProfileEdit />,
       },
     ],

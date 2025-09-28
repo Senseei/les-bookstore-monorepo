@@ -10,21 +10,26 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 
 import { Button } from '@/components'
+import { useAuth } from '@/providers'
 
 import * as S from './styles'
 
 export const Header = () => {
-  // Mock hooks - these would be real in the actual implementation
-  const user = null // Mock user state
+  // Auth state from provider
+  const { isAuthenticated, signOut } = useAuth()
   const cartItemsCount = 0 // Mock cart count
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  const handleLogout = () => {
-    // Mock logout function
-    navigate('/')
-    setIsMenuOpen(false)
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      navigate('/')
+      setIsMenuOpen(false)
+    } catch {
+      // Handle logout error silently or with toast notification
+    }
   }
 
   const handleSearch = (e: React.FormEvent) => {
@@ -91,7 +96,7 @@ export const Header = () => {
             </S.CartContainer>
 
             {/* User menu */}
-            {user ? (
+            {isAuthenticated ? (
               <S.UserMenuContainer>
                 <S.UserMenuButton
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -100,14 +105,14 @@ export const Header = () => {
                   <S.UserAvatar>
                     <User size={16} />
                   </S.UserAvatar>
-                  <S.UserName>Nome do Usuário</S.UserName>
+                  <S.UserName>Minha Conta</S.UserName>
                   <CaretDown size={16} />
                 </S.UserMenuButton>
 
                 {isMenuOpen && (
                   <S.UserDropdown>
                     <S.DropdownItem
-                      to="/profile"
+                      to="/my-profile"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Meu Perfil

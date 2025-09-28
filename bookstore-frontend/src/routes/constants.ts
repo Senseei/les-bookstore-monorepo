@@ -26,8 +26,7 @@ export const ROUTES = {
   HOME: BASE_ROUTES.ROOT,
   SIGNIN: '/sign-in', // Added signin route
   SIGNUP: '/sign-up',
-  PROFILE: '/profile',
-  PROFILE_EDIT: '/profile/edit',
+  MY_PROFILE: '/my-profile', // Simplified profile route
   PROFILE_EDIT_USER: '/profile/edit/:id', // Para admin editar qualquer usuário
 
   // Admin routes
