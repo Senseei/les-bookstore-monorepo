@@ -10,13 +10,15 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 
 import { Button } from '@/components'
-import { useAuth } from '@/providers'
+import { useAuth, useToast } from '@/providers'
+import { ROUTES } from '@/routes/constants'
 
 import * as S from './styles'
 
 export const Header = () => {
   // Auth state from provider
   const { isAuthenticated, signOut } = useAuth()
+  const toast = useToast()
   const cartItemsCount = 0 // Mock cart count
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -25,17 +27,18 @@ export const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut()
-      navigate('/')
+      toast.showSuccess('Sign out efetuado com sucesso.')
+      navigate(ROUTES.SIGNIN)
       setIsMenuOpen(false)
     } catch {
-      // Handle logout error silently or with toast notification
+      toast.showError('Erro ao desconectar. Tente novamente.')
     }
   }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      navigate(`/catalog?search=${encodeURIComponent(searchQuery)}`)
+      navigate(`${ROUTES.CATALOG}?search=${encodeURIComponent(searchQuery)}`)
     }
   }
 
@@ -49,7 +52,7 @@ export const Header = () => {
         <S.HeaderContent>
           {/* Logo */}
           <S.LogoContainer>
-            <Link to="/">
+            <Link to={ROUTES.HOME}>
               <S.LogoWrapper>
                 <S.LogoIcon>
                   <BookOpen size={24} weight="bold" />
@@ -61,7 +64,7 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <S.DesktopNav>
-            <S.NavLink to="/catalog">Catálogo</S.NavLink>
+            <S.NavLink to={ROUTES.CATALOG}>Catálogo</S.NavLink>
           </S.DesktopNav>
 
           {/* Right side */}
@@ -83,7 +86,7 @@ export const Header = () => {
 
             {/* Cart */}
             <S.CartContainer>
-              <Link to="/cart">
+              <Link to={ROUTES.CART}>
                 <S.CartButton>
                   <ShoppingCart size={24} />
                   {cartItemsCount > 0 && (
@@ -106,31 +109,31 @@ export const Header = () => {
                     <User size={16} />
                   </S.UserAvatar>
                   <S.UserName>Minha Conta</S.UserName>
-                  <CaretDown size={16} />
+                  <CaretDown size={16} className="dropdown-caret" />
                 </S.UserMenuButton>
 
                 {isMenuOpen && (
                   <S.UserDropdown>
                     <S.DropdownItem
-                      to="/my-profile"
+                      to={ROUTES.MY_PROFILE}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Meu Perfil
                     </S.DropdownItem>
                     <S.DropdownItem
-                      to="/orders"
+                      to={ROUTES.ORDERS}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Meus Pedidos
                     </S.DropdownItem>
                     <S.DropdownItem
-                      to="/addresses"
+                      to={ROUTES.ADDRESSES}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Endereços
                     </S.DropdownItem>
                     <S.DropdownItem
-                      to="/payment-methods"
+                      to={ROUTES.PAYMENT_METHODS}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Cartões
@@ -144,12 +147,12 @@ export const Header = () => {
               </S.UserMenuContainer>
             ) : (
               <S.AuthButtons>
-                <Link to="/sign-in">
+                <Link to={ROUTES.SIGNIN}>
                   <Button variant="ghost" size="sm">
                     Entrar
                   </Button>
                 </Link>
-                <Link to="/sign-up">
+                <Link to={ROUTES.SIGNUP}>
                   <Button variant="primary" size="sm">
                     Cadastrar
                   </Button>
@@ -170,7 +173,7 @@ export const Header = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <S.MobileNav>
-            <S.MobileNavItem to="/catalog">Catálogo</S.MobileNavItem>
+            <S.MobileNavItem to={ROUTES.CATALOG}>Catálogo</S.MobileNavItem>
 
             {/* Mobile search */}
             <S.MobileSearchForm onSubmit={handleSearch}>
