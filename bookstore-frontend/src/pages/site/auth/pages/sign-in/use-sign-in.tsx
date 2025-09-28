@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
-import { useAuth } from '@/hooks'
+import { useAuth } from '@/providers'
 import { useToast } from '@/providers/toast/use-toast'
 import { ROUTES } from '@/routes/advanced'
 import { type SignInFormData, signInSchema } from '@/schemas/auth-schemas'

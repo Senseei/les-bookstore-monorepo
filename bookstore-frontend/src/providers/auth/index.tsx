@@ -2,19 +2,11 @@ import { useState } from 'react'
 
 import type { NewUserDTO } from '@/dtos/user'
 import { AuthService } from '@/services/auth.service'
-import type { JwtToken } from '@/utils'
 
-interface AuthState {
-  token: JwtToken | null
-  isLoading: boolean
-  error: string | null
-}
+import { AuthContext } from './auth-context'
+import type { AuthProviderProps, AuthState } from './types'
 
-/**
- * Authentication Hook
- * Manages authentication state and provides auth-related functions
- */
-export const useAuth = () => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<AuthState>({
     token: null,
     isLoading: false,
@@ -64,6 +56,9 @@ export const useAuth = () => {
     try {
       const token = await AuthService.signIn(credentials)
 
+      // Set token in axios headers
+      await AuthService.setToken(token.accessToken)
+
       setAuthState((prev) => ({
         ...prev,
         token,
@@ -93,7 +88,22 @@ export const useAuth = () => {
    * Sign out user
    */
   const signOut = async () => {
-    // TODO
+    try {
+      // Call backend signout endpoint
+      await AuthService.signOut()
+    } catch {
+      // Continue with local signout even if backend call fails
+    } finally {
+      // Clear token from axios headers
+      await AuthService.removeToken()
+
+      // Clear local auth state
+      setAuthState((prev) => ({
+        ...prev,
+        token: null,
+        error: null,
+      }))
+    }
   }
 
   /**
@@ -103,7 +113,7 @@ export const useAuth = () => {
     setAuthState((prev) => ({ ...prev, error: null }))
   }
 
-  return {
+  const contextValue = {
     // State
     token: authState.token,
     isLoading: authState.isLoading,
@@ -116,4 +126,8 @@ export const useAuth = () => {
     signOut,
     clearError,
   }
+
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  )
 }

@@ -47,4 +47,8 @@ export class AuthService {
   static async setToken(token: string) {
     AxiosApp.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
+
+  static async removeToken() {
+    delete AxiosApp.defaults.headers.common['Authorization']
+  }
 }
