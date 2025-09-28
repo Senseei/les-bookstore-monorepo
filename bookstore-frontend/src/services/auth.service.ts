@@ -44,11 +44,7 @@ export class AuthService {
     return response.data
   }
 
-  /**
-   * Get current user profile
-   */
-  static async getCurrentUser() {
-    const response = await AxiosApp.get('/auth/me')
-    return response.data
+  static async setToken(token: string) {
+    AxiosApp.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
 }
