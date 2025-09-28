@@ -2,7 +2,7 @@ import { UsersService } from '@application/users/services';
 import { CreateNewUser } from '@application/users/use-cases/create-new-user.usecase';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserDTO } from '@presentation/users/dtos/user.dto';
+import { UserDTO } from '@presentation/common/users/dtos';
 import * as bcrypt from 'bcryptjs';
 
 import { AuthenticatedUserDTO } from './dtos/authenticated-user.dto';
