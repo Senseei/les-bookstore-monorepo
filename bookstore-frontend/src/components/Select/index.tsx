@@ -18,6 +18,7 @@ export interface SelectProps {
   label?: string
   helperText?: string
   error?: boolean
+  'data-testid'?: string
 }
 
 export const Select = ({
@@ -31,6 +32,7 @@ export const Select = ({
   label,
   helperText,
   error = false,
+  'data-testid': dataTestId,
 }: SelectProps) => {
   const handleChange = (event: { target: { value: string } }) => {
     onChange?.(event.target.value)
@@ -46,6 +48,7 @@ export const Select = ({
           onChange={handleChange}
           disabled={disabled}
           aria-label={label || placeholder}
+          data-testid={dataTestId}
         >
           <option value="" disabled>
             {placeholder}

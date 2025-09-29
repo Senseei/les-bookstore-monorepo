@@ -40,6 +40,7 @@ export const SearchAndFilters = ({
           </S.SearchIcon>
           <S.SearchInputWithIcon>
             <Input
+              data-testid="customer-search-input"
               placeholder="Pesquisar por nome, email, CPF, código do cliente ou telefone..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
@@ -48,6 +49,7 @@ export const SearchAndFilters = ({
           </S.SearchInputWithIcon>
         </S.SearchInputWrapper>
         <Button
+          data-testid="filters-toggle-button"
           variant="outline"
           onClick={onToggleFilters}
           startIcon={<Funnel size={16} />}
@@ -61,6 +63,7 @@ export const SearchAndFilters = ({
           <S.FilterGroup>
             <S.FilterLabel>Status</S.FilterLabel>
             <Select
+              data-testid="status-filter-select"
               value={statusFilter}
               onChange={onStatusChange}
               placeholder="Todos"
@@ -92,7 +95,12 @@ export const SearchAndFilters = ({
 
           <S.FilterGroup>
             <S.ClearFiltersButtonWrapper>
-              <Button variant="outline" onClick={onClearFilters} fullWidth>
+              <Button
+                data-testid="clear-filters-button"
+                variant="outline"
+                onClick={onClearFilters}
+                fullWidth
+              >
                 Limpar Filtros
               </Button>
             </S.ClearFiltersButtonWrapper>
@@ -100,7 +108,7 @@ export const SearchAndFilters = ({
         </S.FiltersGrid>
       </S.FiltersContainer>
 
-      <S.ResultsInfo>
+      <S.ResultsInfo data-testid="results-count">
         Mostrando {resultsCount} de {totalCount} clientes
       </S.ResultsInfo>
     </S.SearchAndFiltersContainer>
