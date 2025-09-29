@@ -11,6 +11,7 @@ export const Button = ({
   disabled = false,
   startIcon,
   endIcon,
+  'data-testid': dataTestId,
   ...props
 }: S.ButtonProps) => {
   return (
@@ -20,6 +21,7 @@ export const Button = ({
       fullWidth={fullWidth}
       loading={loading}
       disabled={disabled || loading}
+      data-testid={dataTestId}
       {...props}
     >
       {startIcon && <span>{startIcon}</span>}

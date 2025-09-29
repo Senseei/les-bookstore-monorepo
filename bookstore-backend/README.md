@@ -2,8 +2,6 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
@@ -28,7 +26,7 @@
 ## Project setup
 
 ```bash
-$ yarn install
+yarn install
 ```
 
 ## Compile and run the project
@@ -53,17 +51,102 @@ $ docker compose up -d --build
 $ yarn run docker:up
 ```
 
-## Run tests
+## Step-by-Step Testing Commands
+
+### 1. Start the Test Database
 
 ```bash
-# unit tests
-$ yarn run test
+cd bookstore-backend
+yarn docker:test-db
+```
 
-# e2e tests
-$ yarn run test:e2e
+_This starts only the PostgreSQL test database container on port 5433_
 
-# test coverage
-$ yarn run test:cov
+### 2. Initialize/Setup the Test Database
+
+```bash
+yarn test:db:setup
+```
+
+_This creates all tables based on your NestJS entities in the test database_
+
+### 3. Start the Backend in Test Mode (Optional)
+
+```bash
+yarn start:test
+```
+
+_This starts your NestJS backend connected to the test database_
+
+### 4. Run Cypress E2E Tests
+
+```bash
+cd ../bookstore-frontend
+yarn test:e2e:open  # Interactive mode with Cypress UI
+# OR
+yarn test:e2e       # Headless mode (runs all tests automatically)
+```
+
+## Alternative: One-Command Setup
+
+If you want to do everything in one go:
+
+```bash
+cd bookstore-backend
+yarn test:e2e:setup  # Starts test DB + initializes tables
+cd ../bookstore-frontend
+yarn test:e2e:open   # Run tests
+```
+
+## Reset Database Between Test Runs
+
+If you need to clean the database:
+
+```bash
+cd bookstore-backend
+yarn test:db:reset
+```
+
+## Quick Test Verification
+
+To verify the test database is working:
+
+1. **Check if test database is running:**
+
+   ```bash
+   docker ps | grep postgres-test
+   ```
+
+2. **Check if tables were created:**
+
+   ```bash
+   yarn test:db:setup
+   ```
+
+   _Look for output showing created tables_
+
+3. **In your Cypress tests, use the reset command:**
+
+   ```typescript
+   beforeEach(() => {
+     cy.resetTestDatabase();
+   });
+   ```
+
+## Full Workflow Example
+
+```bash
+# Terminal 1 - Setup
+cd bookstore-backend
+yarn docker:test-db
+yarn test:db:setup
+
+# Terminal 2 - Backend (if needed)
+yarn start:test
+
+# Terminal 3 - Tests
+cd ../bookstore-frontend
+yarn test:e2e:open
 ```
 
 ## Deployment
@@ -73,8 +156,8 @@ When you're ready to deploy your NestJS application to production, there are som
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+yarn install -g @nestjs/mau
+mau deploy
 ```
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.

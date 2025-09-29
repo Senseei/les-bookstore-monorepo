@@ -25,6 +25,7 @@ export const ToastContainer = ({
             key={toast.id}
             variant={toast.variant}
             onClose={() => onRemoveToast(toast.id)}
+            data-testid={`toast-${toast.variant}`}
           >
             {toast.message}
           </Alert>

@@ -43,6 +43,7 @@ export const SignUp = () => {
                 type="text"
                 label="Nome Completo"
                 placeholder="Seu nome completo"
+                data-testid="name-input"
               />
 
               <FormField
@@ -51,6 +52,7 @@ export const SignUp = () => {
                 type="cpf"
                 label="CPF"
                 placeholder="000.000.000-00"
+                data-testid="cpf-input"
               />
 
               <FormField
@@ -59,6 +61,7 @@ export const SignUp = () => {
                 type="email"
                 label="Email"
                 placeholder="seu@email.com"
+                data-testid="email-input"
               />
 
               <FormField
@@ -67,6 +70,7 @@ export const SignUp = () => {
                 type="phone"
                 label="Telefone"
                 placeholder="(11) 99999-9999"
+                data-testid="phone-input"
               />
 
               <FormField
@@ -76,6 +80,7 @@ export const SignUp = () => {
                 label="Gênero"
                 placeholder="Selecione"
                 options={genderOptions}
+                data-testid="gender-select"
               />
 
               <FormField
@@ -84,6 +89,7 @@ export const SignUp = () => {
                 type="date"
                 label="Data de Nascimento"
                 placeholder="DD/MM/AAAA"
+                data-testid="birth-date-input"
               />
 
               <FormField
@@ -91,6 +97,7 @@ export const SignUp = () => {
                 name="password"
                 type="password"
                 label="Senha"
+                data-testid="password-input"
               />
 
               <FormField
@@ -98,6 +105,7 @@ export const SignUp = () => {
                 name="confirmPassword"
                 type="password"
                 label="Confirmar Senha"
+                data-testid="confirm-password-input"
               />
             </FormSection>
 
@@ -109,6 +117,7 @@ export const SignUp = () => {
                 type="zipCode"
                 label="CEP"
                 placeholder="00000-000"
+                data-testid="zip-code-input"
               />
 
               <FormField
@@ -117,6 +126,7 @@ export const SignUp = () => {
                 type="text"
                 label="Rua"
                 placeholder="Nome da rua"
+                data-testid="street-input"
               />
 
               <FormField
@@ -125,6 +135,7 @@ export const SignUp = () => {
                 type="text"
                 label="Número"
                 placeholder="123"
+                data-testid="number-input"
               />
 
               <FormField
@@ -133,6 +144,7 @@ export const SignUp = () => {
                 type="text"
                 label="Complemento"
                 placeholder="Apartamento, bloco, etc."
+                data-testid="complement-input"
               />
 
               <FormField
@@ -141,6 +153,7 @@ export const SignUp = () => {
                 type="text"
                 label="Bairro"
                 placeholder="Nome do bairro"
+                data-testid="neighborhood-input"
               />
 
               <FormField
@@ -149,6 +162,7 @@ export const SignUp = () => {
                 type="text"
                 label="Cidade"
                 placeholder="São Paulo"
+                data-testid="city-input"
               />
 
               <FormField
@@ -158,6 +172,7 @@ export const SignUp = () => {
                 label="Estado"
                 placeholder="Selecione o estado"
                 options={stateOptions}
+                data-testid="state-select"
               />
 
               <FormField
@@ -167,6 +182,7 @@ export const SignUp = () => {
                 label="Tipo de Residência"
                 placeholder="Selecione"
                 options={residenceTypeOptions}
+                data-testid="residence-type-select"
               />
 
               <FormField
@@ -175,6 +191,7 @@ export const SignUp = () => {
                 type="text"
                 label="Identificador do Endereço"
                 placeholder="Casa, Trabalho, etc."
+                data-testid="address-identifier-input"
               />
             </FormSection>
 
@@ -185,6 +202,7 @@ export const SignUp = () => {
               fullWidth
               loading={isLoading}
               disabled={isLoading}
+              data-testid="submit-button"
             >
               {isLoading ? 'Criando conta...' : 'Criar Conta'}
             </Button>

@@ -12,6 +12,7 @@ export interface ButtonProps {
   endIcon?: React.ReactNode
   onClick?: () => void
   type?: 'button' | 'submit' | 'reset'
+  'data-testid'?: string
 }
 
 // Button size variants

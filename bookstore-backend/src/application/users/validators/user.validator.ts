@@ -4,6 +4,8 @@ import { UpdateUserDTO } from '@presentation/site/users/dtos';
 
 import { UserValidationStrategy } from './strategies/user.strategy';
 
+import { UserValidationStrategy } from './strategies/user.strategy';
+
 export class UserValidator {
   constructor(
     @Inject('UserValidationStrategies')
