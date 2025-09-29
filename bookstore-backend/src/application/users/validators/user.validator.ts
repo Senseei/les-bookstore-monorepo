@@ -1,6 +1,8 @@
 import { Inject } from '@nestjs/common';
 import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
-import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
+import { UpdateUserDTO } from '@presentation/site/users/dtos';
+
+import { UserValidationStrategy } from './strategies/user.strategy';
 
 import { UserValidationStrategy } from './strategies/user.strategy';
 

@@ -1,4 +1,13 @@
-import { Alert, Button, Card, Form, FormField, FormSection } from '@/components'
+import {
+  Alert,
+  Button,
+  Card,
+  Form,
+  FormField,
+  FormSection,
+  NavigationLink,
+} from '@/components'
+import { ROUTES } from '@/routes/constants'
 import {
   genderOptions,
   residenceTypeOptions,
@@ -202,8 +211,10 @@ export const SignUp = () => {
 
         <S.LoginLink>
           <S.LoginText>
-            Já tem uma conta? {/* TODO <Link to="/login">Fazer login</Link> */}
-            <S.LoginAnchor href="/login">Fazer login</S.LoginAnchor>
+            Já tem uma conta?{' '}
+            <NavigationLink to={ROUTES.SIGNIN} variant="primary">
+              Fazer login
+            </NavigationLink>
           </S.LoginText>
         </S.LoginLink>
       </S.ContentWrapper>

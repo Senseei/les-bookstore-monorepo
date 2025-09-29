@@ -79,6 +79,14 @@ export class UserService {
   }
 
   /**
+   * Get current authenticated user
+   */
+  static async getCurrentUser(): Promise<UserDTO> {
+    const response = await AxiosApp.get<UserDTO>('/me')
+    return response.data
+  }
+
+  /**
    * Update user data
    */
   static async updateUser(

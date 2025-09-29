@@ -7,8 +7,17 @@ export const Container = styled.div`
 `
 
 export const Header = styled.header`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 32px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
 `
 
 export const Title = styled.h1`

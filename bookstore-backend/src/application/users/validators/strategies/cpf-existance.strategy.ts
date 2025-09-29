@@ -2,7 +2,7 @@ import { InvalidBodyException } from '@application/exceptions/invalid-body.excep
 import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
 import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
-import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
+import { UpdateUserDTO } from '@presentation/site/users/dtos';
 
 import { UserValidationStrategy } from './user.strategy';
 
