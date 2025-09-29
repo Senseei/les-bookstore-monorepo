@@ -19,6 +19,9 @@ export abstract class DomainEntity {
   updatedAt: Date;
 
   public inactivate(): void {
+    if (!this.active) {
+      throw new Error('Entity is already inactive');
+    }
     this.active = false;
   }
 

@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany } from 'typeorm';
-import { DomainEntity } from './domain.entity';
-import { Address } from './address.entity';
-import { Gender } from '@domain/enums/gender.enum';
+import { Gender } from '@domain/user/enums/gender.enum';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+
+import { DomainEntity } from '../domain.entity';
+import { CustomerDetails } from './customer-details.entity';
 
 @Entity('tb_users')
 export class User extends DomainEntity {
@@ -23,14 +24,12 @@ export class User extends DomainEntity {
   @Column()
   birthDate: Date;
 
-  @OneToMany(() => Address, (address) => address.user, {
-    cascade: true,
-    eager: true,
-  })
-  addresses: Address[];
-
   @Column()
   password: string;
+
+  @OneToOne(() => CustomerDetails, { cascade: true, eager: true })
+  @JoinColumn()
+  customerDetails: CustomerDetails;
 
   constructor(props: {
     name: string;
@@ -50,12 +49,8 @@ export class User extends DomainEntity {
       this.password = props.password;
       this.gender = props.gender;
       this.birthDate = props.birthDate;
-      this.addresses = [];
+      this.customerDetails = new CustomerDetails({});
     }
-  }
-
-  public hasAddress(address: Address): boolean {
-    return this.addresses.some((a) => a.equals(address));
   }
 
   public override update(props: {

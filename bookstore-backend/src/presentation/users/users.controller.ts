@@ -9,17 +9,18 @@ import {
   Query,
   // UseGuards, // TODO: Descomentar quando reativar JWT
 } from '@nestjs/common';
-import { UsersWebService } from './users.webservice';
-import { ChangePasswordDTO } from './dtos/change-password.dto';
-import { PaginationParamsDTO } from '@presentation/dtos/pagination-params.dto';
 import { PaginatedResultDTO } from '@presentation/dtos/paginated-result.dto';
-import { UserDTO } from './dtos/user.dto';
-import { UpdateUserDTO } from './dtos/update-user.dto';
+import { PaginationParamsDTO } from '@presentation/dtos/pagination-params.dto';
+
+import { AddressDTO } from './dtos/address.dto';
+import { ChangePasswordDTO } from './dtos/change-password.dto';
 // import { JwtAuthGuard } from '@infrastructure/jwt/jwt-auth.guard'; // TODO: Descomentar quando reativar JWT
 import { CreateAddressDTO } from './dtos/create-address.dto';
-import { UpdateAddressDTO } from './dtos/update-address.dto';
-import { AddressDTO } from './dtos/address.dto';
 import { MinUserDTO } from './dtos/min-user.dto';
+import { UpdateAddressDTO } from './dtos/update-address.dto';
+import { UpdateUserDTO } from './dtos/update-user.dto';
+import { UserDTO } from './dtos/user.dto';
+import { UsersWebService } from './users.webservice';
 
 // TODO: Reativar JWT Auth quando implementar o login
 // @UseGuards(JwtAuthGuard)

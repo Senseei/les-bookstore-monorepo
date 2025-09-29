@@ -1,5 +1,5 @@
+import { ORMS } from '@infrastructure/nestjs/modules/orms';
 import { Module } from '@nestjs/common';
-import { ORMS } from './orms';
 
 @Module({
   providers: [],

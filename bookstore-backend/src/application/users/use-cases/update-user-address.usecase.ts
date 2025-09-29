@@ -1,46 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { Address } from '@domain/address.entity';
 import { EntityNotFoundException } from '@application/exceptions/entity-not-found.exception';
+import { Address } from '@domain/user/address.entity';
+import { Injectable } from '@nestjs/common';
 import { UpdateAddressDTO } from '@presentation/users/dtos/update-address.dto';
-import { AddressService } from './address.service';
+
+import { UsersService } from '../services';
 
 @Injectable()
 export class UpdateUserAddress {
-  constructor(private readonly addressService: AddressService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   async execute(
     userId: string,
     addressId: string,
     dto: UpdateAddressDTO,
   ): Promise<Address> {
-    // Buscar o endereço do usuário
-    const address = await this.addressService.findByUserIdAndAddressId(
-      userId,
-      addressId,
-    );
+    const user = await this.usersService.findActiveByIdOrThrow(userId);
+
+    const address = user.customerDetails.getAddress(addressId);
 
     if (!address) {
       throw new EntityNotFoundException('Address', addressId);
     }
 
-    // Atualizar apenas os campos fornecidos
-    const updateData = {
-      type: dto.type ?? address.type,
-      purpose: dto.purpose ?? address.purpose,
-      addressName: dto.addressName ?? address.addressName,
-      postalCode: dto.postalCode ?? address.postalCode,
-      street: dto.street ?? address.street,
-      number: dto.number ?? address.number,
-      complement: dto.complement ?? address.complement,
-      district: dto.district ?? address.district,
-      city: dto.city ?? address.city,
-      state: dto.state ?? address.state,
-    };
+    address.update(dto);
 
-    // Aplicar as atualizações
-    address.update(updateData);
-
-    // Salvar as mudanças
-    return await this.addressService.save(address);
+    await this.usersService.save(user);
+    return address;
   }
 }

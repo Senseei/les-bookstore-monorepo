@@ -1,7 +1,8 @@
-import { UserValidationStrategy } from './strategies/user.strategy';
 import { Inject } from '@nestjs/common';
 import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
 import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
+
+import { UserValidationStrategy } from './strategies/user.strategy';
 
 export class UserValidator {
   constructor(
