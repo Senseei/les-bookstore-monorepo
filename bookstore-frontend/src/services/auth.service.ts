@@ -29,14 +29,6 @@ export class AuthService {
   }
 
   /**
-   * Sign out current user
-   */
-  static async signOut() {
-    const response = await AxiosApp.post('/auth/signout')
-    return response.data
-  }
-
-  /**
    * Refresh authentication token
    */
   static async refreshToken() {

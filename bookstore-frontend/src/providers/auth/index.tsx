@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { NewUserDTO } from '@/dtos/user'
 import { AuthService } from '@/services/auth.service'
@@ -6,12 +6,57 @@ import { AuthService } from '@/services/auth.service'
 import { AuthContext } from './auth-context'
 import type { AuthProviderProps, AuthState } from './types'
 
+const TOKEN_STORAGE_KEY = 'auth-token'
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<AuthState>({
     token: null,
-    isLoading: false,
+    isLoading: true, // Start with loading true to check for existing token
     error: null,
   })
+
+  /**
+   * Load token from storage on app initialization
+   */
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        // Check for stored token
+        const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY)
+
+        if (storedToken) {
+          const token = JSON.parse(storedToken)
+
+          // Set token in axios headers
+          await AuthService.setToken(token.accessToken)
+
+          // Update auth state
+          setAuthState({
+            token,
+            isLoading: false,
+            error: null,
+          })
+        } else {
+          // No token found
+          setAuthState((prev) => ({
+            ...prev,
+            isLoading: false,
+          }))
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error)
+        // Clear invalid token
+        localStorage.removeItem(TOKEN_STORAGE_KEY)
+        setAuthState({
+          token: null,
+          isLoading: false,
+          error: 'Erro ao restaurar sessão',
+        })
+      }
+    }
+
+    initializeAuth()
+  }, [])
 
   /**
    * Sign up a new user
@@ -59,6 +104,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Set token in axios headers
       await AuthService.setToken(token.accessToken)
 
+      // Store token in localStorage
+      localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token))
+
       setAuthState((prev) => ({
         ...prev,
         token,
@@ -88,22 +136,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Sign out user
    */
   const signOut = async () => {
-    try {
-      // Call backend signout endpoint
-      await AuthService.signOut()
-    } catch {
-      // Continue with local signout even if backend call fails
-    } finally {
-      // Clear token from axios headers
-      await AuthService.removeToken()
+    // Clear token from storage
+    localStorage.removeItem(TOKEN_STORAGE_KEY)
 
-      // Clear local auth state
-      setAuthState((prev) => ({
-        ...prev,
-        token: null,
-        error: null,
-      }))
-    }
+    // Clear token from axios headers
+    await AuthService.removeToken()
+
+    // Clear local auth state
+    setAuthState((prev) => ({
+      ...prev,
+      token: null,
+      error: null,
+    }))
   }
 
   /**
