@@ -4,7 +4,7 @@ import { UserDTO } from '@presentation/common/users/dtos';
 import { AuthWebService } from './auth.webservice';
 import { LoginCredentialsDTO } from './dtos/login-credentials.dto';
 import { NewUserDTO } from './dtos/new-user.dto';
-import { JwtToken } from './interfaces/jwt-token.interface';
+import { JwtToken } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
