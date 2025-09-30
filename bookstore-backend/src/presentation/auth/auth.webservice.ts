@@ -1,21 +1,19 @@
-import { UsersService } from '@application/users/services';
 import { CreateNewUser } from '@application/users/use-cases/create-new-user.usecase';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserDTO } from '@presentation/common/users/dtos';
-import * as bcrypt from 'bcryptjs';
+
+import { AuthService } from '@/application/auth/auth.service';
 
 import { AuthenticatedUserDTO } from './dtos/authenticated-user.dto';
 import { NewUserDTO } from './dtos/new-user.dto';
-import { InactiveUserException } from './exceptions/inactive-user.exception';
-import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
-import { JwtToken } from './interfaces/jwt-token.interface';
+import { JwtPayload, JwtToken } from './interfaces';
 
 @Injectable()
 export class AuthWebService {
   constructor(
-    private usersService: UsersService,
     private createNewUser: CreateNewUser,
+    private authService: AuthService,
     private jwtService: JwtService,
   ) {}
 
@@ -23,21 +21,22 @@ export class AuthWebService {
     email: string,
     userPassword: string,
   ): Promise<AuthenticatedUserDTO> {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.authService.validateUser(email, userPassword);
 
-    if (!user || !(await bcrypt.compare(userPassword, user.password))) {
-      throw new InvalidCredentialsException('Invalid email or password');
-    }
-
-    if (!user.active) {
-      throw new InactiveUserException('User is inactive');
-    }
-
-    return new AuthenticatedUserDTO(user.id, user.name, user.email);
+    return new AuthenticatedUserDTO(
+      user.getId(),
+      user.getName(),
+      user.getEmail(),
+      user.getRole(),
+    );
   }
 
   public signIn(user: AuthenticatedUserDTO): JwtToken {
-    const payload = { email: user.email, sub: user.id };
+    const payload: JwtPayload = {
+      email: user.email,
+      sub: user.id,
+      role: user.role,
+    };
     return {
       accessToken: this.jwtService.sign(payload),
     };

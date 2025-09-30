@@ -1,4 +1,3 @@
-import { JwtAuthGuard } from '@infrastructure/jwt/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -13,13 +12,18 @@ import {
 import { AuthenticatedRequest } from '@presentation/auth/interfaces/authenticated-request.interface';
 import { AddressDTO, UserDTO } from '@presentation/common/users/dtos';
 
+import { UserRole } from '@/domain/user/enums/role.enum';
+import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
+import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
+
 import { ChangePasswordDTO } from './dtos/change-password.dto';
 import { CreateAddressDTO } from './dtos/create-address.dto';
 import { UpdateAddressDTO } from './dtos/update-address.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { UsersSiteWebService } from './users-site.webservice';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.USER)
 @Controller('me')
 export class UsersSiteController {
   constructor(private readonly usersWebService: UsersSiteWebService) {}
