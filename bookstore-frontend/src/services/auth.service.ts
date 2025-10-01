@@ -35,12 +35,4 @@ export class AuthService {
     const response = await AxiosApp.post('/auth/refresh')
     return response.data
   }
-
-  static async setToken(token: string) {
-    AxiosApp.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  }
-
-  static async removeToken() {
-    delete AxiosApp.defaults.headers.common['Authorization']
-  }
 }

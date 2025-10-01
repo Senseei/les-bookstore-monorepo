@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 
 import type { NewUserDTO } from '@/dtos/user'
 import { AuthService } from '@/services/auth.service'
+import { AuthStorage } from '@/storage'
 
 import { AuthContext } from './auth-context'
 import type { AuthProviderProps, AuthState } from './types'
-
-const TOKEN_STORAGE_KEY = 'auth-token'
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<AuthState>({
@@ -21,12 +20,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        // Check for stored token
-        const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY)
+        // Check for stored token using AuthStorage
+        const token = AuthStorage.getAuthToken()
 
-        if (storedToken) {
-          const token = JSON.parse(storedToken)
-
+        if (token) {
           // Set token in axios headers
           await AuthService.setToken(token.accessToken)
 
@@ -43,10 +40,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             isLoading: false,
           }))
         }
-      } catch (error) {
-        console.error('Error initializing auth:', error)
-        // Clear invalid token
-        localStorage.removeItem(TOKEN_STORAGE_KEY)
+      } catch {
+        // Clear invalid token and reset state
+        AuthStorage.clearAuthData()
         setAuthState({
           token: null,
           isLoading: false,
@@ -104,8 +100,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Set token in axios headers
       await AuthService.setToken(token.accessToken)
 
-      // Store token in localStorage
-      localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token))
+      // Store token using AuthStorage
+      AuthStorage.setAuthToken(token)
 
       setAuthState((prev) => ({
         ...prev,
@@ -136,18 +132,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Sign out user
    */
   const signOut = async () => {
-    // Clear token from storage
-    localStorage.removeItem(TOKEN_STORAGE_KEY)
+    try {
+      // Call backend signout endpoint
+      await AuthService.signOut()
+    } catch {
+      // Continue with local signout even if backend call fails
+    } finally {
+      // Clear token from storage
+      AuthStorage.removeAuthToken()
 
-    // Clear token from axios headers
-    await AuthService.removeToken()
+      // Clear token from axios headers
+      await AuthService.removeToken()
 
-    // Clear local auth state
-    setAuthState((prev) => ({
-      ...prev,
-      token: null,
-      error: null,
-    }))
+      // Clear local auth state
+      setAuthState((prev) => ({
+        ...prev,
+        token: null,
+        error: null,
+      }))
+    }
   }
 
   /**
