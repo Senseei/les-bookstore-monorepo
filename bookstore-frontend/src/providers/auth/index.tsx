@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import type { NewUserDTO } from '@/dtos/user'
 import { AuthService } from '@/services/auth.service'
+import { AxiosApp } from '@/services/axios-app'
 import { AuthStorage } from '@/storage'
 
 import { AuthContext } from './auth-context'
@@ -15,6 +16,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   })
 
   /**
+   * Refresh token function for axios interceptor
+   */
+  const refreshToken = useCallback(async (refreshTokenValue: string) => {
+    return await AuthService.refreshToken(refreshTokenValue)
+  }, [])
+
+  /**
+   * Sign out user
+   */
+  const signOut = useCallback(async () => {
+    // Clear token from storage
+    AuthStorage.removeAuthToken()
+
+    // Clear token from AxiosApp default headers
+    delete AxiosApp.defaults.headers.common.Authorization
+
+    // Clear local auth state
+    setAuthState((prev) => ({
+      ...prev,
+      token: null,
+      error: null,
+    }))
+  }, [])
+
+  /**
    * Load token from storage on app initialization
    */
   useEffect(() => {
@@ -24,8 +50,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const token = AuthStorage.getAuthToken()
 
         if (token) {
-          // Set token in axios headers
-          await AuthService.setToken(token.accessToken)
+          // Set token in AxiosApp default headers for interceptor
+          AxiosApp.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`
 
           // Update auth state
           setAuthState({
@@ -53,6 +79,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     initializeAuth()
   }, [])
+
+  /**
+   * Register axios interceptor for token management
+   */
+  useEffect(() => {
+    const interceptorCleanup = AxiosApp.registerInterceptTokenManager(
+      signOut,
+      refreshToken,
+    )
+
+    // Cleanup interceptor on unmount
+    return interceptorCleanup
+  }, [signOut, refreshToken])
 
   /**
    * Sign up a new user
@@ -97,8 +136,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const token = await AuthService.signIn(credentials)
 
-      // Set token in axios headers
-      await AuthService.setToken(token.accessToken)
+      // Set token in AxiosApp default headers for interceptor
+      AxiosApp.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`
 
       // Store token using AuthStorage
       AuthStorage.setAuthToken(token)
@@ -125,31 +164,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }))
 
       return { success: false, error: errorMessage }
-    }
-  }
-
-  /**
-   * Sign out user
-   */
-  const signOut = async () => {
-    try {
-      // Call backend signout endpoint
-      await AuthService.signOut()
-    } catch {
-      // Continue with local signout even if backend call fails
-    } finally {
-      // Clear token from storage
-      AuthStorage.removeAuthToken()
-
-      // Clear token from axios headers
-      await AuthService.removeToken()
-
-      // Clear local auth state
-      setAuthState((prev) => ({
-        ...prev,
-        token: null,
-        error: null,
-      }))
     }
   }
 

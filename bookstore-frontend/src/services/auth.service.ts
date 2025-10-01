@@ -31,8 +31,10 @@ export class AuthService {
   /**
    * Refresh authentication token
    */
-  static async refreshToken() {
-    const response = await AxiosApp.post('/auth/refresh')
+  static async refreshToken(refreshToken: string): Promise<JwtToken> {
+    const response = await AxiosApp.post('/auth/refresh-token', {
+      refreshToken,
+    })
     return response.data
   }
 }
