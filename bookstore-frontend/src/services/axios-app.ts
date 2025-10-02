@@ -84,13 +84,18 @@ const queueFailedRequest = (
   reject: (reason?: unknown) => void,
 ): void => {
   failedRequestsQueue.push({
-    onSuccess: (token) => {
+    onSuccess: async (token) => {
       if (!originalConfig) return
       originalConfig.headers = {
         ...originalConfig.headers,
         Authorization: `Bearer ${token}`,
       }
-      resolve(AxiosApp(originalConfig))
+      try {
+        const response = await AxiosApp(originalConfig)
+        resolve(response)
+      } catch (error) {
+        reject(error)
+      }
     },
     onFailure: (error) => reject(error),
   })
@@ -127,7 +132,7 @@ const handleTokenRefresh = async (
   refreshToken: string,
   originalConfig: AxiosRequestConfig | undefined,
   signOut: SignOut,
-): Promise<AxiosResponse | undefined> => {
+): Promise<AxiosResponse> => {
   try {
     const newTokenData = await refreshTokenFunction!(refreshToken)
 
@@ -142,6 +147,9 @@ const handleTokenRefresh = async (
       }
       return AxiosApp(originalConfig)
     }
+
+    // This shouldn't happen, but provide a fallback
+    throw new Error('No original config to retry')
   } catch (refreshError) {
     clearQueueWithError(refreshError as AxiosError)
     signOut()
