@@ -93,6 +93,11 @@ export class UsersSiteWebService {
     await this.removeUserAddress.execute(userId, addressId);
   }
 
+  public async getCards(userId: string): Promise<CardDTO[]> {
+    const user = await this.usersService.findActiveByIdOrThrow(userId);
+    return user.customerDetails.cards.map((card) => new CardDTO(card));
+  }
+
   public async addCard(userId: string, dto: CreateCardDTO): Promise<CardDTO> {
     return new CardDTO(await this.addUserCard.execute(userId, dto));
   }

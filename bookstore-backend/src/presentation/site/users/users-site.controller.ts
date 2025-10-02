@@ -97,6 +97,13 @@ export class UsersSiteController {
     await this.usersWebService.deleteAddress(req.user.userId, addressId);
   }
 
+  @Get('cards')
+  public async getCards(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<CardDTO[]> {
+    return await this.usersWebService.getCards(req.user.userId);
+  }
+
   @Post('cards')
   public async addCard(
     @Request() req: AuthenticatedRequest,
