@@ -4,13 +4,17 @@ import type { NewUserDTO } from '@/dtos/user'
 import { AuthService } from '@/services/auth.service'
 import { AxiosApp } from '@/services/axios-app'
 import { AuthStorage } from '@/storage'
+import { getUserFromToken } from '@/utils'
 
 import { AuthContext } from './auth-context'
 import type { AuthProviderProps, AuthState } from './types'
 
+export * from './types' // Export types for external use
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<AuthState>({
     token: null,
+    user: null,
     isLoading: true, // Start with loading true to check for existing token
     error: null,
   })
@@ -36,6 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAuthState((prev) => ({
       ...prev,
       token: null,
+      user: null,
       error: null,
     }))
   }, [])
@@ -53,9 +58,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           // Set token in AxiosApp default headers for interceptor
           AxiosApp.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`
 
+          // Decode user information from token
+          const user = getUserFromToken(token.accessToken)
+
           // Update auth state
           setAuthState({
             token,
+            user,
             isLoading: false,
             error: null,
           })
@@ -71,6 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         AuthStorage.clearAuthData()
         setAuthState({
           token: null,
+          user: null,
           isLoading: false,
           error: 'Erro ao restaurar sessão',
         })
@@ -142,9 +152,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Store token using AuthStorage
       AuthStorage.setAuthToken(token)
 
+      // Decode user information from token
+      const user = getUserFromToken(token.accessToken)
+
       setAuthState((prev) => ({
         ...prev,
         token,
+        user,
         isLoading: false,
         error: null,
       }))
@@ -177,6 +191,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const contextValue = {
     // State
     token: authState.token,
+    user: authState.user,
     isLoading: authState.isLoading,
     error: authState.error,
     isAuthenticated: !!authState.token,
