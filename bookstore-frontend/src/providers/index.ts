@@ -3,6 +3,7 @@ export type {
   AuthContextValue,
   AuthProviderProps,
   AuthState,
+  User,
 } from './auth/types'
 export { useAuth } from './auth/use-auth'
 export { ToastProvider } from './toast/index.tsx'
