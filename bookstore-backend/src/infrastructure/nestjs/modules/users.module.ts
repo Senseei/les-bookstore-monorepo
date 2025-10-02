@@ -1,6 +1,7 @@
 import { UsersService } from '@application/users/services';
 import {
   AddUserAddress,
+  AddUserCard,
   ChangeUserPassword,
   CreateNewUser,
   RemoveUserAddress,
@@ -25,6 +26,9 @@ import { UsersWebService } from '@presentation/admin/users/users.webservice';
 import { UsersSiteController } from '@presentation/site/users/users-site.controller';
 import { UsersSiteWebService } from '@presentation/site/users/users-site.webservice';
 
+import { RemoveUserCard } from '@/application/users/use-cases/cards/remove-user-card.usecase';
+import { Card } from '@/domain/user/card.entity';
+
 const USE_CASES = [
   CreateNewUser,
   ChangeUserPassword,
@@ -32,11 +36,13 @@ const USE_CASES = [
   AddUserAddress,
   UpdateUserAddress,
   RemoveUserAddress,
+  AddUserCard,
+  RemoveUserCard,
 ];
 const VALIDATION_STRATEGIES = [EmailExistenceStrategy, CpfExistenceStrategy];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, CustomerDetails, Address])],
+  imports: [TypeOrmModule.forFeature([User, CustomerDetails, Address, Card])],
   controllers: [UsersController, UsersSiteController],
   providers: [
     ...VALIDATION_STRATEGIES,
