@@ -1,7 +1,8 @@
-import { BaseRepository } from '@application/base.repository';
 import { PaginatedResult } from '@application/paginated-result';
 import { DomainEntity } from '@domain/domain.entity';
 import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
+
+import { BaseRepository } from '@/application/base.repository';
 
 export abstract class CRUDRepository<E extends DomainEntity>
   implements BaseRepository<E>

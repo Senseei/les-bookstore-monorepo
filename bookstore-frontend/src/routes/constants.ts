@@ -28,6 +28,7 @@ export const ROUTES = {
   SIGNUP: '/sign-up',
   MY_PROFILE: '/my-profile',
   CATALOG: '/catalog',
+  ERROR: '/error',
   CART: '/cart',
   ORDERS: '/orders',
   ADDRESSES: '/addresses',

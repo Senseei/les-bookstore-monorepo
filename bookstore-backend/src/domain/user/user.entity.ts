@@ -3,9 +3,11 @@ import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { DomainEntity } from '../domain.entity';
 import { CustomerDetails } from './customer-details.entity';
+import { UserRole } from './enums/role.enum';
+import { UserAuthDetails } from './interfaces/user-auth-details.interface';
 
 @Entity('tb_users')
-export class User extends DomainEntity {
+export class User extends DomainEntity implements UserAuthDetails {
   @Column()
   name: string;
 
@@ -30,6 +32,9 @@ export class User extends DomainEntity {
   @OneToOne(() => CustomerDetails, { cascade: true, eager: true })
   @JoinColumn()
   customerDetails: CustomerDetails;
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: UserRole;
 
   constructor(props: {
     name: string;
@@ -67,5 +72,21 @@ export class User extends DomainEntity {
     this.phone = props.phone;
     this.gender = props.gender;
     this.birthDate = props.birthDate;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getEmail(): string {
+    return this.email;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getRole(): UserRole {
+    return this.role;
   }
 }

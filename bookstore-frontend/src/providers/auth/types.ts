@@ -3,8 +3,15 @@ import type { ReactNode } from 'react'
 import type { NewUserDTO } from '@/dtos/user'
 import type { JwtToken } from '@/utils'
 
+export interface User {
+  id: string
+  email: string
+  role: string
+}
+
 export interface AuthState {
   token: JwtToken | null
+  user: User | null
   isLoading: boolean
   error: string | null
 }
@@ -12,6 +19,7 @@ export interface AuthState {
 export interface AuthContextValue {
   // State
   token: JwtToken | null
+  user: User | null
   isLoading: boolean
   error: string | null
   isAuthenticated: boolean

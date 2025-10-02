@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InvalidCredentialsException } from '@presentation/auth/exceptions/invalid-credentials.exception';
 import * as bcrypt from 'bcryptjs';
+
+import { InvalidCredentialsException } from '@/application/auth/exceptions/invalid-credentials.exception';
 
 import { UsersService } from '../services';
 

@@ -29,26 +29,12 @@ export class AuthService {
   }
 
   /**
-   * Sign out current user
-   */
-  static async signOut() {
-    const response = await AxiosApp.post('/auth/signout')
-    return response.data
-  }
-
-  /**
    * Refresh authentication token
    */
-  static async refreshToken() {
-    const response = await AxiosApp.post('/auth/refresh')
+  static async refreshToken(refreshToken: string): Promise<JwtToken> {
+    const response = await AxiosApp.post('/auth/refresh-token', {
+      refreshToken,
+    })
     return response.data
-  }
-
-  static async setToken(token: string) {
-    AxiosApp.defaults.headers.common['Authorization'] = `Bearer ${token}`
-  }
-
-  static async removeToken() {
-    delete AxiosApp.defaults.headers.common['Authorization']
   }
 }

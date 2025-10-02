@@ -1,8 +1,9 @@
-import { InvalidBodyException } from '@application/exceptions/invalid-body.exception';
 import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
 import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
 import { UpdateUserDTO } from '@presentation/site/users/dtos';
+
+import { DuplicatedEntityException } from '@/application/exceptions';
 
 import { UserValidationStrategy } from './user.strategy';
 
@@ -16,7 +17,7 @@ export class CpfExistenceStrategy implements UserValidationStrategy {
   ): Promise<void> {
     const existingUser = await this.usersService.findByCpf(dto.cpf);
     if (existingUser && existingUser.id !== userId) {
-      throw new InvalidBodyException('CPF already in use');
+      throw new DuplicatedEntityException('CPF already in use');
     }
   }
 }

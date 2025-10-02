@@ -71,4 +71,5 @@ export interface StateOption {
 
 export interface JwtToken {
   accessToken: string
+  refreshToken: string
 }
