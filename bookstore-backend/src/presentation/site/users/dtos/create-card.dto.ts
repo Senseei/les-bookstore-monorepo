@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
@@ -18,7 +19,7 @@ export class CreateCardDTO {
   holderName: string;
 
   @IsDate()
-  @IsNotEmpty()
+  @Type(() => Date)
   expirationDate: Date;
 
   @IsEnum(CardType)
