@@ -21,7 +21,17 @@ interface BaseFormFieldProps<T extends FieldValues> {
 
 interface InputFormFieldProps<T extends FieldValues>
   extends BaseFormFieldProps<T> {
-  type?: 'text' | 'email' | 'password' | 'cpf' | 'phone' | 'date' | 'zipCode'
+  type?:
+    | 'text'
+    | 'email'
+    | 'password'
+    | 'cpf'
+    | 'phone'
+    | 'date'
+    | 'zipCode'
+    | 'creditCard'
+    | 'cardExpiry'
+    | 'cardCVV'
   options?: never
 }
 

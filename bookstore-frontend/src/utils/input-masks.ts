@@ -67,6 +67,37 @@ export const formatDate = (value: string): string => {
 }
 
 // Remove mask to get clean value for validation/submission
+export const formatCreditCard = (value: string): string => {
+  // Remove all non-digits
+  const digits = value.replace(/\D/g, '')
+
+  // Apply credit card mask: 0000 0000 0000 0000
+  if (digits.length <= 16) {
+    return digits.replace(/(\d{4})(?=\d)/g, '$1 ')
+  }
+
+  // If more than 16 digits, truncate and format
+  return digits.slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 ')
+}
+
+export const formatCardExpiry = (value: string): string => {
+  // Remove all non-digits
+  const digits = value.replace(/\D/g, '')
+
+  // Apply expiry mask: MM/YY
+  if (digits.length <= 4) {
+    return digits.replace(/(\d{2})(\d)/, '$1/$2')
+  }
+
+  // If more than 4 digits, truncate and format
+  return digits.slice(0, 4).replace(/(\d{2})(\d{2})/, '$1/$2')
+}
+
+export const formatCardCVV = (value: string): string => {
+  // Remove all non-digits and limit to 4 characters (for American Express)
+  return value.replace(/\D/g, '').slice(0, 4)
+}
+
 export const removeMask = (value: string): string => {
   return value.replace(/\D/g, '')
 }
