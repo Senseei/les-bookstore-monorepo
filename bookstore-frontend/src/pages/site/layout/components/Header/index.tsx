@@ -10,7 +10,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 
 import { Button } from '@/components'
-import { useAuth, useToast } from '@/providers'
+import { useAuth, useCart, useToast } from '@/providers'
 import { ROUTES } from '@/routes/constants'
 
 import * as S from './styles'
@@ -18,8 +18,8 @@ import * as S from './styles'
 export const Header = () => {
   // Auth state from provider
   const { isAuthenticated, signOut } = useAuth()
+  const { totalItems: cartItemsCount } = useCart()
   const toast = useToast()
-  const cartItemsCount = 0 // Mock cart count
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
