@@ -1,4 +1,5 @@
 export * from './auth.service'
 export * from './axios-app'
+export * from './book.service'
 export * from './card.service'
 export * from './user.service'
