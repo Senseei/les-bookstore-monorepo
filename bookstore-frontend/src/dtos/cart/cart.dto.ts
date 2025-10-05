@@ -1,4 +1,4 @@
-import type { BookDTO } from './book.dto'
+import type { BookDTO } from '../book/book.dto'
 
 export interface CartItemDTO {
   bookId: string

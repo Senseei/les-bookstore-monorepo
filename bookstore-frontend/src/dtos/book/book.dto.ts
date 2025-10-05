@@ -8,6 +8,7 @@ export interface BookDTO {
   stock: number
   publisher?: string
   publishedDate?: Date
+  imageUrl?: string
   createdAt: Date
   updatedAt: Date
 }
