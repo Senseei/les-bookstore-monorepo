@@ -11,6 +11,7 @@ import {
 import { UserRole } from '@/domain/user/enums/role.enum';
 import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
 import { RolesGuard } from '@/infrastructure/auth/guards';
+import { JwtAuthGuard } from '@/infrastructure/auth/guards/jwt-auth.guard';
 import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
 import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
 
@@ -22,7 +23,7 @@ import { CreateBookDTO } from './dtos/create-book.dto';
 export class BooksController {
   constructor(private readonly webService: BooksWebService) {}
 
-  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post()
   public async create(@Body() body: CreateBookDTO): Promise<BookDTO> {
