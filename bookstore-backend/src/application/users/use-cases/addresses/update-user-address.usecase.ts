@@ -1,9 +1,8 @@
 import { EntityNotFoundException } from '@application/exceptions/entity-not-found.exception';
+import { UsersService } from '@application/users/services';
 import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { UpdateAddressDTO } from '@presentation/site/users/dtos';
-
-import { UsersService } from '../services';
 
 @Injectable()
 export class UpdateUserAddress {

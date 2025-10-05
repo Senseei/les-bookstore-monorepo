@@ -1,10 +1,9 @@
 import { EntityNotFoundException } from '@application/exceptions/entity-not-found.exception';
+import { CannotRemoveAddressException } from '@application/users/exceptions/cannot-remove-address.exception';
+import { UsersService } from '@application/users/services';
 import { Address } from '@domain/user/address.entity';
 import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
 import { Injectable } from '@nestjs/common';
-
-import { CannotRemoveAddressException } from '../exceptions/cannot-remove-address.exception';
-import { UsersService } from '../services';
 
 @Injectable()
 export class RemoveUserAddress {

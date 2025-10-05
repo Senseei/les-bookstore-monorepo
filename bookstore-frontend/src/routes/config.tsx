@@ -9,6 +9,7 @@ import {
   SignUp,
   SiteLayout,
 } from '@/pages'
+import { PaymentMethods } from '@/pages/site/profile/pages/payment-methods'
 
 import { PATHS, ROUTES } from './constants'
 
@@ -68,6 +69,14 @@ export const routeConfig = [
         element: (
           <ProtectedRoute>
             <ProfileEdit />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: ROUTES.PAYMENT_METHODS.slice(1), // Remove leading slash for child route
+        element: (
+          <ProtectedRoute>
+            <PaymentMethods />
           </ProtectedRoute>
         ),
       },

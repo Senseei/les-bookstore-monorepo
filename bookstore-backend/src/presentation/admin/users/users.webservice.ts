@@ -8,8 +8,9 @@ import {
 } from '@application/users/use-cases';
 import { Injectable } from '@nestjs/common';
 import { UserDTO } from '@presentation/common/users/dtos';
-import { PaginatedResultDTO } from '@presentation/dtos/paginated-result.dto';
-import { PaginationParamsDTO } from '@presentation/dtos/pagination-params.dto';
+
+import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
+import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
 
 import { MinUserDTO } from './dtos';
 

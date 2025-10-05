@@ -1,8 +1,7 @@
+import { UsersService } from '@application/users/services';
 import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDTO } from '@presentation/site/users/dtos';
-
-import { UsersService } from '../services';
 
 @Injectable()
 export class AddUserAddress {
