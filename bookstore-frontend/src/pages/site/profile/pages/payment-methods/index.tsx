@@ -1,6 +1,6 @@
 import { CreditCard, Plus, Trash } from 'phosphor-react'
 
-import { Button } from '@/components'
+import { Button, ConfirmationModal } from '@/components'
 
 import { CardForm } from './components/CardForm'
 import * as S from './styles'
@@ -17,6 +17,10 @@ export const PaymentMethods = () => {
     handleAddCard,
     handleCloseForm,
     handleDeleteCard,
+    handleCloseDeleteModal,
+    handleConfirmDeleteCard,
+    isDeleteModalOpen,
+    cardToDelete,
     getFormattedCardDisplay,
   } = usePaymentMethods()
 
@@ -65,6 +69,7 @@ export const PaymentMethods = () => {
                 <S.CardDetails>
                   <S.CardNumber>{getFormattedCardDisplay(card)}</S.CardNumber>
                   <S.CardType>
+                    {card.brand} •{' '}
                     {card.type === 'credit' ? 'Crédito' : 'Débito'}
                   </S.CardType>
                   <S.CardExpiry>
@@ -92,6 +97,21 @@ export const PaymentMethods = () => {
         form={cardForm}
         onSubmit={handleFormSubmit}
         onClose={handleCloseForm}
+      />
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDeleteCard}
+        title="Remover cartão"
+        message={
+          cardToDelete
+            ? `Tem certeza que deseja remover o cartão ${getFormattedCardDisplay(cardToDelete)}?`
+            : ''
+        }
+        confirmText="Remover"
+        cancelText="Cancelar"
+        variant="danger"
       />
     </S.Container>
   )

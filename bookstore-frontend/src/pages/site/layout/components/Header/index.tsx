@@ -127,12 +127,6 @@ export const Header = () => {
                       Meus Pedidos
                     </S.DropdownItem>
                     <S.DropdownItem
-                      to={ROUTES.ADDRESSES}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Endereços
-                    </S.DropdownItem>
-                    <S.DropdownItem
                       to={ROUTES.PAYMENT_METHODS}
                       onClick={() => setIsMenuOpen(false)}
                     >

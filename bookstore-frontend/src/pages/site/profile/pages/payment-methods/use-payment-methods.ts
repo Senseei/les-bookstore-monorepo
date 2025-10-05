@@ -19,6 +19,7 @@ import {
  */
 export const usePaymentMethods = () => {
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [cardToDelete, setCardToDelete] = useState<CardDTO | null>(null)
 
   const {
     cards,
@@ -104,16 +105,31 @@ export const usePaymentMethods = () => {
   }
 
   /**
-   * Handle card deletion with confirmation
+   * Handle opening delete confirmation modal
    */
-  const handleDeleteCard = async (card: CardDTO) => {
-    if (window.confirm('Tem certeza que deseja remover este cartão?')) {
-      try {
-        await deleteCard(card.id)
-        toast.showSuccess('Cartão removido com sucesso!')
-      } catch {
-        // Error is handled by the useEffect that watches for errors
-      }
+  const handleDeleteCard = (card: CardDTO) => {
+    setCardToDelete(card)
+  }
+
+  /**
+   * Handle closing delete confirmation modal
+   */
+  const handleCloseDeleteModal = () => {
+    setCardToDelete(null)
+  }
+
+  /**
+   * Handle confirming card deletion
+   */
+  const handleConfirmDeleteCard = async () => {
+    if (!cardToDelete) return
+
+    try {
+      await deleteCard(cardToDelete.id)
+      toast.showSuccess('Cartão removido com sucesso!')
+      setCardToDelete(null)
+    } catch {
+      // Error is handled by the useEffect that watches for errors
     }
   }
 
@@ -181,6 +197,8 @@ export const usePaymentMethods = () => {
     isLoading,
     isSaving,
     isFormOpen,
+    cardToDelete,
+    isDeleteModalOpen: !!cardToDelete,
 
     // Form
     cardForm,
@@ -191,6 +209,8 @@ export const usePaymentMethods = () => {
     handleAddCard,
     handleCloseForm,
     handleDeleteCard,
+    handleCloseDeleteModal,
+    handleConfirmDeleteCard,
 
     // Input handlers
     handleCardNumberChange,
