@@ -1,6 +1,6 @@
 import { User } from '@domain/user/user.entity';
 import { Injectable } from '@nestjs/common';
-import { UpdateUserDTO } from '@presentation/users/dtos/update-user.dto';
+import { UpdateUserDTO } from '@presentation/site/users/dtos';
 
 import { UsersService } from '../services';
 import { UserValidator } from '../validators/user.validator';

@@ -11,6 +11,7 @@ interface AddressListProps {
   onEdit: (address: Address) => void
   onDelete: (id: string) => void
   loading?: boolean
+  editMode?: boolean
 }
 
 export const AddressList = ({
@@ -18,6 +19,7 @@ export const AddressList = ({
   onEdit,
   onDelete,
   loading = false,
+  editMode = true,
 }: AddressListProps) => {
   const residentialAddresses = addresses.filter((addr) => addr.type === 'house')
   const hasResidential = residentialAddresses.length > 0
@@ -66,28 +68,30 @@ export const AddressList = ({
                 </S.AddressLine>
               </S.AddressInfo>
 
-              <S.AddressActions>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onEdit(address)}
-                  disabled={loading}
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDelete(address.id)}
-                  disabled={
-                    loading ||
-                    (address.type === 'house' &&
-                      residentialAddresses.length === 1)
-                  }
-                >
-                  Excluir
-                </Button>
-              </S.AddressActions>
+              {editMode && (
+                <S.AddressActions>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEdit(address)}
+                    disabled={loading}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDelete(address.id)}
+                    disabled={
+                      loading ||
+                      (address.type === 'house' &&
+                        residentialAddresses.length === 1)
+                    }
+                  >
+                    Excluir
+                  </Button>
+                </S.AddressActions>
+              )}
             </S.AddressCard>
           ))}
         </S.AddressList>

@@ -3,6 +3,7 @@ import {
   CustomerDetails,
   CustomersList,
   ProfileEdit,
+  SignIn,
   SignUp,
   SiteLayout,
 } from '@/pages'
@@ -49,15 +50,15 @@ export const routeConfig = [
         element: <div>Home Page</div>,
       },
       {
+        path: ROUTES.SIGNIN.slice(1), // Remove leading slash for child route
+        element: <SignIn />,
+      },
+      {
         path: ROUTES.SIGNUP.slice(1), // Remove leading slash for child route
         element: <SignUp />,
       },
       {
-        path: ROUTES.PROFILE_EDIT.slice(1), // Remove leading slash for child route
-        element: <ProfileEdit />,
-      },
-      {
-        path: 'profile/edit/:id', // Rota com parâmetro para editar usuário específico
+        path: ROUTES.MY_PROFILE.slice(1), // Remove leading slash for child route
         element: <ProfileEdit />,
       },
     ],

@@ -24,10 +24,14 @@ const ADMIN_ROUTES = {
 export const ROUTES = {
   // Public routes
   HOME: BASE_ROUTES.ROOT,
-  LOGIN: '/login',
+  SIGNIN: '/sign-in',
   SIGNUP: '/sign-up',
-  PROFILE: '/profile',
-  PROFILE_EDIT: '/profile/edit',
+  MY_PROFILE: '/my-profile',
+  CATALOG: '/catalog',
+  CART: '/cart',
+  ORDERS: '/orders',
+  ADDRESSES: '/addresses',
+  PAYMENT_METHODS: '/payment-methods',
   PROFILE_EDIT_USER: '/profile/edit/:id', // Para admin editar qualquer usuário
 
   // Admin routes

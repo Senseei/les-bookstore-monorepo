@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useAddress, useUser } from '@/hooks'
-import { useToast } from '@/providers'
+import { useAuth, useToast } from '@/providers'
 import type { CreateAddressData, UpdateUserData } from '@/services/user.service'
 
 import type { Address, Customer, PasswordChangeData } from './types'
@@ -35,7 +35,9 @@ export interface UseProfileEditReturn {
   loadProfile: () => Promise<void>
 }
 
-export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
+export const useProfileEdit = (): UseProfileEditReturn => {
+  // Get authenticated user from AuthProvider
+  const { isAuthenticated } = useAuth()
   // Entity hooks
   const userHook = useUser()
   const addressHook = useAddress()
@@ -63,10 +65,8 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
 
   // Carregamento inicial do perfil
   const loadProfile = useCallback(async () => {
-    if (!userId) {
-      toast.showError(
-        'ID do usuário é obrigatório. Use a rota /profile/edit/:id',
-      )
+    if (!isAuthenticated) {
+      toast.showError('Usuário não autenticado')
       return
     }
 
@@ -74,7 +74,8 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     setHasLoadError(false) // Reset error state when starting a new load
 
     try {
-      const result = await userHook.getUserById(userId)
+      // Use getCurrentUser to get the current authenticated user
+      const result = await userHook.getCurrentUser()
 
       if (result.success && result.data) {
         setHasLoadError(false)
@@ -91,14 +92,14 @@ export const useProfileEdit = (userId?: string): UseProfileEditReturn => {
     } finally {
       setLoading(false)
     }
-  }, [userId, userHook, toast, hasInitialLoad])
+  }, [isAuthenticated, userHook, toast, hasInitialLoad])
 
   useEffect(() => {
-    if (userId && !hasInitialLoad) {
+    if (isAuthenticated && !hasInitialLoad) {
       setHasInitialLoad(true)
       loadProfile()
     }
-  }, [userId]) // Removed loadProfile from dependencies to prevent infinite loops
+  }, [isAuthenticated, hasInitialLoad, loadProfile]) // Fixed dependencies
 
   const saveProfile = useCallback(
     async (profileData?: Partial<Customer>) => {

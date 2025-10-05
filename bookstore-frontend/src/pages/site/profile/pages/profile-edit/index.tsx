@@ -1,6 +1,5 @@
-import { House, Lock } from 'phosphor-react'
+import { House, Lock, PencilSimple, X } from 'phosphor-react'
 import React from 'react'
-import { useParams } from 'react-router'
 
 import { Button } from '@/components'
 
@@ -15,8 +14,6 @@ import type { Address, PasswordChangeData } from './types'
 import { useProfileEdit } from './use-profile-edit'
 
 export const ProfileEdit = () => {
-  const { id: userId } = useParams<{ id?: string }>() // Captura o ID da URL se existir
-
   const {
     // Estado principal
     customer,
@@ -41,11 +38,21 @@ export const ProfileEdit = () => {
 
     // Funções de carregamento
     loadProfile,
-  } = useProfileEdit(userId)
+  } = useProfileEdit()
 
   // Estados de controle de UI
+  const [isEditMode, setIsEditMode] = React.useState(false)
   const [showPasswordForm, setShowPasswordForm] = React.useState(false)
   const [showAddressForm, setShowAddressForm] = React.useState(false)
+
+  const handleEditToggle = () => {
+    setIsEditMode(!isEditMode)
+    // If canceling edit mode, reset any unsaved changes if needed
+    if (isEditMode) {
+      // Optionally reload profile to reset any unsaved changes
+      loadProfile()
+    }
+  }
 
   const handleAddAddress = () => {
     startAddingAddress()
@@ -107,8 +114,29 @@ export const ProfileEdit = () => {
   return (
     <S.Container>
       <S.Header>
-        <S.Title>Editar Perfil</S.Title>
-        <S.Subtitle>Gerencie suas informações pessoais</S.Subtitle>
+        <div>
+          <S.Title>Meu Perfil</S.Title>
+          <S.Subtitle>
+            {isEditMode
+              ? 'Editando suas informações pessoais'
+              : 'Visualizando suas informações pessoais'}
+          </S.Subtitle>
+        </div>
+        <Button
+          variant={isEditMode ? 'ghost' : 'primary'}
+          size="sm"
+          onClick={handleEditToggle}
+        >
+          {isEditMode ? (
+            <>
+              <X size={16} /> Cancelar Edição
+            </>
+          ) : (
+            <>
+              <PencilSimple size={16} /> Editar Perfil
+            </>
+          )}
+        </Button>
       </S.Header>
 
       {showPasswordForm ? (
@@ -133,22 +161,26 @@ export const ProfileEdit = () => {
             customer={customer}
             onSave={saveProfile}
             loading={saving}
+            editMode={isEditMode}
           />
 
-          <S.ActionsContainer>
-            <S.ActionButton onClick={() => setShowPasswordForm(true)}>
-              <Lock size={20} /> Alterar Senha
-            </S.ActionButton>
-            <S.ActionButton onClick={handleAddAddress}>
-              <House size={20} /> Adicionar Endereço
-            </S.ActionButton>
-          </S.ActionsContainer>
+          {isEditMode && (
+            <S.ActionsContainer>
+              <S.ActionButton onClick={() => setShowPasswordForm(true)}>
+                <Lock size={20} /> Alterar Senha
+              </S.ActionButton>
+              <S.ActionButton onClick={handleAddAddress}>
+                <House size={20} /> Adicionar Endereço
+              </S.ActionButton>
+            </S.ActionsContainer>
+          )}
 
           <AddressList
             addresses={customer.addresses || []}
             onEdit={handleEditAddress}
             onDelete={handleDeleteAddress}
             loading={saving}
+            editMode={isEditMode}
           />
         </>
       )}

@@ -202,7 +202,8 @@ export const UserMenuButton = styled.button<{ isOpen: boolean }>`
     background-color: ${(props) => props.theme.COLORS.NEUTRAL_100};
   }
 
-  svg {
+  /* Only rotate the dropdown caret */
+  .dropdown-caret {
     transform: ${(props) => (props.isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
     transition: transform 0.2s ease;
   }

@@ -20,6 +20,7 @@ interface ProfileEditFormProps {
   onSave: (data: Partial<Customer>) => void
   onCancel?: () => void
   loading?: boolean
+  editMode?: boolean
 }
 
 export const ProfileEditForm = ({
@@ -27,6 +28,7 @@ export const ProfileEditForm = ({
   onSave,
   onCancel: _onCancel,
   loading = false,
+  editMode = true,
 }: ProfileEditFormProps) => {
   const form = useForm<ProfileEditFormData>({
     resolver: zodResolver(profileEditSchema),
@@ -68,6 +70,7 @@ export const ProfileEditForm = ({
               type="text"
               label="Nome Completo"
               placeholder="Digite seu nome completo"
+              disabled={!editMode}
               data-testid="profile-name-input"
             />
 
@@ -77,6 +80,7 @@ export const ProfileEditForm = ({
               type="email"
               label="Email"
               placeholder="Digite seu email"
+              disabled={!editMode}
               data-testid="profile-email-input"
             />
 
@@ -86,6 +90,7 @@ export const ProfileEditForm = ({
               type="cpf"
               label="CPF"
               placeholder="000.000.000-00"
+              disabled={!editMode}
               data-testid="profile-cpf-input"
             />
 
@@ -95,6 +100,7 @@ export const ProfileEditForm = ({
               type="date"
               label="Data de Nascimento"
               placeholder="DD/MM/AAAA"
+              disabled={!editMode}
               data-testid="profile-birth-date-input"
             />
 
@@ -104,6 +110,7 @@ export const ProfileEditForm = ({
               type="phone"
               label="Telefone"
               placeholder="(11) 99999-9999"
+              disabled={!editMode}
               data-testid="profile-phone-input"
             />
 
@@ -114,20 +121,19 @@ export const ProfileEditForm = ({
               label="Gênero"
               placeholder="Selecione seu gênero"
               options={genderOptions}
+              disabled={!editMode}
               data-testid="profile-gender-select"
             />
           </S.FormGrid>
         </FormSection>
 
-        <S.FormActions>
-          <Button
-            type="submit"
-            loading={loading}
-            data-testid="profile-save-button"
-          >
-            Salvar Alterações
-          </Button>
-        </S.FormActions>
+        {editMode && (
+          <S.FormActions>
+            <Button type="submit" loading={loading}>
+              Salvar Alterações
+            </Button>
+          </S.FormActions>
+        )}
       </Form>
     </S.Container>
   )
