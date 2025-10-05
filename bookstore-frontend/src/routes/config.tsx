@@ -9,7 +9,7 @@ import {
   SignUp,
   SiteLayout,
 } from '@/pages'
-import { BooksListing } from '@/pages/admin/book-management'
+import { BooksListing, NewBook } from '@/pages/admin/book-management'
 import { PaymentMethods } from '@/pages/site/profile/pages/payment-methods'
 
 import { PATHS, ROUTES } from './constants'
@@ -34,7 +34,7 @@ export const adminRoutes = [
   },
   {
     path: `${PATHS.BOOKS}/${PATHS.NEW}`, // 'books/new' - composed from segments
-    element: <div>New Book Form</div>,
+    element: <NewBook />,
   },
 ]
 
