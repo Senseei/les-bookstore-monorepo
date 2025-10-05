@@ -1,11 +1,4 @@
 import { UsersService } from '@application/users/services';
-import {
-  AddUserAddress,
-  ChangeUserPassword,
-  RemoveUserAddress,
-  UpdateUser,
-  UpdateUserAddress,
-} from '@application/users/use-cases';
 import { Injectable } from '@nestjs/common';
 import { UserDTO } from '@presentation/common/users/dtos';
 
@@ -16,14 +9,7 @@ import { MinUserDTO } from './dtos';
 
 @Injectable()
 export class UsersWebService {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly changeUserPassword: ChangeUserPassword,
-    private readonly updateUser: UpdateUser,
-    private readonly addUserAddress: AddUserAddress,
-    private readonly updateUserAddress: UpdateUserAddress,
-    private readonly removeUserAddress: RemoveUserAddress,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   public async findById(id: string): Promise<UserDTO> {
     const user = await this.usersService.findByIdOrThrow(id);
