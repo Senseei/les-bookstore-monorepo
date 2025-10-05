@@ -9,6 +9,4 @@ export interface BookDTO {
   publisher?: string
   publishedDate?: Date
   imageUrl?: string
-  createdAt: Date
-  updatedAt: Date
 }

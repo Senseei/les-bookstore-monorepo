@@ -85,7 +85,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       } else {
         setCartState((prev) => ({ ...prev, isLoading: false }))
       }
-    } catch (error) {
+    } catch {
       // Failed to load cart from storage
       setCartState((prev) => ({ ...prev, isLoading: false }))
     }

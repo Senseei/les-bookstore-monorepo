@@ -10,6 +10,7 @@ import {
   SiteLayout,
 } from '@/pages'
 import { BooksListing, NewBook } from '@/pages/admin/book-management'
+import { Cart } from '@/pages/site/books'
 import { PaymentMethods } from '@/pages/site/profile/pages/payment-methods'
 
 import { PATHS, ROUTES } from './constants'
@@ -78,6 +79,14 @@ export const routeConfig = [
         element: (
           <ProtectedRoute>
             <PaymentMethods />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: ROUTES.CART.slice(1), // Remove leading slash for child route
+        element: (
+          <ProtectedRoute>
+            <Cart />
           </ProtectedRoute>
         ),
       },
