@@ -1,8 +1,9 @@
-import { InvalidBodyException } from '@application/exceptions/invalid-body.exception';
 import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
 import { NewUserDTO } from '@presentation/auth/dtos/new-user.dto';
 import { UpdateUserDTO } from '@presentation/site/users/dtos';
+
+import { DuplicatedEntityException } from '@/application/exceptions';
 
 import { UserValidationStrategy } from './user.strategy';
 
@@ -16,7 +17,7 @@ export class EmailExistenceStrategy implements UserValidationStrategy {
   ): Promise<void> {
     const existingUser = await this.usersService.findByEmail(dto.email);
     if (existingUser && existingUser.id !== userId) {
-      throw new InvalidBodyException('Email already in use');
+      throw new DuplicatedEntityException('Email already in use');
     }
   }
 }

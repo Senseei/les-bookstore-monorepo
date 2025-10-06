@@ -1,5 +1,6 @@
-import { BaseRepository } from '@application/base.repository';
 import { DomainEntity } from '@domain/domain.entity';
+
+import { BaseRepository } from '@/application/base.repository';
 
 import { EntityNotFoundException } from './exceptions/entity-not-found.exception';
 import { UnactiveException } from './exceptions/unactive.exception';

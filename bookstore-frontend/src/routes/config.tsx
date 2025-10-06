@@ -1,7 +1,9 @@
+import { ProtectedRoute } from '@/components'
 import {
   AdminLayout,
   CustomerDetails,
   CustomersList,
+  ErrorPage,
   ProfileEdit,
   SignIn,
   SignUp,
@@ -38,7 +40,11 @@ export const adminRoutes = [
 export const routeConfig = [
   {
     path: ROUTES.ADMIN,
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute requiredRoles={['admin']}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     children: adminRoutes,
   },
   {
@@ -59,8 +65,22 @@ export const routeConfig = [
       },
       {
         path: ROUTES.MY_PROFILE.slice(1), // Remove leading slash for child route
-        element: <ProfileEdit />,
+        element: (
+          <ProtectedRoute>
+            <ProfileEdit />
+          </ProtectedRoute>
+        ),
       },
     ],
+  },
+  // Error page route
+  {
+    path: ROUTES.ERROR,
+    element: <ErrorPage />,
+  },
+  // Catch-all route for 404s
+  {
+    path: '*',
+    element: <ErrorPage />,
   },
 ]

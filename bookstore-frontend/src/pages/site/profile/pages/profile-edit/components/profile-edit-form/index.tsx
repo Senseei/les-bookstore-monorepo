@@ -72,6 +72,7 @@ export const ProfileEditForm = ({
               placeholder="Digite seu nome completo"
               disabled={!editMode}
               data-testid="profile-name-input"
+              disabled={!editMode}
             />
 
             <FormField
@@ -82,6 +83,7 @@ export const ProfileEditForm = ({
               placeholder="Digite seu email"
               disabled={!editMode}
               data-testid="profile-email-input"
+              disabled={!editMode}
             />
 
             <FormField
@@ -92,6 +94,7 @@ export const ProfileEditForm = ({
               placeholder="000.000.000-00"
               disabled={!editMode}
               data-testid="profile-cpf-input"
+              disabled={!editMode}
             />
 
             <FormField
@@ -102,6 +105,7 @@ export const ProfileEditForm = ({
               placeholder="DD/MM/AAAA"
               disabled={!editMode}
               data-testid="profile-birth-date-input"
+              disabled={!editMode}
             />
 
             <FormField
@@ -112,6 +116,7 @@ export const ProfileEditForm = ({
               placeholder="(11) 99999-9999"
               disabled={!editMode}
               data-testid="profile-phone-input"
+              disabled={!editMode}
             />
 
             <FormField
@@ -123,6 +128,7 @@ export const ProfileEditForm = ({
               options={genderOptions}
               disabled={!editMode}
               data-testid="profile-gender-select"
+              disabled={!editMode}
             />
           </S.FormGrid>
         </FormSection>

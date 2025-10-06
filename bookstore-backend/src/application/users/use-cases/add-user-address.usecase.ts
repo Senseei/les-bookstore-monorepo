@@ -30,6 +30,6 @@ export class AddUserAddress {
       await this.usersService.save(user);
     }
 
-    return user.customerDetails.addresses.find((a) => a.equals(address))!;
+    return user.customerDetails.addresses.find((a) => a.equals(address));
   }
 }
