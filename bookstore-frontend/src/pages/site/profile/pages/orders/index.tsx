@@ -1,7 +1,8 @@
 import { ArrowClockwise, Package, Storefront } from 'phosphor-react'
 
-import { Button } from '@/components'
+import { Button, NavigationButton } from '@/components'
 import { Container } from '@/pages/site/layout/styles'
+import { ROUTES } from '@/routes/constants'
 
 import { OrderCard } from './components'
 import * as S from './styles'
@@ -90,10 +91,10 @@ export const Orders = () => {
               Você ainda não fez nenhum pedido. Que tal começar explorando nossa
               coleção de livros?
             </S.EmptyDescription>
-            <Button onClick={() => (window.location.href = '/books')}>
+            <NavigationButton to={ROUTES.CATALOG}>
               <Storefront size={16} />
               Explorar Livros
-            </Button>
+            </NavigationButton>
           </S.EmptyState>
         ) : (
           <S.OrdersList>
