@@ -4,14 +4,18 @@ export class MinBookDTO {
   id: string;
   title: string;
   author: string;
-  price: number;
   isbn: string;
+  price: number;
+  stock: number;
+  publisher?: string;
 
-  constructor(book: Book) {
-    this.id = book.id;
-    this.title = book.title;
-    this.author = book.author;
-    this.price = book.price;
-    this.isbn = book.isbn;
+  constructor(entity: Book) {
+    this.id = entity.id;
+    this.title = entity.title;
+    this.author = entity.author;
+    this.isbn = entity.isbn;
+    this.price = entity.price;
+    this.stock = entity.stock;
+    this.publisher = entity.publisher;
   }
 }

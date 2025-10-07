@@ -20,8 +20,6 @@ export const ORMS = {
           database: configService.get('DATABASE_NAME'),
           autoLoadEntities: true,
           namingStrategy: new SnakeNamingStrategy(),
-          numericColumnDecimalAsString: false, // Return decimal columns as numbers
-          // Always sync in test environment to ensure clean state
           synchronize: nodeEnv !== 'production',
           migrations: [
             `${__dirname}/../../persistence/typeorm/migrations/*{.ts,.js}`,

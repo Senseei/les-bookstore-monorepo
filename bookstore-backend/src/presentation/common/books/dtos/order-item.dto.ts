@@ -1,15 +1,15 @@
 import { OrderItem } from '@/domain/order/order-item.entity';
 
-import { MinBookDTO } from './min-book.dto';
+import { OrderBookDTO } from './order-book.dto';
 
 export class OrderItemDTO {
-  book: MinBookDTO;
+  book: OrderBookDTO;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
 
   constructor(entity: OrderItem) {
-    this.book = new MinBookDTO(entity.book);
+    this.book = new OrderBookDTO(entity.book);
     this.quantity = entity.quantity;
     this.unitPrice = entity.unitPrice;
     this.totalPrice = entity.getTotalPrice();

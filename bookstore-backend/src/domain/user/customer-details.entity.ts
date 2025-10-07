@@ -79,4 +79,16 @@ export class CustomerDetails extends DomainEntity {
       (c) => c.number === identifier || c.id === identifier,
     );
   }
+
+  public getMostRecentOrder(): Order | undefined {
+    if (!this.orders || this.orders.length === 0) {
+      return undefined;
+    }
+
+    return this.orders.reduce((mostRecent, current) => {
+      if (!mostRecent) return current;
+
+      return current.orderDate > mostRecent.orderDate ? current : mostRecent;
+    });
+  }
 }
