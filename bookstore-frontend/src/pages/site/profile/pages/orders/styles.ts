@@ -2,18 +2,11 @@ import styled from 'styled-components'
 
 import { defaultTheme } from '@/styles'
 
-export const Container = styled.div`
+export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${defaultTheme.SPACING.XL};
   width: 100%;
-  padding: ${defaultTheme.SPACING.XL};
-  max-width: 1200px;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    padding: ${defaultTheme.SPACING.LG};
-  }
 `
 
 export const Header = styled.div`

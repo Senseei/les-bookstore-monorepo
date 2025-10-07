@@ -1,7 +1,10 @@
 import styled from 'styled-components'
 
-export const Container = styled.div`
-  padding: ${({ theme }) => theme.SPACING.XL};
+export const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.SPACING.XL};
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
 `
