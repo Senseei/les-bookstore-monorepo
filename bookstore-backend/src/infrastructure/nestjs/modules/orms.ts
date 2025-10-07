@@ -11,15 +11,6 @@ export const ORMS = {
         const nodeEnv = configService.get<string>('NODE_ENV');
         const isTest = nodeEnv === 'test';
 
-        // Debug logging to verify configuration
-        if (isTest) {
-          console.log('🔍 Test Database Configuration:');
-          console.log(`  Host: ${configService.get('DATABASE_HOST')}`);
-          console.log(`  Port: ${configService.get('DATABASE_PORT')}`);
-          console.log(`  Database: ${configService.get('DATABASE_NAME')}`);
-          console.log(`  Environment: ${nodeEnv}`);
-        }
-
         return {
           type: 'postgres',
           host: configService.get('DATABASE_HOST'),
@@ -29,10 +20,13 @@ export const ORMS = {
           database: configService.get('DATABASE_NAME'),
           autoLoadEntities: true,
           namingStrategy: new SnakeNamingStrategy(),
+          numericColumnDecimalAsString: false, // Return decimal columns as numbers
           // Always sync in test environment to ensure clean state
           synchronize: nodeEnv !== 'production',
-          migrations: [`${__dirname}/migrations/*{.ts,.js}`],
-          migrationsRun: !isTest, // Don't run migrations in test (use synchronize instead)
+          migrations: [
+            `${__dirname}/../../persistence/typeorm/migrations/*{.ts,.js}`,
+          ],
+          migrationsRun: nodeEnv === 'production',
           dropSchema: isTest, // Drop schema on each test run for clean state
           ssl:
             nodeEnv === 'production'

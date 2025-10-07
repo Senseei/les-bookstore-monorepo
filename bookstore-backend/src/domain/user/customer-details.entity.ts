@@ -1,6 +1,7 @@
 import { DomainEntity } from '@domain/domain.entity';
 import { Entity, OneToMany, OneToOne } from 'typeorm';
 
+import { Order } from '../order/order.entity';
 import { Address } from './address.entity';
 import { Card } from './card.entity';
 import { User } from './user.entity';
@@ -14,24 +15,39 @@ export class CustomerDetails extends DomainEntity {
     cascade: true,
     eager: true,
   })
-  addresses: Address[];
+  _addresses: Address[];
 
   @OneToMany(() => Card, (card) => card.customerDetails, {
     cascade: true,
     eager: true,
   })
-  cards: Card[];
+  _cards: Card[];
 
-  constructor(props: any) {
-    super();
-    if (props) {
-      this.addresses = [];
-      this.cards = [];
+  @OneToMany(() => Order, (order) => order.customer, {
+    cascade: true,
+    eager: true,
+  })
+  _orders: Order[];
+
+  get addresses(): Address[] {
+    if (!this._addresses) {
+      this._addresses = [];
     }
+    return this._addresses;
   }
 
-  public override update(props: any): void {
-    throw new Error('Method not implemented.');
+  get cards(): Card[] {
+    if (!this._cards) {
+      this._cards = [];
+    }
+    return this._cards;
+  }
+
+  get orders(): Order[] {
+    if (!this._orders) {
+      this._orders = [];
+    }
+    return this._orders;
   }
 
   public hasAddress(address: Address): boolean;
