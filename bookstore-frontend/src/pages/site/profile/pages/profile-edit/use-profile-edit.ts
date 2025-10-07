@@ -106,10 +106,7 @@ export const useProfileEdit = (): UseProfileEditReturn => {
       if (!customer || !profileData?.id) return
 
       try {
-        const result = await userHook.updateUser(
-          profileData.id,
-          profileData as UpdateUserData,
-        )
+        const result = await userHook.updateUser(profileData as UpdateUserData)
 
         if (result.success) {
           toast.showSuccess('Perfil atualizado com sucesso!')
@@ -263,10 +260,7 @@ export const useProfileEdit = (): UseProfileEditReturn => {
     }
 
     try {
-      const result = await userHook.changeUserPassword(
-        customer.id,
-        passwordFormData,
-      )
+      const result = await userHook.changeUserPassword(passwordFormData)
 
       if (result.success) {
         setPasswordFormData({
