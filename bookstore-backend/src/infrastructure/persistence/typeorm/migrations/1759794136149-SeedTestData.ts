@@ -35,13 +35,13 @@ export class SeedTestData1759794136149 implements MigrationInterface {
         updated_at
       ) VALUES (
         '550e8400-e29b-41d4-a716-446655440001',
-        'João Silva',
-        'joao.silva@test.com',
+        'Gabriel de Jesus',
+        'gabrieldjesus475@gmail.com',
         '12345678901',
         '11987654321',
         'male',
-        '1990-05-15',
-        '$2b$10$K7L/CtEqh7X5nVc7VkPyK.9ZGqzPzQKl3tYyZB8nD6mL.1vHzK2.2', -- password: "password123"
+        '2003-01-15',
+        '$2a$12$0M9jTH82qibgZkVYL8NHU.48qm9fvGZ5IXKX0ZEUnorkoJ9h9kBWi', -- password: "Abc$%123"
         'user',
         '550e8400-e29b-41d4-a716-446655440002',
         true,
@@ -154,6 +154,7 @@ export class SeedTestData1759794136149 implements MigrationInterface {
       INSERT INTO tb_orders (
         id,
         order_date,
+        status,
         customer_id,
         active,
         created_at,
@@ -161,6 +162,7 @@ export class SeedTestData1759794136149 implements MigrationInterface {
       ) VALUES (
         '550e8400-e29b-41d4-a716-446655440006',
         '2024-10-06',
+        'pending',
         '550e8400-e29b-41d4-a716-446655440002',
         true,
         NOW(),
