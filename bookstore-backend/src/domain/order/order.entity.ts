@@ -3,6 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { DomainEntity } from '../domain.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
 import { OrderItem } from './order-item.entity';
+import { OrderStatus } from './status.enum';
 
 @Entity('tb_orders')
 export class Order extends DomainEntity {
@@ -12,12 +13,15 @@ export class Order extends DomainEntity {
   })
   _items: OrderItem[];
 
+  @Column()
+  orderDate: Date = new Date();
+
+  @Column({ type: 'enum', enum: OrderStatus })
+  status: OrderStatus;
+
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
   @JoinColumn()
   customer: CustomerDetails;
-
-  @Column()
-  orderDate: Date = new Date();
 
   get items(): OrderItem[] {
     if (!this._items) {
