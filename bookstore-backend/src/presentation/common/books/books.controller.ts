@@ -18,6 +18,7 @@ import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
 import { BooksWebService } from './books.webservice';
 import { BookDTO } from './dtos/book.dto';
 import { CreateBookDTO } from './dtos/create-book.dto';
+import { MinBookDTO } from './dtos/min-book.dto';
 
 @Controller('books')
 export class BooksController {
@@ -34,7 +35,7 @@ export class BooksController {
   public async findAll(
     @Query() query: PaginationParamsDTO,
     @Query() filters: Record<string, any> = {},
-  ): Promise<PaginatedResultDTO<BookDTO>> {
+  ): Promise<PaginatedResultDTO<MinBookDTO>> {
     return this.webService.findAll(query, filters);
   }
 

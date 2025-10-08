@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksService } from '@/application/books/services/books.service';
 import { CreateBook } from '@/application/books/use-cases/create-book.usecase';
 import { Book } from '@/domain/book.entity';
+import { Order } from '@/domain/order/order.entity';
+import { OrderItem } from '@/domain/order/order-item.entity';
 import { BooksRepositoryImpl } from '@/infrastructure/persistence/typeorm/repositories/books.repository';
 import { BooksController } from '@/presentation/common/books/books.controller';
 import { BooksWebService } from '@/presentation/common/books/books.webservice';
@@ -11,7 +13,7 @@ import { BooksWebService } from '@/presentation/common/books/books.webservice';
 const USE_CASES = [CreateBook];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Book])],
+  imports: [TypeOrmModule.forFeature([Book, Order, OrderItem])],
   controllers: [BooksController],
   providers: [
     {

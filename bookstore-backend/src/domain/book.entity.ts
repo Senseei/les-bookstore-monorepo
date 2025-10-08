@@ -51,7 +51,7 @@ export class Book extends DomainEntity {
     }
   }
 
-  public override update(props: {
+  public update(props: {
     title: string;
     author: string;
     description?: string;
