@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import type { OrderDTO } from '@/dtos'
 
@@ -24,13 +24,6 @@ interface OrderStatistics {
  */
 export const useOrder = () => {
   const { user, isUserLoading, userError, getCurrentUser } = useUser()
-
-  // Load user data on mount if not already loaded
-  useEffect(() => {
-    if (!user && !isUserLoading) {
-      getCurrentUser()
-    }
-  }, [user, isUserLoading, getCurrentUser])
 
   const orderState: OrderState = useMemo(
     () => ({

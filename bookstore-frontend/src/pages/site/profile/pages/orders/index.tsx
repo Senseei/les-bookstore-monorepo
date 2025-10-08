@@ -38,7 +38,10 @@ export const Orders = () => {
         <S.ContentContainer>
           <S.ErrorContainer>
             <h3>Erro ao carregar pedidos</h3>
-            <p>Não foi possível carregar seus pedidos. Tente novamente.</p>
+            <p>
+              Não foi possível carregar seus pedidos. Verifique sua conexão com
+              a internet e clique no botão abaixo para tentar novamente.
+            </p>
             <Button onClick={handleRefreshOrders} variant="outline">
               <ArrowClockwise size={16} />
               Tentar novamente

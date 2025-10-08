@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useOrder } from '@/hooks'
-import { useToast } from '@/providers'
+import { useAuth, useToast } from '@/providers'
+import { formatCurrency, formatDateTime } from '@/utils'
 
 interface OrderFilters {
   startDate?: Date
@@ -10,9 +11,10 @@ interface OrderFilters {
 }
 
 export const useOrders = () => {
+  const { isAuthenticated } = useAuth()
   const {
-    isLoading,
-    error,
+    isLoading: orderIsLoading,
+    error: orderError,
     totalOrders,
     orderStatistics,
     sortedOrders,
@@ -24,6 +26,9 @@ export const useOrders = () => {
   const { addToast } = useToast()
   const [filters, setFilters] = useState<OrderFilters>({})
   const [filteredOrders, setFilteredOrders] = useState(sortedOrders)
+  const [hasInitialLoad, setHasInitialLoad] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [hasLoadError, setHasLoadError] = useState(false)
 
   // Apply filters when orders or filters change
   useEffect(() => {
@@ -50,16 +55,53 @@ export const useOrders = () => {
     setFilteredOrders(filtered)
   }, [sortedOrders, filters, filterOrdersByDateRange])
 
-  const handleRefreshOrders = async () => {
-    const result = await refreshOrders()
+  // Load orders data
+  const loadOrders = useCallback(async () => {
+    if (!isAuthenticated) {
+      addToast('Usuário não autenticado', 'error')
+      return
+    }
 
-    if (!result.success) {
+    setLoading(true)
+    setHasLoadError(false) // Reset error state when starting a new load
+
+    try {
+      const result = await refreshOrders()
+
+      if (result.success) {
+        setHasLoadError(false)
+        if (!hasInitialLoad) {
+          setHasInitialLoad(true)
+        }
+      } else {
+        setHasLoadError(true)
+        addToast(
+          'Não foi possível carregar seus pedidos. Verifique sua conexão e tente novamente.',
+          'error',
+        )
+      }
+    } catch {
+      setHasLoadError(true)
       addToast(
-        'Não foi possível carregar seus pedidos. Tente novamente.',
+        'Não foi possível carregar seus pedidos. Verifique sua conexão e tente novamente.',
         'error',
       )
+    } finally {
+      setLoading(false)
     }
-  }
+  }, [isAuthenticated, refreshOrders, addToast, hasInitialLoad])
+
+  // Initial load effect
+  useEffect(() => {
+    if (isAuthenticated && !hasInitialLoad) {
+      setHasInitialLoad(true)
+      loadOrders()
+    }
+  }, [isAuthenticated, hasInitialLoad, loadOrders])
+
+  const handleRefreshOrders = useCallback(async () => {
+    await loadOrders()
+  }, [loadOrders])
 
   const handleFilterChange = (newFilters: Partial<OrderFilters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }))
@@ -69,43 +111,21 @@ export const useOrders = () => {
     setFilters({})
   }
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value)
-  }
-
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(new Date(date))
-  }
-
   return {
-    // Data
+    // Loading state - true if loading or retrying or no initial load yet
+    isLoading: loading || orderIsLoading || !hasInitialLoad,
+    error: orderError || hasLoadError,
     orders: filteredOrders,
-    allOrders: sortedOrders,
-    recentOrders,
     totalOrders,
     orderStatistics,
-
-    // State
-    isLoading,
-    error,
+    recentOrders,
+    filteredOrders,
     filters,
-
-    // Actions
-    handleRefreshOrders,
+    setFilters,
     handleFilterChange,
     clearFilters,
-
-    // Utils
     formatCurrency,
-    formatDate,
+    formatDate: formatDateTime,
+    handleRefreshOrders,
   }
 }

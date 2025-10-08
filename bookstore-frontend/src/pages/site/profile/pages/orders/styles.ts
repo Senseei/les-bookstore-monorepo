@@ -138,8 +138,22 @@ export const ErrorContainer = styled.div`
   justify-content: center;
   padding: ${defaultTheme.SPACING.XXXL};
   text-align: center;
-  background: ${defaultTheme.COLORS.ERROR_LIGHTER};
-  border: 1px solid ${defaultTheme.COLORS.ERROR_LIGHT};
+  background: ${defaultTheme.COLORS.NEUTRAL_50};
+  border: 1px solid ${defaultTheme.COLORS.NEUTRAL_300};
   border-radius: ${defaultTheme.BORDER_RADIUS.LG};
-  color: ${defaultTheme.COLORS.ERROR_DARK};
+
+  h3 {
+    font-size: ${defaultTheme.FONT_SIZE.LARGE};
+    font-weight: ${defaultTheme.FONT_WEIGHT.BOLD};
+    color: ${defaultTheme.COLORS.NEUTRAL_900};
+    margin: 0 0 ${defaultTheme.SPACING.MD} 0;
+  }
+
+  p {
+    font-size: ${defaultTheme.FONT_SIZE.MEDIUM};
+    color: ${defaultTheme.COLORS.NEUTRAL_600};
+    margin: 0 0 ${defaultTheme.SPACING.XL} 0;
+    max-width: 400px;
+    line-height: 1.5;
+  }
 `
