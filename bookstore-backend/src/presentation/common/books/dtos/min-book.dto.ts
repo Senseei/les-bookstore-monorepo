@@ -8,6 +8,7 @@ export class MinBookDTO {
   price: number;
   stock: number;
   publisher?: string;
+  imageUrl?: string;
 
   constructor(entity: Book) {
     this.id = entity.id;

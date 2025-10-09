@@ -6,4 +6,5 @@ export interface MinBookDTO {
   price: number
   stock: number
   publisher?: string
+  imageUrl?: string
 }

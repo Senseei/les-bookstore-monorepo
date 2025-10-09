@@ -1,3 +1,5 @@
+import path from 'path'
+
 import { ProtectedRoute } from '@/components'
 import {
   AdminLayout,
@@ -10,7 +12,7 @@ import {
   SiteLayout,
 } from '@/pages'
 import { BooksListing, NewBook } from '@/pages/admin/book-management'
-import { Cart } from '@/pages/site/books'
+import { Cart, Catalog } from '@/pages/site/books'
 import { Orders } from '@/pages/site/profile/pages/orders'
 import { PaymentMethods } from '@/pages/site/profile/pages/payment-methods'
 
@@ -94,6 +96,10 @@ export const routeConfig = [
             <Cart />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: ROUTES.CATALOG.slice(1), // Remove leading slash for child route
+        element: <Catalog />,
       },
     ],
   },
