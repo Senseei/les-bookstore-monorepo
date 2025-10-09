@@ -27,10 +27,13 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const calculateSummary = useCallback(
     (items: CartItemDTO[]): CartSummaryDTO => {
       const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-      const totalPrice = items.reduce(
-        (sum, item) => sum + item.book.price * item.quantity,
-        0,
-      )
+      const totalPrice = items.reduce((sum, item) => {
+        const price =
+          typeof item.book.price === 'string'
+            ? parseFloat(item.book.price)
+            : item.book.price
+        return sum + price * item.quantity
+      }, 0)
       const totalUniqueItems = items.length
 
       return {
