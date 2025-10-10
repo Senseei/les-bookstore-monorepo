@@ -1,5 +1,6 @@
 import { Column, Entity } from 'typeorm';
 
+import { DecimalColumn } from './decorators/decimal-column.decorator';
 import { DomainEntity } from './domain.entity';
 
 @Entity('tb_books')
@@ -16,7 +17,7 @@ export class Book extends DomainEntity {
   @Column('text', { nullable: true })
   description?: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @DecimalColumn({ precision: 10, scale: 2 })
   price: number;
 
   @Column({ default: 0 })
