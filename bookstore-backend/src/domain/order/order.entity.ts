@@ -23,6 +23,13 @@ export class Order extends DomainEntity {
   @JoinColumn()
   customer: CustomerDetails;
 
+  constructor(customer: CustomerDetails) {
+    super();
+    if (customer) {
+      this.customer = customer;
+    }
+  }
+
   get items(): OrderItem[] {
     if (!this._items) {
       this._items = [];
