@@ -3,6 +3,8 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { DomainEntity } from '../domain.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
 import { OrderItem } from './order-item.entity';
+import { PaymentStatus } from './payment/enums/payment-status.enum';
+import { Payment } from './payment/payment.entity';
 import { OrderStatus } from './status.enum';
 
 @Entity('tb_orders')
@@ -18,6 +20,12 @@ export class Order extends DomainEntity {
 
   @Column({ type: 'enum', enum: OrderStatus })
   status: OrderStatus;
+
+  @OneToMany(() => Payment, (payment) => payment.order, {
+    eager: true,
+    cascade: true,
+  })
+  _payments: Payment[];
 
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
   @JoinColumn()
@@ -35,6 +43,13 @@ export class Order extends DomainEntity {
       this._items = [];
     }
     return this._items;
+  }
+
+  get payments(): Payment[] {
+    if (!this._payments) {
+      this._payments = [];
+    }
+    return this._payments;
   }
 
   public getTotalItems(): number {
@@ -56,5 +71,30 @@ export class Order extends DomainEntity {
 
   public removeItem(item: OrderItem): void {
     this._items = this.items.filter((i) => !i.equals(item));
+  }
+
+  public getSuccessfulPayments(): Payment[] {
+    return this.payments.filter((p) => p.status === PaymentStatus.SUCCEEDED);
+  }
+
+  public getTotalPaid(): number {
+    return (
+      this.getSuccessfulPayments().reduce(
+        (sum, p) => sum + p.amountInCents,
+        0,
+      ) / 100
+    );
+  }
+
+  public isFullyPaid(): boolean {
+    return this.getTotalPaid() >= this.getTotalPrice();
+  }
+
+  public getRemainingBalance(): number {
+    return Math.max(0, this.getTotalPrice() - this.getTotalPaid());
+  }
+
+  public getPaymentsByCard(cardId: string): Payment[] {
+    return this.payments.filter((p) => p.card?.id === cardId);
   }
 }

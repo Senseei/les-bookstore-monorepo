@@ -1,8 +1,8 @@
 import { BaseService } from '@application/base.service';
-import { UsersRepository } from '@application/users/users.repository';
 import { User } from '@domain/user/user.entity';
 import { Inject, Injectable } from '@nestjs/common';
 
+import { UsersRepository } from '@/application/users/interfaces/users.repository';
 import { UserRole } from '@/domain/user/enums/role.enum';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { UsersService } from '@/application/users/services';
 import { Order } from '@/domain/order/order.entity';
 import { OrderStatus } from '@/domain/order/status.enum';
 
-import { OrdersRepository } from '../orders.repository';
+import { OrdersRepository } from '../interfaces/orders.repository';
 
 @Injectable()
 export class OrdersService extends BaseService<Order> {

@@ -1,0 +1,73 @@
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+
+import { CardsService } from '@/application/users/services/cards.service';
+import { Order } from '@/domain/order/order.entity';
+import { Payment } from '@/domain/order/payment/payment.entity';
+import { toPaymentMethod } from '@/domain/user/enums/card-type.enum';
+import { PaymentsDTO } from '@/presentation/site/orders/dtos/payments.dto';
+
+import { OrderAlreadyFullyPaidException } from '../exceptions/order-already-paid.exception';
+import { PaymentGateway } from '../interfaces/payment/payment.gateway';
+import { PaymentIntentRequest } from '../interfaces/payment/payment-intent-request';
+import { OrdersService } from '../services/orders.service';
+
+@Injectable()
+export class PayOrder {
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly cardsService: CardsService,
+    @Inject('PaymentGateway') private readonly paymentGateway: PaymentGateway,
+  ) {}
+
+  public async execute(orderId: string, payments: PaymentsDTO): Promise<Order> {
+    const order = await this.ordersService.findByIdOrThrow(orderId);
+
+    this.validate(order, payments);
+
+    for (const paymentDTO of payments.payments) {
+      const paymentIntentRequest: PaymentIntentRequest = {
+        amountInCents: paymentDTO.amountInCents,
+        cardId: paymentDTO.cardId,
+        metadata: {
+          orderId: order.id,
+        },
+      };
+
+      const response =
+        await this.paymentGateway.createPayment(paymentIntentRequest);
+
+      const card = await this.cardsService.findByIdOrThrow(paymentDTO.cardId);
+
+      const paymentEntity = new Payment({
+        amountInCents: paymentDTO.amountInCents,
+        method: toPaymentMethod(card.type),
+        gatewayTransactionId: response.gatewayTransactionId,
+        card,
+      });
+
+      if (response.status === 'succeeded') {
+        paymentEntity.markAsPaid();
+      }
+
+      order.payments.push(paymentEntity);
+    }
+
+    return await this.ordersService.save(order);
+  }
+
+  private validate(order: Order, dto: PaymentsDTO) {
+    if (order.isFullyPaid()) {
+      throw new OrderAlreadyFullyPaidException(order.id);
+    }
+
+    const totalAmount = dto.payments.reduce(
+      (acc, payment) => acc + payment.amountInCents,
+      0,
+    );
+    if (totalAmount !== order.getTotalPrice() * 100) {
+      throw new BadRequestException(
+        'The total amount of payments does not match the order total price.',
+      );
+    }
+  }
+}

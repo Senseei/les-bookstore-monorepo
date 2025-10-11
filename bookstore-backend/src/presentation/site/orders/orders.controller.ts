@@ -1,10 +1,19 @@
-import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Request,
+} from '@nestjs/common';
 
 import { OrderStatus } from '@/domain/order/status.enum';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
 import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
 
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
+import { PaymentsDTO } from './dtos/payments.dto';
 import { OrdersWebService } from './orders.webservice';
 
 @Controller('orders')
@@ -27,5 +36,13 @@ export class OrdersController {
   ): Promise<OrderDTO[]> {
     const userId = req.user.userId;
     return this.webService.findByUserAndStatus(userId, status);
+  }
+
+  @Post(':id/pay')
+  public async payOrder(
+    @Param('id') orderId: string,
+    @Body() dto: PaymentsDTO,
+  ): Promise<OrderDTO> {
+    return await this.webService.pay(orderId, dto);
   }
 }
