@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useToast } from '@/providers'
 import { useCart } from '@/providers'
 
@@ -5,14 +7,29 @@ import { CartItem, CartSummary, EmptyCart } from './components'
 import * as S from './styles'
 
 export const Cart = () => {
-  const { items, summary, updateQuantity, removeItem } = useCart()
-  const { showSuccess } = useToast()
+  const { items, summary, updateQuantity, removeItem, checkout } = useCart()
+  const { showSuccess, showError } = useToast()
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
 
-  const handleCheckout = () => {
-    // TODO: Implement checkout logic
-    showSuccess(
-      'Checkout iniciado - Redirecionando para a página de pagamento...',
-    )
+  const handleCheckout = async () => {
+    setIsCheckingOut(true)
+
+    try {
+      const result = await checkout()
+
+      if (result.success) {
+        showSuccess(
+          `Pedido realizado com sucesso! Número do pedido: ${result.orderId}`,
+        )
+        // The cart will be automatically cleared by the checkout function
+      } else {
+        showError(result.error || 'Erro ao finalizar pedido. Tente novamente.')
+      }
+    } catch {
+      showError('Erro inesperado ao finalizar pedido. Tente novamente.')
+    } finally {
+      setIsCheckingOut(false)
+    }
   }
 
   if (items.length === 0) {
@@ -41,7 +58,11 @@ export const Cart = () => {
         </S.CartItemsList>
 
         <S.CartSidePanel>
-          <CartSummary summary={summary} onCheckout={handleCheckout} />
+          <CartSummary
+            summary={summary}
+            onCheckout={handleCheckout}
+            isCheckingOut={isCheckingOut}
+          />
         </S.CartSidePanel>
       </S.CartContent>
     </S.CartContainer>
