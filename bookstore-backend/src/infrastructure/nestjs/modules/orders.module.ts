@@ -10,6 +10,8 @@ import { OrderItem } from '@/domain/order/order-item.entity';
 import { Payment } from '@/domain/order/payment/payment.entity';
 import { MockPaymentGateway } from '@/infrastructure/payment/mock/mock-payment.gateway';
 import { OrdersRepositoryImpl } from '@/infrastructure/persistence/typeorm/repositories';
+import { OrdersController } from '@/presentation/site/orders/orders.controller';
+import { OrdersWebService } from '@/presentation/site/orders/orders.webservice';
 
 import { BooksModule } from './books.module';
 import { UsersModule } from './users.module';
@@ -22,9 +24,8 @@ const USE_CASES = [CreateNewOrder, PayOrder, CancelOrder];
     BooksModule,
     UsersModule,
   ],
-  controllers: [],
+  controllers: [OrdersController],
   providers: [
-    OrdersService,
     {
       provide: 'OrdersRepository',
       useClass: OrdersRepositoryImpl,
@@ -33,6 +34,8 @@ const USE_CASES = [CreateNewOrder, PayOrder, CancelOrder];
       provide: 'PaymentGateway',
       useClass: MockPaymentGateway,
     },
+    OrdersWebService,
+    OrdersService,
     ...USE_CASES,
   ],
 })
