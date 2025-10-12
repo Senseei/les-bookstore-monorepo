@@ -13,7 +13,7 @@ export class Payment extends DomainEntity {
   amountInCents: number;
 
   @Column({ type: 'enum', enum: PaymentStatus })
-  status: PaymentStatus;
+  status: PaymentStatus = PaymentStatus.PENDING;
 
   @Column({ type: 'enum', enum: PaymentMethod })
   method: PaymentMethod;
@@ -46,7 +46,6 @@ export class Payment extends DomainEntity {
       this.amountInCents = props.amountInCents;
       this.method = props.method;
       this.gatewayTransactionId = props.gatewayTransactionId;
-      this.status = PaymentStatus.PENDING;
       this.card = props.card;
     }
   }

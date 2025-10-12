@@ -19,7 +19,7 @@ export class Order extends DomainEntity {
   orderDate: Date = new Date();
 
   @Column({ type: 'enum', enum: OrderStatus })
-  status: OrderStatus;
+  status: OrderStatus = OrderStatus.PENDING;
 
   @OneToMany(() => Payment, (payment) => payment.order, {
     eager: true,
