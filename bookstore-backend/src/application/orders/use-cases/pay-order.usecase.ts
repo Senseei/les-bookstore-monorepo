@@ -3,6 +3,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CardsService } from '@/application/users/services/cards.service';
 import { Order } from '@/domain/order/order.entity';
 import { Payment } from '@/domain/order/payment/payment.entity';
+import { OrderStatus } from '@/domain/order/status.enum';
 import { toPaymentMethod } from '@/domain/user/enums/card-type.enum';
 import { PaymentsDTO } from '@/presentation/site/orders/dtos/payments.dto';
 
@@ -50,6 +51,10 @@ export class PayOrder {
       }
 
       order.payments.push(paymentEntity);
+    }
+
+    if (order.isFullyPaid()) {
+      order.status = OrderStatus.CONFIRMED;
     }
 
     return await this.ordersService.save(order);
