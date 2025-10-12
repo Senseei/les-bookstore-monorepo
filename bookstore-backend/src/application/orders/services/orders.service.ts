@@ -29,7 +29,7 @@ export class OrdersService extends BaseService<Order> {
     const user = await this.usersService.findActiveCustomerByIdOrThrow(userId);
     const order = await this.findByIdOrThrow(orderId);
 
-    if (order.customer.id !== user.customerDetails.id) {
+    if (!user.customerDetails.orders.some((o) => o.id === order.id)) {
       throw new BadRequestException(
         `Order with ID ${orderId} does not belong to the user.`,
       );

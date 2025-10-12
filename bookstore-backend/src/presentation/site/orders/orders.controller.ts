@@ -7,9 +7,13 @@ import {
   Post,
   Query,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 
 import { OrderStatus } from '@/domain/order/status.enum';
+import { UserRole } from '@/domain/user/enums/role.enum';
+import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
+import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
 import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
 
@@ -17,6 +21,8 @@ import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
 import { OrdersWebService } from './orders.webservice';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.USER)
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly webService: OrdersWebService) {}
