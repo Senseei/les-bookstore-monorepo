@@ -16,6 +16,7 @@ export const Orders = () => {
     isLoading,
     error,
     handleRefreshOrders,
+    handleCancelOrder,
     formatCurrency,
     formatDate,
   } = useOrders()
@@ -107,6 +108,7 @@ export const Orders = () => {
                 order={order}
                 formatCurrency={formatCurrency}
                 formatDate={formatDate}
+                onCancelOrder={handleCancelOrder}
               />
             ))}
           </S.OrdersList>

@@ -1,6 +1,7 @@
-import { Calendar, Package } from 'phosphor-react'
+import { Calendar, Package, X } from 'phosphor-react'
+import { useState } from 'react'
 
-import { Badge, Card } from '@/components'
+import { Badge, Button, Card, ConfirmationModal } from '@/components'
 import type { OrderDTO } from '@/dtos'
 
 import * as S from './styles'
@@ -9,6 +10,7 @@ interface OrderCardProps {
   order: OrderDTO
   formatCurrency: (value: number) => string
   formatDate: (date: Date) => string
+  onCancelOrder: (orderId: string) => Promise<{ success: boolean }>
 }
 
 const getStatusBadge = (status: OrderDTO['status']) => {
@@ -29,56 +31,106 @@ export const OrderCard = ({
   order,
   formatCurrency,
   formatDate,
+  onCancelOrder,
 }: OrderCardProps) => {
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+  const [isCancelling, setIsCancelling] = useState(false)
+
   const statusInfo = getStatusBadge(order.status)
 
+  // Only show cancel button for pending or confirmed orders
+  const canCancel = order.status === 'pending' || order.status === 'confirmed'
+
+  const handleCancelClick = () => {
+    setIsConfirmModalOpen(true)
+  }
+
+  const handleConfirmCancel = async () => {
+    setIsCancelling(true)
+    try {
+      await onCancelOrder(order.id)
+      setIsConfirmModalOpen(false)
+    } catch {
+      // Error handling is done in the parent component
+    } finally {
+      setIsCancelling(false)
+    }
+  }
+
   return (
-    <Card>
-      <S.OrderHeader>
-        <S.OrderInfo>
-          <S.OrderDate>
-            <Calendar size={16} />
-            {formatDate(order.orderDate)}
-          </S.OrderDate>
-          <S.OrderTotal>{formatCurrency(order.totalPrice)}</S.OrderTotal>
-        </S.OrderInfo>
-        <Badge variant={statusInfo.variant} size="sm">
-          {statusInfo.label}
-        </Badge>
-      </S.OrderHeader>
+    <>
+      <Card>
+        <S.OrderHeader>
+          <S.OrderInfo>
+            <S.OrderDate>
+              <Calendar size={16} />
+              {formatDate(order.orderDate)}
+            </S.OrderDate>
+            <S.OrderTotal>{formatCurrency(order.totalPrice)}</S.OrderTotal>
+          </S.OrderInfo>
+          <Badge variant={statusInfo.variant} size="sm">
+            {statusInfo.label}
+          </Badge>
+        </S.OrderHeader>
 
-      <S.OrderContent>
-        <S.OrderSummary>
-          <S.SummaryItem>
-            <Package size={16} />
-            <span>
-              {order.totalItems} {order.totalItems === 1 ? 'item' : 'itens'}
-            </span>
-          </S.SummaryItem>
-        </S.OrderSummary>
+        <S.OrderContent>
+          <S.OrderSummary>
+            <S.SummaryItem>
+              <Package size={16} />
+              <span>
+                {order.totalItems} {order.totalItems === 1 ? 'item' : 'itens'}
+              </span>
+            </S.SummaryItem>
+          </S.OrderSummary>
 
-        <S.OrderItems>
-          {order.items.slice(0, 3).map((item, index) => (
-            <S.OrderItem key={`${item.book.id}-${index}`}>
-              <S.BookInfo>
-                <S.BookTitle>{item.book.title}</S.BookTitle>
-                <S.BookAuthor>por {item.book.author}</S.BookAuthor>
-              </S.BookInfo>
-              <S.ItemDetails>
-                <S.ItemQuantity>Qtd: {item.quantity}</S.ItemQuantity>
-                <S.ItemPrice>{formatCurrency(item.totalPrice)}</S.ItemPrice>
-              </S.ItemDetails>
-            </S.OrderItem>
-          ))}
+          <S.OrderItems>
+            {order.items.slice(0, 3).map((item, index) => (
+              <S.OrderItem key={`${item.book.id}-${index}`}>
+                <S.BookInfo>
+                  <S.BookTitle>{item.book.title}</S.BookTitle>
+                  <S.BookAuthor>por {item.book.author}</S.BookAuthor>
+                </S.BookInfo>
+                <S.ItemDetails>
+                  <S.ItemQuantity>Qtd: {item.quantity}</S.ItemQuantity>
+                  <S.ItemPrice>{formatCurrency(item.totalPrice)}</S.ItemPrice>
+                </S.ItemDetails>
+              </S.OrderItem>
+            ))}
 
-          {order.items.length > 3 && (
-            <S.MoreItems>
-              +{order.items.length - 3}{' '}
-              {order.items.length - 3 === 1 ? 'item' : 'itens'}
-            </S.MoreItems>
-          )}
-        </S.OrderItems>
-      </S.OrderContent>
-    </Card>
+            {order.items.length > 3 && (
+              <S.MoreItems>
+                +{order.items.length - 3}{' '}
+                {order.items.length - 3 === 1 ? 'item' : 'itens'}
+              </S.MoreItems>
+            )}
+          </S.OrderItems>
+        </S.OrderContent>
+
+        {canCancel && (
+          <S.OrderFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCancelClick}
+              disabled={isCancelling}
+            >
+              <X size={14} />
+              Cancelar Pedido
+            </Button>
+          </S.OrderFooter>
+        )}
+      </Card>
+
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        onConfirm={handleConfirmCancel}
+        onClose={() => setIsConfirmModalOpen(false)}
+        title="Cancelar Pedido"
+        message="Tem certeza de que deseja cancelar este pedido? Esta ação não pode ser desfeita."
+        confirmText="Sim, cancelar pedido"
+        cancelText="Não, manter pedido"
+        variant="warning"
+      />
+    </>
   )
 }

@@ -1,5 +1,3 @@
-import path from 'path'
-
 import { ProtectedRoute } from '@/components'
 import {
   AdminLayout,
