@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Request,
@@ -44,5 +45,14 @@ export class OrdersController {
     @Body() dto: PaymentsDTO,
   ): Promise<OrderDTO> {
     return await this.webService.pay(orderId, dto);
+  }
+
+  @Patch(':id/cancel')
+  public async cancelOrder(
+    @Param('id') orderId: string,
+    @Request() req: AuthenticatedRequest,
+  ): Promise<OrderDTO> {
+    const userId = req.user.userId;
+    return this.webService.cancel(orderId, userId);
   }
 }

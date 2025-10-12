@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
+import { CancelOrder } from '@/application/orders/use-cases/cancel-order.usecase';
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
 import { Order } from '@/domain/order/order.entity';
@@ -13,7 +14,7 @@ import { OrdersRepositoryImpl } from '@/infrastructure/persistence/typeorm/repos
 import { BooksModule } from './books.module';
 import { UsersModule } from './users.module';
 
-const USE_CASES = [CreateNewOrder, PayOrder];
+const USE_CASES = [CreateNewOrder, PayOrder, CancelOrder];
 
 @Module({
   imports: [

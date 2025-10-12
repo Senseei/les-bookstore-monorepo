@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
 import { BaseService } from '@/application/base.service';
 import { UsersService } from '@/application/users/services';
@@ -20,5 +20,21 @@ export class OrdersService extends BaseService<Order> {
   public async findByUserAndStatus(userId: string, status?: OrderStatus) {
     const user = await this.usersService.findActiveCustomerByIdOrThrow(userId);
     return await this.repository.findByUserAndStatus(user, status);
+  }
+
+  async findByIdAndUserOrThrow(
+    orderId: string,
+    userId: string,
+  ): Promise<Order> {
+    const user = await this.usersService.findActiveCustomerByIdOrThrow(userId);
+    const order = await this.findByIdOrThrow(orderId);
+
+    if (order.customer.id !== user.customerDetails.id) {
+      throw new BadRequestException(
+        `Order with ID ${orderId} does not belong to the user.`,
+      );
+    }
+
+    return order;
   }
 }

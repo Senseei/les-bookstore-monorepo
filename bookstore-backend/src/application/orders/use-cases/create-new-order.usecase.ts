@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { BooksService } from '@/application/books/services/books.service';
 import { UsersService } from '@/application/users/services';
@@ -23,7 +23,20 @@ export class CreateNewOrder {
 
     for (const item of dto.items) {
       const book = await this.booksService.findByIdOrThrow(item.bookId);
-      order.addItem(new OrderItem({ book, quantity: item.quantity }));
+
+      if (!book.isInStock(item.quantity)) {
+        throw new BadRequestException(
+          `Book with ID ${item.bookId} is out of stock or does not have enough stock.`,
+        );
+      }
+      book.reduceStock(item.quantity);
+
+      order.addItem(
+        new OrderItem({
+          book: await this.booksService.save(book),
+          quantity: item.quantity,
+        }),
+      );
     }
 
     return await this.service.save(order);

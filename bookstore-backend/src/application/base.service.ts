@@ -13,6 +13,10 @@ export abstract class BaseService<E extends DomainEntity> {
     return this.commonRepository.save(entity);
   }
 
+  public async saveAll(entities: E[]): Promise<E[]> {
+    return this.commonRepository.saveAll(entities);
+  }
+
   public async findById(id: string): Promise<E | null> {
     return this.commonRepository.findById(id);
   }

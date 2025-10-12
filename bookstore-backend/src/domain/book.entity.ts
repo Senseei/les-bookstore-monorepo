@@ -82,4 +82,19 @@ export class Book extends DomainEntity {
     }
     return this.isbn;
   }
+
+  public isInStock(quantity: number): boolean {
+    return this.stock >= quantity;
+  }
+
+  public reduceStock(quantity: number): void {
+    if (!this.isInStock(quantity)) {
+      throw new Error('Insufficient stock');
+    }
+    this.stock -= quantity;
+  }
+
+  public increaseStock(quantity: number): void {
+    this.stock += quantity;
+  }
 }
