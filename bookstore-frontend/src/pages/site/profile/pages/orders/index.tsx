@@ -1,10 +1,14 @@
 import { ArrowClockwise, Package, Storefront } from 'phosphor-react'
+import { useState } from 'react'
 
 import { Button, NavigationButton } from '@/components'
+import type { OrderDTO, PaymentsDTO } from '@/dtos'
+import { useCard, usePayment } from '@/hooks'
 import { Container } from '@/pages/site/layout/styles'
+import { useToast } from '@/providers'
 import { ROUTES } from '@/routes/constants'
 
-import { OrderCard } from './components'
+import { OrderCard, PaymentModal } from './components'
 import * as S from './styles'
 import { useOrders } from './use-orders'
 
@@ -20,6 +24,40 @@ export const Orders = () => {
     formatCurrency,
     formatDate,
   } = useOrders()
+
+  const { getCards } = useCard()
+  const { payOrder, isLoading: isPaymentLoading } = usePayment()
+  const { showSuccess, showError } = useToast()
+
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState<OrderDTO | null>(null)
+
+  const handlePayOrder = (orderId: string) => {
+    const order = orders.find((o) => o.id === orderId)
+    if (order) {
+      setSelectedOrder(order)
+      setIsPaymentModalOpen(true)
+      getCards() // Load cards when opening modal
+    }
+  }
+
+  const handleClosePaymentModal = () => {
+    setIsPaymentModalOpen(false)
+    setSelectedOrder(null)
+  }
+
+  const handleConfirmPayment = async (payments: PaymentsDTO) => {
+    if (!selectedOrder) return
+
+    try {
+      await payOrder(selectedOrder.id, payments)
+      showSuccess('Seu pagamento foi processado com sucesso!')
+      handleRefreshOrders() // Refresh orders to get updated status
+      handleClosePaymentModal()
+    } catch {
+      showError('Não foi possível processar o pagamento. Tente novamente.')
+    }
+  }
 
   if (isLoading) {
     return (
@@ -109,10 +147,19 @@ export const Orders = () => {
                 formatCurrency={formatCurrency}
                 formatDate={formatDate}
                 onCancelOrder={handleCancelOrder}
+                onPayOrder={handlePayOrder}
               />
             ))}
           </S.OrdersList>
         )}
+
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          order={selectedOrder}
+          onClose={handleClosePaymentModal}
+          onPayment={handleConfirmPayment}
+          isLoading={isPaymentLoading}
+        />
       </S.ContentContainer>
     </Container>
   )

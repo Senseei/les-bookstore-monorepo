@@ -1,4 +1,4 @@
-import { Calendar, Package, X } from 'phosphor-react'
+import { Calendar, CreditCard, Package, X } from 'phosphor-react'
 import { useState } from 'react'
 
 import { Badge, Button, Card, ConfirmationModal } from '@/components'
@@ -11,6 +11,7 @@ interface OrderCardProps {
   formatCurrency: (value: number) => string
   formatDate: (date: Date) => string
   onCancelOrder: (orderId: string) => Promise<{ success: boolean }>
+  onPayOrder?: (orderId: string) => void
 }
 
 const getStatusBadge = (status: OrderDTO['status']) => {
@@ -32,6 +33,7 @@ export const OrderCard = ({
   formatCurrency,
   formatDate,
   onCancelOrder,
+  onPayOrder,
 }: OrderCardProps) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const [isCancelling, setIsCancelling] = useState(false)
@@ -39,10 +41,17 @@ export const OrderCard = ({
   const statusInfo = getStatusBadge(order.status)
 
   // Only show cancel button for pending or confirmed orders
-  const canCancel = order.status === 'pending' || order.status === 'confirmed'
+  const canCancel = order.status === 'pending'
+
+  // Only show pay button for pending orders
+  const canPay = order.status === 'pending'
 
   const handleCancelClick = () => {
     setIsConfirmModalOpen(true)
+  }
+
+  const handlePayClick = () => {
+    onPayOrder?.(order.id)
   }
 
   const handleConfirmCancel = async () => {
@@ -106,17 +115,25 @@ export const OrderCard = ({
           </S.OrderItems>
         </S.OrderContent>
 
-        {canCancel && (
+        {(canCancel || canPay) && (
           <S.OrderFooter>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCancelClick}
-              disabled={isCancelling}
-            >
-              <X size={14} />
-              Cancelar Pedido
-            </Button>
+            {canPay && (
+              <Button variant="primary" size="sm" onClick={handlePayClick}>
+                <CreditCard size={14} />
+                Pagar
+              </Button>
+            )}
+            {canCancel && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCancelClick}
+                disabled={isCancelling}
+              >
+                <X size={14} />
+                Cancelar Pedido
+              </Button>
+            )}
           </S.OrderFooter>
         )}
       </Card>

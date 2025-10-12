@@ -46,6 +46,7 @@ export const OrderFooter = styled.div`
   background-color: ${defaultTheme.COLORS.NEUTRAL_50};
   display: flex;
   justify-content: flex-end;
+  gap: ${defaultTheme.SPACING.SM};
 `
 
 export const OrderSummary = styled.div`

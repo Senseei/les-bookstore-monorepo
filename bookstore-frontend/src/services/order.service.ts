@@ -1,4 +1,4 @@
-import type { CreateOrderDTO, OrderDTO } from '@/dtos'
+import type { CreateOrderDTO, OrderDTO, PaymentsDTO } from '@/dtos'
 
 import { AxiosApp } from './axios-app'
 
@@ -22,6 +22,22 @@ export class OrderService {
    */
   static async cancelOrder(orderId: string): Promise<OrderDTO> {
     const response = await AxiosApp.patch<OrderDTO>(`/orders/${orderId}/cancel`)
+    return response.data
+  }
+
+  /**
+   * Pay for an order
+   * @param orderId - The ID of the order to pay
+   * @param paymentsData - The payments data
+   */
+  static async payOrder(
+    orderId: string,
+    paymentsData: PaymentsDTO,
+  ): Promise<OrderDTO> {
+    const response = await AxiosApp.post<OrderDTO>(
+      `/orders/${orderId}/pay`,
+      paymentsData,
+    )
     return response.data
   }
 }
