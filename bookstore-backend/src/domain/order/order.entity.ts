@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { DomainEntity } from '../domain.entity';
+import { Address } from '../user/address.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
 import { OrderItem } from './order-item.entity';
 import { PaymentStatus } from './payment/enums/payment-status.enum';
@@ -21,6 +22,10 @@ export class Order extends DomainEntity {
   @Column({ type: 'enum', enum: OrderStatus })
   status: OrderStatus = OrderStatus.PENDING;
 
+  @ManyToOne(() => Address, { eager: true })
+  @JoinColumn()
+  deliveryAddress: Address;
+
   @OneToMany(() => Payment, (payment) => payment.order, {
     eager: true,
     cascade: true,
@@ -31,10 +36,13 @@ export class Order extends DomainEntity {
   @JoinColumn()
   customer: CustomerDetails;
 
-  constructor(customer: CustomerDetails) {
+  constructor(
+    props: { customer: CustomerDetails; deliveryAddress: Address } = null,
+  ) {
     super();
-    if (customer) {
-      this.customer = customer;
+    if (props) {
+      this.customer = props.customer;
+      this.deliveryAddress = props.deliveryAddress;
     }
   }
 

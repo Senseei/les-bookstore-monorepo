@@ -15,6 +15,10 @@ export class CreateNewOrderDTO {
   @ArrayMinSize(1)
   @Type(() => OrderItemDTO)
   items: OrderItemDTO[];
+
+  @IsString()
+  @IsNotEmpty()
+  deliveryAddressId: string;
 }
 
 export class OrderItemDTO {

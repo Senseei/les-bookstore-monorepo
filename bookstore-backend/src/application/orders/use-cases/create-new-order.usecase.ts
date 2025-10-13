@@ -18,8 +18,14 @@ export class CreateNewOrder {
 
   public async execute(dto: CreateNewOrderDTO, userId: string): Promise<Order> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
+    const deliveryAddress = user.customerDetails.getAddress(
+      dto.deliveryAddressId,
+    );
 
-    const order = new Order(user.customerDetails);
+    const order = new Order({
+      customer: user.customerDetails,
+      deliveryAddress,
+    });
 
     for (const item of dto.items) {
       const book = await this.booksService.findByIdOrThrow(item.bookId);
