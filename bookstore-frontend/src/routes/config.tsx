@@ -1,5 +1,3 @@
-import path from 'path'
-
 import { ProtectedRoute } from '@/components'
 import {
   AdminLayout,
@@ -72,7 +70,7 @@ export const routeConfig = [
       {
         path: ROUTES.MY_PROFILE.slice(1), // Remove leading slash for child route
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRoles={['user']}>
             <ProfileEdit />
           </ProtectedRoute>
         ),
@@ -80,19 +78,23 @@ export const routeConfig = [
       {
         path: ROUTES.PAYMENT_METHODS.slice(1), // Remove leading slash for child route
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRoles={['user']}>
             <PaymentMethods />
           </ProtectedRoute>
         ),
       },
       {
         path: ROUTES.ORDERS.slice(1),
-        element: <Orders />,
+        element: (
+          <ProtectedRoute requiredRoles={['user']}>
+            <Orders />
+          </ProtectedRoute>
+        ),
       },
       {
         path: ROUTES.CART.slice(1), // Remove leading slash for child route
         element: (
-          <ProtectedRoute>
+          <ProtectedRoute requiredRoles={['user']}>
             <Cart />
           </ProtectedRoute>
         ),

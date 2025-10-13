@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { Book } from '../book.entity';
+import { DecimalColumn } from '../decorators/decimal-column.decorator';
 import { Order } from './order.entity';
 
 @Entity('tb_order_items')
@@ -22,7 +23,7 @@ export class OrderItem {
   @Column()
   quantity: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @DecimalColumn({ precision: 10, scale: 2 })
   unitPrice: number;
 
   constructor(props: { book: Book; quantity: number }) {

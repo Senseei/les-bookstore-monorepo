@@ -23,6 +23,13 @@ export interface CartContextValue {
   getItem: (bookId: string) => CartItemDTO | undefined
   hasItem: (bookId: string) => boolean
 
+  // Checkout operations
+  checkout: (deliveryAddressId: string) => Promise<{
+    success: boolean
+    orderId?: string
+    error?: string
+  }>
+
   // Utility methods
   refreshSummary: () => void
 }
