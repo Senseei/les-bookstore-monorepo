@@ -262,49 +262,59 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   /**
    * Checkout - Create order from cart items
    */
-  const checkout = useCallback(async () => {
-    if (cartState.items.length === 0) {
-      return {
-        success: false,
-        error: 'Carrinho vazio. Adicione itens antes de finalizar o pedido.',
+  const checkout = useCallback(
+    async (deliveryAddressId: string) => {
+      if (cartState.items.length === 0) {
+        return {
+          success: false,
+          error: 'Carrinho vazio. Adicione itens antes de finalizar o pedido.',
+        }
       }
-    }
 
-    try {
-      // Convert cart items to order format
-      const orderItems = cartState.items.map((item) => ({
-        bookId: item.bookId,
-        quantity: item.quantity,
-      }))
-
-      const orderData = { items: orderItems }
-
-      // Create the order
-      const createdOrder = await OrderService.createOrder(orderData)
-
-      // Clear cart after successful order creation
-      clearCart()
-
-      toast.showSuccess(
-        `Pedido realizado com sucesso! Número do pedido: ${createdOrder.id}`,
-      )
-
-      return {
-        success: true,
-        orderId: createdOrder.id,
+      if (!deliveryAddressId) {
+        return {
+          success: false,
+          error: 'Endereço de entrega é obrigatório.',
+        }
       }
-    } catch (error) {
-      const errorMessage =
-        'Erro ao finalizar pedido. Tente novamente ou entre em contato com o suporte.'
 
-      toast.showError(errorMessage)
+      try {
+        // Convert cart items to order format
+        const orderItems = cartState.items.map((item) => ({
+          bookId: item.bookId,
+          quantity: item.quantity,
+        }))
 
-      return {
-        success: false,
-        error: errorMessage,
+        const orderData = { items: orderItems, deliveryAddressId }
+
+        // Create the order
+        const createdOrder = await OrderService.createOrder(orderData)
+
+        // Clear cart after successful order creation
+        clearCart()
+
+        toast.showSuccess(
+          `Pedido realizado com sucesso! Número do pedido: ${createdOrder.id}`,
+        )
+
+        return {
+          success: true,
+          orderId: createdOrder.id,
+        }
+      } catch {
+        const errorMessage =
+          'Erro ao finalizar pedido. Tente novamente ou entre em contato com o suporte.'
+
+        toast.showError(errorMessage)
+
+        return {
+          success: false,
+          error: errorMessage,
+        }
       }
-    }
-  }, [cartState.items, clearCart, toast])
+    },
+    [cartState.items, clearCart, toast],
+  )
 
   // Computed properties
   const isEmpty = useMemo(() => cartState.items.length === 0, [cartState.items])

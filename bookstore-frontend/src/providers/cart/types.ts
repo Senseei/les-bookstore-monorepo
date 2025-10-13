@@ -24,7 +24,7 @@ export interface CartContextValue {
   hasItem: (bookId: string) => boolean
 
   // Checkout operations
-  checkout: () => Promise<{
+  checkout: (deliveryAddressId: string) => Promise<{
     success: boolean
     orderId?: string
     error?: string
