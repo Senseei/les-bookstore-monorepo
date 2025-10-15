@@ -3,11 +3,13 @@ import { UsersService } from '@application/users/services';
 import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { UpdateAddressDTO } from '@presentation/site/users/dtos';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class UpdateUserAddress {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   async execute(
     userId: string,
     addressId: string,

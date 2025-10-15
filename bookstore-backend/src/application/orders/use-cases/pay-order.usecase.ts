@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { CardsService } from '@/application/users/services/cards.service';
 import { Order } from '@/domain/order/order.entity';
@@ -21,6 +22,7 @@ export class PayOrder {
     @Inject('PaymentGateway') private readonly paymentGateway: PaymentGateway,
   ) {}
 
+  @Transactional()
   public async execute(orderId: string, payments: PaymentsDTO): Promise<Order> {
     const order = await this.ordersService.findByIdOrThrow(orderId);
 

@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { BooksService } from '@/application/books/services/books.service';
 import { UsersService } from '@/application/users/services';
@@ -16,6 +17,7 @@ export class CreateNewOrder {
     private readonly usersService: UsersService,
   ) {}
 
+  @Transactional()
   public async execute(dto: CreateNewOrderDTO, userId: string): Promise<Order> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
     const deliveryAddress = user.customerDetails.getAddress(
