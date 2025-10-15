@@ -4,11 +4,13 @@ import { UsersService } from '@application/users/services';
 import { Address } from '@domain/user/address.entity';
 import { AddressPurpose } from '@domain/user/enums/address-purpose.enum';
 import { Injectable } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class RemoveUserAddress {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   async execute(userId: string, addressId: string): Promise<void> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
 

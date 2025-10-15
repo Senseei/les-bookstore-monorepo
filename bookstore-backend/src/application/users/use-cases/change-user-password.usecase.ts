@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import { Transactional } from 'typeorm-transactional';
 
 import { InvalidCredentialsException } from '@/application/auth/exceptions/invalid-credentials.exception';
 
@@ -9,6 +10,7 @@ import { UsersService } from '../services';
 export class ChangeUserPassword {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   public async execute(
     userId: string,
     oldPassword: string,
