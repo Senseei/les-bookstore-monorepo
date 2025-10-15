@@ -106,6 +106,14 @@ export class Order extends DomainEntity {
     return this.payments.filter((p) => p.card?.id === cardId);
   }
 
+  public getPendingPayments(): Payment[] {
+    return this.payments.filter(
+      (p) =>
+        p.status === PaymentStatus.PENDING ||
+        p.status === PaymentStatus.PROCESSING,
+    );
+  }
+
   public canBeCancelled(): boolean {
     return this.status === OrderStatus.PENDING;
   }

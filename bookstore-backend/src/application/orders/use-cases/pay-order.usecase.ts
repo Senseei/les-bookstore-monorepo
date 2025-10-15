@@ -12,6 +12,7 @@ import { PaymentGateway } from '../interfaces/payment/payment.gateway';
 import { PaymentIntentRequest } from '../interfaces/payment/payment-intent-request';
 import { OrdersService } from '../services/orders.service';
 
+// TODO - Implement in the future a better payment flow, following good practices
 @Injectable()
 export class PayOrder {
   constructor(
@@ -63,6 +64,14 @@ export class PayOrder {
   private validate(order: Order, dto: PaymentsDTO) {
     if (order.isFullyPaid()) {
       throw new OrderAlreadyFullyPaidException(order.id);
+    }
+
+    const pendingPayments = order.getPendingPayments();
+
+    if (pendingPayments.length > 0) {
+      throw new BadRequestException(
+        `Order ${order.id} has ${pendingPayments.length} pending payment(s). Please wait for current payment to complete before submitting another.`,
+      );
     }
 
     const totalAmount = dto.payments.reduce(

@@ -22,9 +22,22 @@ export class OrdersRepositoryImpl
     customer: User,
     status?: OrderStatus,
   ): Promise<Order[]> {
-    return this.repository.findBy({
-      status,
-      customer: customer.customerDetails,
-    });
+    const queryBuilder = this.repository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.customer', 'customer')
+      .leftJoinAndSelect('order.deliveryAddress', 'deliveryAddress')
+      .leftJoinAndSelect('order._items', 'items')
+      .leftJoinAndSelect('items.book', 'book')
+      .leftJoinAndSelect('order._payments', 'payments')
+      .leftJoinAndSelect('payments.card', 'card')
+      .where('customer.id = :customerId', {
+        customerId: customer.customerDetails.id,
+      });
+
+    if (status) {
+      queryBuilder.andWhere('order.status = :status', { status });
+    }
+
+    return queryBuilder.getMany();
   }
 }
