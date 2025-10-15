@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 import { DomainEntity } from '../domain.entity';
+import { Ticket } from '../ticket/ticket.entity';
 import { Address } from '../user/address.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
 import { OrderItem } from './order-item.entity';
@@ -32,17 +33,24 @@ export class Order extends DomainEntity {
   })
   _payments: Payment[];
 
+  @ManyToOne(() => Ticket, { eager: true, nullable: true })
+  @JoinColumn()
+  ticket?: Ticket;
+
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
   @JoinColumn()
   customer: CustomerDetails;
 
-  constructor(
-    props: { customer: CustomerDetails; deliveryAddress: Address } = null,
-  ) {
+  constructor(props: {
+    customer: CustomerDetails;
+    deliveryAddress: Address;
+    ticket?: Ticket;
+  }) {
     super();
     if (props) {
       this.customer = props.customer;
       this.deliveryAddress = props.deliveryAddress;
+      this.ticket = props.ticket;
     }
   }
 
@@ -65,6 +73,14 @@ export class Order extends DomainEntity {
   }
 
   public getTotalPrice(): number {
+    const totalItemsPrice = this.getTotalItemsPrice();
+    const result =
+      totalItemsPrice - this.ticket?.applyTicket(totalItemsPrice) || 0;
+
+    return result > 0 ? result : 0;
+  }
+
+  public getTotalItemsPrice(): number {
     return this.items.reduce((total, item) => total + item.getTotalPrice(), 0);
   }
 
