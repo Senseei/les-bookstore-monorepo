@@ -8,6 +8,7 @@ import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
 import { Order } from '@/domain/order/order.entity';
 import { OrderItem } from '@/domain/order/order-item.entity';
 import { Payment } from '@/domain/order/payment/payment.entity';
+import { Ticket } from '@/domain/ticket/ticket.entity';
 import { MockPaymentGateway } from '@/infrastructure/payment/mock/mock-payment.gateway';
 import { OrdersRepositoryImpl } from '@/infrastructure/persistence/typeorm/repositories';
 import { OrdersController } from '@/presentation/site/orders/orders.controller';
@@ -20,7 +21,7 @@ const USE_CASES = [CreateNewOrder, PayOrder, CancelOrder];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem, Payment]),
+    TypeOrmModule.forFeature([Order, OrderItem, Payment, Ticket]),
     BooksModule,
     UsersModule,
   ],
