@@ -80,7 +80,7 @@ export class PayOrder {
       (acc, payment) => acc + payment.amountInCents,
       0,
     );
-    if (totalAmount !== order.getTotalPrice() * 100) {
+    if (totalAmount !== order.getFinalPrice() * 100) {
       throw new BadRequestException(
         'The total amount of payments does not match the order total price.',
       );

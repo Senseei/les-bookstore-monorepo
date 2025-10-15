@@ -7,8 +7,8 @@ export class OrderDTO {
   id: string;
   items: OrderItemDTO[];
   totalItems: number;
-  totalPrice: number;
-  discount?: number;
+  subtotal: number;
+  discount: number;
   orderDate: Date;
   status: OrderStatus;
 
@@ -16,8 +16,8 @@ export class OrderDTO {
     this.id = order.id;
     this.items = order.items.map((item) => new OrderItemDTO(item));
     this.totalItems = order.getTotalItems();
-    this.totalPrice = order.getTotalItemsPrice();
-    this.discount = order.ticket?.applyTicket(this.totalPrice);
+    this.subtotal = order.getSubtotal();
+    this.discount = order.getDiscount();
     this.orderDate = order.orderDate;
     this.status = order.status;
   }

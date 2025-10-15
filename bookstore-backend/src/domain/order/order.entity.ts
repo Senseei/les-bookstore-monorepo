@@ -72,16 +72,19 @@ export class Order extends DomainEntity {
     return this.items.reduce((total, item) => total + item.quantity, 0);
   }
 
-  public getTotalPrice(): number {
-    const totalItemsPrice = this.getTotalItemsPrice();
-    const result =
-      totalItemsPrice - this.ticket?.applyTicket(totalItemsPrice) || 0;
+  public getFinalPrice(): number {
+    const totalItemsPrice = this.getSubtotal();
+    const result = totalItemsPrice - this.getDiscount();
 
     return result > 0 ? result : 0;
   }
 
-  public getTotalItemsPrice(): number {
+  public getSubtotal(): number {
     return this.items.reduce((total, item) => total + item.getTotalPrice(), 0);
+  }
+
+  public getDiscount(): number {
+    return this.ticket?.applyTicket(this.getSubtotal()) || 0;
   }
 
   public addItem(item: OrderItem): void {
@@ -111,11 +114,11 @@ export class Order extends DomainEntity {
   }
 
   public isFullyPaid(): boolean {
-    return this.getTotalPaid() >= this.getTotalPrice();
+    return this.getTotalPaid() >= this.getFinalPrice();
   }
 
   public getRemainingBalance(): number {
-    return Math.max(0, this.getTotalPrice() - this.getTotalPaid());
+    return Math.max(0, this.getFinalPrice() - this.getTotalPaid());
   }
 
   public getPaymentsByCard(cardId: string): Payment[] {
