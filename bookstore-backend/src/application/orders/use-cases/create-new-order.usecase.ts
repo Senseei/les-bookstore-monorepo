@@ -5,6 +5,7 @@ import { BooksService } from '@/application/books/services/books.service';
 import { UsersService } from '@/application/users/services';
 import { Order } from '@/domain/order/order.entity';
 import { OrderItem } from '@/domain/order/order-item.entity';
+import { User } from '@/domain/user/user.entity';
 import { CreateNewOrderDTO } from '@/presentation/site/orders/dtos/create-new-order.dto';
 
 import { OrdersService } from '../services/orders.service';
@@ -20,6 +21,8 @@ export class CreateNewOrder {
   @Transactional()
   public async execute(dto: CreateNewOrderDTO, userId: string): Promise<Order> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
+
+    this.validate(dto, user);
     const deliveryAddress = user.customerDetails.getAddress(
       dto.deliveryAddressId,
     );
@@ -48,5 +51,19 @@ export class CreateNewOrder {
     }
 
     return await this.service.save(order);
+  }
+
+  private validate(dto: CreateNewOrderDTO, user: User): void {
+    if (user.customerDetails.hasAddress(dto.deliveryAddressId)) {
+      throw new BadRequestException(
+        `User does not have an address with ID ${dto.deliveryAddressId}.`,
+      );
+    }
+
+    if (dto.ticketId && user.customerDetails.hasUsedTicket(dto.ticketId)) {
+      throw new BadRequestException(
+        `User has already used the ticket with ID ${dto.ticketId}.`,
+      );
+    }
   }
 }
