@@ -9,6 +9,7 @@ import { User } from '@/domain/user/user.entity';
 import { CreateNewOrderDTO } from '@/presentation/site/orders/dtos/create-new-order.dto';
 
 import { OrdersService } from '../services/orders.service';
+import { TicketsService } from '../services/tickets.service';
 
 @Injectable()
 export class CreateNewOrder {
@@ -16,6 +17,7 @@ export class CreateNewOrder {
     private readonly service: OrdersService,
     private readonly booksService: BooksService,
     private readonly usersService: UsersService,
+    private readonly ticketsService: TicketsService,
   ) {}
 
   @Transactional()
@@ -31,6 +33,11 @@ export class CreateNewOrder {
       customer: user.customerDetails,
       deliveryAddress,
     });
+
+    if (dto.ticketId) {
+      const ticket = await this.ticketsService.findByIdOrThrow(dto.ticketId);
+      order.ticket = ticket;
+    }
 
     for (const item of dto.items) {
       const book = await this.booksService.findByIdOrThrow(item.bookId);
