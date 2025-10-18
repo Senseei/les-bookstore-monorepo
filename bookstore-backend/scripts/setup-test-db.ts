@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { addTransactionalDataSource } from 'typeorm-transactional';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -16,7 +17,7 @@ async function setupTestDatabase() {
 
   try {
     const app = await NestFactory.create(AppModule, {
-      logger: ['error', 'warn'], // Keep some logging for debugging
+      logger: ['error', 'warn'],
       abortOnError: false,
     });
 
@@ -24,6 +25,11 @@ async function setupTestDatabase() {
 
     // Get database connection
     const dataSource = app.get(DataSource);
+
+    // Ensure transactional library is initialized (in case it wasn't)
+    if (dataSource.isInitialized) {
+      addTransactionalDataSource(dataSource);
+    }
 
     console.log('📊 Database connection established');
     console.log(`📝 Database: ${configService.get('DATABASE_NAME')}`);
@@ -56,7 +62,6 @@ async function setupTestDatabase() {
   } catch (error) {
     console.error('❌ Failed to setup test database:', error);
 
-    // Provide more specific error information
     if (error.code === 'ECONNREFUSED') {
       console.error('💡 Make sure PostgreSQL is running and accessible');
       console.error('💡 Try running: yarn docker:test-db');
