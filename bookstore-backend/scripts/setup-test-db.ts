@@ -1,9 +1,9 @@
-import { NestFactory } from '@nestjs/core';
-import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { addTransactionalDataSource } from 'typeorm-transactional';
+import { NestFactory } from '@nestjs/core';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { DataSource } from 'typeorm';
+import { initializeTransactionalContext } from 'typeorm-transactional';
 
 // Load environment variables before importing AppModule
 process.env.NODE_ENV = 'test';
@@ -16,6 +16,9 @@ async function setupTestDatabase() {
   console.log('🔧 Setting up test database...');
 
   try {
+    // Initialize transactional context before creating the app
+    initializeTransactionalContext();
+
     const app = await NestFactory.create(AppModule, {
       logger: ['error', 'warn'],
       abortOnError: false,
@@ -25,11 +28,6 @@ async function setupTestDatabase() {
 
     // Get database connection
     const dataSource = app.get(DataSource);
-
-    // Ensure transactional library is initialized (in case it wasn't)
-    if (dataSource.isInitialized) {
-      addTransactionalDataSource(dataSource);
-    }
 
     console.log('📊 Database connection established');
     console.log(`📝 Database: ${configService.get('DATABASE_NAME')}`);
