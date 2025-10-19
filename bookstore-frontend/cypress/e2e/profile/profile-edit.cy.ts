@@ -7,10 +7,32 @@ describe('Profile Edit - With Authentication', () => {
   const API_URL = Cypress.env('API_URL') || 'http://localhost:3000'
 
   before(() => {
+    // Reset database before all tests to ensure clean state
+    cy.task('resetTestDatabase').then((result: any) => {
+      if (!result.success) {
+        cy.log(
+          '⚠️ Database reset failed, but continuing with tests:',
+          result.error,
+        )
+      } else {
+        cy.log('✅ Database reset successful before test suite')
+      }
+    })
     // Create and authenticate a real user for testing
     cy.setupAuthenticatedUser().then((user) => {
       authenticatedUser = user
       cy.log('✅ Authenticated user created:', authenticatedUser.user?.id)
+    })
+  })
+
+  after(() => {
+    // Clean up database after all tests
+    cy.task('resetTestDatabase').then((result: any) => {
+      if (result.success) {
+        cy.log('✅ Database cleaned up after test suite')
+      } else {
+        cy.log('⚠️ Database cleanup failed:', result.error)
+      }
     })
   })
 
