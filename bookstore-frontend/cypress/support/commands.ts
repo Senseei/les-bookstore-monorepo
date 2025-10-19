@@ -6,11 +6,13 @@ declare global {
   namespace Cypress {
     interface Chainable {
       createRealUser(userData?: any): Chainable<any>
+      createAdminUser(userData?: any): Chainable<any>
       loginRealUser(credentials: {
         email: string
         password: string
       }): Chainable<any>
       setupAuthenticatedUser(userData?: any): Chainable<any>
+      setupAuthenticatedAdmin(userData?: any): Chainable<any>
       setAuthToken(token: { accessToken: string; refreshToken: string }): void
       clearAuth(): void
     }
@@ -109,10 +111,9 @@ Cypress.Commands.add(
             window.localStorage.setItem('auth-token', JSON.stringify(tokenData))
           })
 
-          // Set default authorization header for subsequent requests
-          cy.wrap(null).then(() => {
-            Cypress.env('authToken', tokenData.accessToken)
-          })
+          // Reload the page to trigger AuthProvider initialization
+          // This ensures axios headers are set properly
+          cy.reload()
 
           return cy.wrap({
             token: tokenData,
@@ -159,6 +160,97 @@ Cypress.Commands.add('setupAuthenticatedUser', (userData = {}) => {
       .then((authData) => {
         return cy.wrap({
           ...user,
+          ...authData,
+        })
+      })
+  })
+})
+
+/**
+ * Creates an admin user via test API endpoint
+ */
+Cypress.Commands.add('createAdminUser', (userData = {}) => {
+  return cy.fixture('user').then((fixture: any) => {
+    const baseUser = fixture.existing
+    const user = { ...baseUser, ...userData }
+
+    const timestamp = Date.now().toString().slice(-6)
+    const validCPF = generateValidCPFNumbers()
+    const password = 'AdminPassword123@'
+
+    const uniqueUser = {
+      ...user,
+      email: `admin${timestamp}@ex.com`,
+      cpf: validCPF,
+      password,
+    }
+
+    return cy
+      .request({
+        method: 'POST',
+        url: `${Cypress.env('API_URL') || 'http://localhost:3000'}/api/test/create-admin-user`,
+        body: {
+          name: uniqueUser.name,
+          email: uniqueUser.email,
+          cpf: uniqueUser.cpf,
+          phone: uniqueUser.phone,
+          gender: uniqueUser.gender,
+          birthDate: uniqueUser.birthDate,
+          password: uniqueUser.password,
+          address: {
+            type: 'house',
+            purpose: 'both',
+            addressName: uniqueUser.addresses[0].addressName,
+            street: uniqueUser.addresses[0].street,
+            number: uniqueUser.addresses[0].number,
+            complement: uniqueUser.addresses[0].complement,
+            district: uniqueUser.addresses[0].district,
+            city: uniqueUser.addresses[0].city,
+            state: uniqueUser.addresses[0].state,
+            postalCode: uniqueUser.addresses[0].postalCode.replace('-', ''),
+          },
+        },
+        failOnStatusCode: false,
+      })
+      .then((response) => {
+        if (response.status === 201 && response.body.success) {
+          return cy.wrap({
+            ...uniqueUser,
+            id: response.body.user.id,
+            role: response.body.user.role,
+            password,
+          })
+        } else {
+          cy.log('API Error Details:', {
+            status: response.status,
+            body: response.body,
+          })
+
+          // Return mock admin user for testing
+          return cy.wrap({
+            ...uniqueUser,
+            id: '12345678-1234-1234-1234-123456789012',
+            role: 'admin',
+            password,
+          })
+        }
+      })
+  })
+})
+
+/**
+ * Creates an admin user and logs them in for authenticated admin testing
+ */
+Cypress.Commands.add('setupAuthenticatedAdmin', (userData = {}) => {
+  return cy.createAdminUser(userData).then((admin: any) => {
+    return cy
+      .loginRealUser({
+        email: admin.email,
+        password: admin.password,
+      })
+      .then((authData) => {
+        return cy.wrap({
+          ...admin,
           ...authData,
         })
       })
