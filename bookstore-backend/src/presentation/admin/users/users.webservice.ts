@@ -2,6 +2,7 @@ import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
 import { UserDTO } from '@presentation/common/users/dtos';
 
+import { UserRole } from '@/domain/user/enums/role.enum';
 import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
 import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
 
@@ -20,10 +21,16 @@ export class UsersWebService {
     params: PaginationParamsDTO,
     filters: Record<string, any> = {},
   ): Promise<PaginatedResultDTO<MinUserDTO>> {
+    // Add filter to exclude admin users from customer list
+    const customersOnlyFilters = {
+      ...filters,
+      role: UserRole.USER,
+    };
+
     const result = await this.usersService.findAll(
       params.page,
       params.limit,
-      filters,
+      customersOnlyFilters,
       params.orderBy,
     );
 
