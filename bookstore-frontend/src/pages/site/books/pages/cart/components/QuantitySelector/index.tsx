@@ -54,6 +54,7 @@ export const QuantitySelector = ({
         min={min}
         max={max}
         aria-label="Quantidade"
+        data-testid="cart-item-quantity-input"
       />
 
       <S.QuantityButton

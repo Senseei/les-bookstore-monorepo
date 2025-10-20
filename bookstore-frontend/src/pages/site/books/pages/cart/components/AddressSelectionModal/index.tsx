@@ -71,13 +71,14 @@ export const AddressSelectionModal = ({
         </S.AddressesSection>
 
         <S.Footer>
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={handleClose} data-testid="address-cancel-button">
             Cancelar
           </Button>
           <Button
             variant="primary"
             onClick={handleConfirm}
             disabled={!selectedAddressId || addresses.length === 0}
+            data-testid="address-confirm-button"
           >
             Confirmar Endereço
           </Button>
