@@ -10,6 +10,12 @@ export const OrderHeader = styled.div`
   border-bottom: 1px solid ${defaultTheme.COLORS.NEUTRAL_200};
 `
 
+export const OrderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${defaultTheme.SPACING.SM};
+`
+
 export const OrderInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,6 +38,15 @@ export const OrderTotal = styled.div`
 
 export const OrderContent = styled.div`
   padding: ${defaultTheme.SPACING.LG};
+`
+
+export const OrderFooter = styled.div`
+  padding: ${defaultTheme.SPACING.LG};
+  border-top: 1px solid ${defaultTheme.COLORS.NEUTRAL_200};
+  background-color: ${defaultTheme.COLORS.NEUTRAL_50};
+  display: flex;
+  justify-content: flex-end;
+  gap: ${defaultTheme.SPACING.SM};
 `
 
 export const OrderSummary = styled.div`

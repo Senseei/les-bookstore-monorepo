@@ -1,8 +1,9 @@
-export const formatCurrency = (value: number) => {
+export const formatCurrency = (value: number | string) => {
+  const numericValue = typeof value === 'string' ? parseFloat(value) : value
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-  }).format(value)
+  }).format(numericValue)
 }
 
 export const formatDateTime = (date: Date) => {
@@ -22,3 +23,6 @@ export const formatDateOnly = (date: Date) => {
     year: 'numeric',
   }).format(new Date(date))
 }
+
+// Alias for formatCurrency for backward compatibility
+export const formatPrice = formatCurrency

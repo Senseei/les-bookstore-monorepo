@@ -1,6 +1,7 @@
 import { Eye, Trash } from 'phosphor-react'
 
 import { Button, Card, CardContent, CardHeader } from '@/components'
+import { formatPrice } from '@/utils'
 
 import type { Book } from '../../types'
 import * as S from './styles'
@@ -15,13 +16,6 @@ export const BookCard = ({ book, onDeleteBook }: BookCardProps) => {
     if (onDeleteBook) {
       await onDeleteBook(book.id)
     }
-  }
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price)
   }
 
   return (

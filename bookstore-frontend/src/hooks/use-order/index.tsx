@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import type { OrderDTO } from '@/dtos'
+import { OrderService } from '@/services'
 
 import { useUser } from '../use-user'
 
@@ -102,6 +103,23 @@ export const useOrder = () => {
     return await getCurrentUser()
   }
 
+  /**
+   * Cancel an order
+   */
+  const cancelOrder = useCallback(
+    async (orderId: string) => {
+      try {
+        await OrderService.cancelOrder(orderId)
+        // Refresh user data to get updated orders
+        await getCurrentUser()
+        return { success: true }
+      } catch (error) {
+        return { success: false, error }
+      }
+    },
+    [getCurrentUser],
+  )
+
   return {
     // State
     orders: orderState.orders,
@@ -116,6 +134,7 @@ export const useOrder = () => {
 
     // Actions
     refreshOrders,
+    cancelOrder,
     filterOrdersByDateRange,
   }
 }

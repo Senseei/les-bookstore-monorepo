@@ -1,5 +1,6 @@
 import { Column, Entity } from 'typeorm';
 
+import { DecimalColumn } from './decorators/decimal-column.decorator';
 import { DomainEntity } from './domain.entity';
 
 @Entity('tb_books')
@@ -16,7 +17,7 @@ export class Book extends DomainEntity {
   @Column('text', { nullable: true })
   description?: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @DecimalColumn({ precision: 10, scale: 2 })
   price: number;
 
   @Column({ default: 0 })
@@ -80,5 +81,20 @@ export class Book extends DomainEntity {
       return `${this.isbn.slice(0, 3)}-${this.isbn.slice(3, 4)}-${this.isbn.slice(4, 7)}-${this.isbn.slice(7, 12)}-${this.isbn.slice(12)}`;
     }
     return this.isbn;
+  }
+
+  public isInStock(quantity: number): boolean {
+    return this.stock >= quantity;
+  }
+
+  public reduceStock(quantity: number): void {
+    if (!this.isInStock(quantity)) {
+      throw new Error('Insufficient stock');
+    }
+    this.stock -= quantity;
+  }
+
+  public increaseStock(quantity: number): void {
+    this.stock += quantity;
   }
 }
