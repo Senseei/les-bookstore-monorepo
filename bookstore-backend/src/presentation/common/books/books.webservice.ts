@@ -7,6 +7,7 @@ import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
 import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
 
 import { CreateBookDTO } from './dtos/create-book.dto';
+import { MinBookDTO } from './dtos/min-book.dto';
 
 @Injectable()
 export class BooksWebService {
@@ -18,7 +19,7 @@ export class BooksWebService {
   public async findAll(
     params: PaginationParamsDTO,
     filters: Record<string, any> = {},
-  ): Promise<PaginatedResultDTO<BookDTO>> {
+  ): Promise<PaginatedResultDTO<MinBookDTO>> {
     const result = await this.service.findAll(
       params.page,
       params.limit,
@@ -27,7 +28,7 @@ export class BooksWebService {
     );
 
     return new PaginatedResultDTO(
-      result.items.map((item) => new BookDTO(item)),
+      result.items.map((item) => new MinBookDTO(item)),
       result.count,
       params.limit,
       params.page,
