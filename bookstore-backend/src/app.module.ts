@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './infrastructure/nestjs/modules/auth.module';
 import { BooksModule } from './infrastructure/nestjs/modules/books.module';
 import { DatabaseModule } from './infrastructure/nestjs/modules/database.module';
+import { OrdersModule } from './infrastructure/nestjs/modules/orders.module';
 import { UsersModule } from './infrastructure/nestjs/modules/users.module';
 import { TestModule } from './presentation/test/test.module';
 
@@ -24,6 +25,7 @@ import { TestModule } from './presentation/test/test.module';
     AuthModule,
     UsersModule,
     BooksModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

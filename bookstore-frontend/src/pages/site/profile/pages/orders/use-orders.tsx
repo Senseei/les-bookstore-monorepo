@@ -20,6 +20,7 @@ export const useOrders = () => {
     sortedOrders,
     recentOrders,
     refreshOrders,
+    cancelOrder,
     filterOrdersByDateRange,
   } = useOrder()
 
@@ -103,6 +104,32 @@ export const useOrders = () => {
     await loadOrders()
   }, [loadOrders])
 
+  const handleCancelOrder = useCallback(
+    async (orderId: string) => {
+      try {
+        const result = await cancelOrder(orderId)
+        if (result.success) {
+          addToast('Pedido cancelado com sucesso!', 'success')
+          // Refresh orders to get updated data
+          await loadOrders()
+        } else {
+          addToast(
+            'Não foi possível cancelar o pedido. Tente novamente.',
+            'error',
+          )
+        }
+        return result
+      } catch {
+        addToast(
+          'Não foi possível cancelar o pedido. Tente novamente.',
+          'error',
+        )
+        return { success: false }
+      }
+    },
+    [cancelOrder, addToast, loadOrders],
+  )
+
   const handleFilterChange = (newFilters: Partial<OrderFilters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }))
   }
@@ -127,5 +154,6 @@ export const useOrders = () => {
     formatCurrency,
     formatDate: formatDateTime,
     handleRefreshOrders,
+    handleCancelOrder,
   }
 }
