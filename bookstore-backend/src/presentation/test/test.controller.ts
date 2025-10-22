@@ -10,7 +10,9 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { DataSource } from 'typeorm';
 
+import { Book } from '@/domain/book.entity';
 import { Address } from '@/domain/user/address.entity';
+import { Gender } from '@/domain/user/enums/gender.enum';
 import { UserRole } from '@/domain/user/enums/role.enum';
 import { User } from '@/domain/user/user.entity';
 
@@ -171,6 +173,13 @@ export class TestController {
 
       const hashedPassword = await bcrypt.hash(body.password, 10);
 
+      // Map gender string to enum
+      const genderMap: Record<string, Gender> = {
+        male: Gender.MALE,
+        female: Gender.FEMALE,
+        other: Gender.OTHER,
+      };
+
       // Create user entity
       const user = new User({
         name: body.name,
@@ -178,7 +187,7 @@ export class TestController {
         cpf: body.cpf,
         phone: body.phone,
         password: hashedPassword,
-        gender: body.gender as any,
+        gender: genderMap[body.gender] || Gender.OTHER,
         birthDate: new Date(body.birthDate),
       });
 
@@ -213,6 +222,65 @@ export class TestController {
           error instanceof Error
             ? error.message
             : 'Failed to create admin user',
+      };
+    }
+  }
+
+  @Post('create-book')
+  @HttpCode(HttpStatus.CREATED)
+  async createBook(
+    @Body()
+    body: {
+      title: string;
+      author: string;
+      publisher?: string;
+      isbn: string;
+      price: number;
+      stock: number;
+      active?: boolean;
+      description?: string;
+      publishedDate?: string;
+    },
+  ) {
+    const nodeEnv = this.configService.get<string>('NODE_ENV');
+
+    if (nodeEnv !== 'test') {
+      return {
+        success: false,
+        error: 'Book creation only allowed in test environment',
+      };
+    }
+
+    try {
+      // Ensure database is connected
+      if (!this.dataSource.isInitialized) {
+        await this.dataSource.initialize();
+      }
+
+      // Create book entity
+      const book = new Book({
+        title: body.title,
+        author: body.author,
+        isbn: body.isbn,
+        price: body.price,
+        stock: body.stock,
+        publisher: body.publisher,
+        description: body.description,
+        publishedDate: body.publishedDate
+          ? new Date(body.publishedDate)
+          : undefined,
+      });
+
+      // Save book
+      const bookRepository = this.dataSource.getRepository(Book);
+      const savedBook = await bookRepository.save(book);
+
+      return savedBook;
+    } catch (error) {
+      console.error('Book creation error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to create book',
       };
     }
   }

@@ -86,11 +86,11 @@ export const Header = () => {
 
             {/* Cart */}
             <S.CartContainer>
-              <Link to={ROUTES.CART}>
+              <Link to={ROUTES.CART} data-testid="cart-icon">
                 <S.CartButton>
                   <ShoppingCart size={24} />
                   {cartItemsCount > 0 && (
-                    <S.CartBadge>
+                    <S.CartBadge data-testid="cart-badge">
                       {cartItemsCount > 99 ? '99+' : cartItemsCount}
                     </S.CartBadge>
                   )}
@@ -104,6 +104,7 @@ export const Header = () => {
                 <S.UserMenuButton
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   isOpen={isMenuOpen}
+                  data-testid="account-dropdown-button"
                 >
                   <S.UserAvatar>
                     <User size={16} />
@@ -123,6 +124,7 @@ export const Header = () => {
                     <S.DropdownItem
                       to={ROUTES.ORDERS}
                       onClick={() => setIsMenuOpen(false)}
+                      data-testid="orders-menu-link"
                     >
                       Meus Pedidos
                     </S.DropdownItem>
