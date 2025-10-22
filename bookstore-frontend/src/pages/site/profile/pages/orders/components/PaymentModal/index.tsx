@@ -89,6 +89,7 @@ export const PaymentModal = ({
                     key={card.id}
                     isSelected={isSelected}
                     onClick={() => handleCardSelection(card)}
+                    data-testid="payment-card-option"
                   >
                     <S.CardInfo>
                       <S.CardIcon>
@@ -163,13 +164,14 @@ export const PaymentModal = ({
         )}
 
         <S.Footer>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={onClose} disabled={isLoading} data-testid="payment-cancel-button">
             Cancelar
           </Button>
           <Button
             variant="primary"
             onClick={handleConfirmPayment}
             disabled={!isPaymentValid || isLoading}
+            data-testid="payment-confirm-button"
           >
             {isLoading ? 'Processando...' : 'Confirmar Pagamento'}
           </Button>

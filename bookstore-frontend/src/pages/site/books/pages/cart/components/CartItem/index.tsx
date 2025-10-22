@@ -41,7 +41,7 @@ export const CartItem = ({
   const totalPrice = price * quantity
 
   return (
-    <S.CartItemContainer>
+    <S.CartItemContainer data-testid="cart-item">
       {book.imageUrl ? (
         <S.BookImage
           style={{ backgroundImage: `url(${book.imageUrl})` }}
@@ -74,6 +74,7 @@ export const CartItem = ({
         <S.RemoveButton
           onClick={handleRemove}
           aria-label={`Remover ${book.title}`}
+          data-testid="cart-item-remove-button"
         >
           <Trash size={16} />
           Remover

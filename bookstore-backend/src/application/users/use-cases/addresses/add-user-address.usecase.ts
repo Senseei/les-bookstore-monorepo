@@ -2,11 +2,13 @@ import { UsersService } from '@application/users/services';
 import { Address } from '@domain/user/address.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDTO } from '@presentation/site/users/dtos';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class AddUserAddress {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   async execute(userId: string, dto: CreateAddressDTO): Promise<Address> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
 

@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { CardsService } from '@/application/users/services/cards.service';
 import { Order } from '@/domain/order/order.entity';
@@ -21,6 +22,7 @@ export class PayOrder {
     @Inject('PaymentGateway') private readonly paymentGateway: PaymentGateway,
   ) {}
 
+  @Transactional()
   public async execute(orderId: string, payments: PaymentsDTO): Promise<Order> {
     const order = await this.ordersService.findByIdOrThrow(orderId);
 
@@ -28,7 +30,7 @@ export class PayOrder {
 
     for (const paymentDTO of payments.payments) {
       const paymentIntentRequest: PaymentIntentRequest = {
-        amountInCents: paymentDTO.amountInCents,
+        amountInCents: Math.round(paymentDTO.amountInCents),
         cardId: paymentDTO.cardId,
         metadata: {
           orderId: order.id,
@@ -41,7 +43,7 @@ export class PayOrder {
       const card = await this.cardsService.findByIdOrThrow(paymentDTO.cardId);
 
       const paymentEntity = new Payment({
-        amountInCents: paymentDTO.amountInCents,
+        amountInCents: Math.round(paymentDTO.amountInCents),
         method: toPaymentMethod(card.type),
         gatewayTransactionId: response.gatewayTransactionId,
         card,
@@ -74,11 +76,12 @@ export class PayOrder {
       );
     }
 
-    const totalAmount = dto.payments.reduce(
-      (acc, payment) => acc + payment.amountInCents,
-      0,
+    const totalAmount = Math.round(
+      dto.payments.reduce((acc, payment) => acc + payment.amountInCents, 0),
     );
-    if (totalAmount !== order.getTotalPrice() * 100) {
+    const expectedAmount = Math.round(order.getTotalPrice() * 100);
+    
+    if (totalAmount !== expectedAmount) {
       throw new BadRequestException(
         'The total amount of payments does not match the order total price.',
       );
