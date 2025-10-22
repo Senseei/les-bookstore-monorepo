@@ -1,5 +1,6 @@
 import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { EntityNotFoundException } from '@/application/exceptions';
 
@@ -7,6 +8,7 @@ import { EntityNotFoundException } from '@/application/exceptions';
 export class RemoveUserCard {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   public async execute(userId: string, cardId: string): Promise<void> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
 
