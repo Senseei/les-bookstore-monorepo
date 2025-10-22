@@ -593,42 +593,7 @@ describe('Book Purchase Flow', () => {
       cy.window().then((window) => {
         window.localStorage.removeItem('cart-storage')
       })
-
-      // Add a payment method for the user via UI (required for checkout)
-      // cy.visit('/payment-methods')
-      // cy.wait(1000)
-
-      // // Check if no cards exist by looking for the "Nenhum cartão cadastrado" message
-      // cy.get('body').then(($body) => {
-      //   if ($body.text().includes('Nenhum cartão cadastrado')) {
-      //     // Click add card button
-      //     cy.contains('button', 'Adicionar Cartão').click()
-
-      //     // Wait for form to appear
-      //     cy.wait(500)
-
-      //     // Fill in card details (using correct input names from form)
-      //     cy.get('input[name="number"]', { timeout: 5000 })
-      //       .clear()
-      //       .type('4111111111111111')
-      //     cy.get('input[name="holderName"]').clear().type('Test User')
-      //     cy.get('input[name="expiryDate"]').clear().type('12/28')
-      //     cy.get('input[name="cvv"]').clear().type('123')
-
-      //     // Select card type (credit)
-      //     cy.get('select').select('credit')
-
-      //     // Submit card form
-      //     cy.contains('button', 'Salvar Cartão').click()
-
-      //     // Wait for card to be saved and verify it appears
-      //     cy.wait(2000)
-
-      //     // Verify card was added successfully by checking for card display
-      //     cy.get('body').should('not.contain', 'Nenhum cartão cadastrado')
-      //   }
-      // })
-
+      
       // Create an order by adding book and checking out
       cy.visit('/catalog')
       cy.get('[data-testid="book-card"]', { timeout: 10000 })
@@ -776,41 +741,6 @@ describe('Book Purchase Flow', () => {
       cy.window().then((window) => {
         window.localStorage.removeItem('cart-storage')
       })
-
-      // // Add a payment method for the user via UI (required for payment)
-      // cy.visit('/payment-methods')
-      // cy.wait(1000)
-
-      // // Check if no cards exist by looking for the "Nenhum cartão cadastrado" message
-      // cy.get('body').then(($body) => {
-      //   if ($body.text().includes('Nenhum cartão cadastrado')) {
-      //     // Click add card button
-      //     cy.contains('button', 'Adicionar Cartão').click()
-
-      //     // Wait for form to appear
-      //     cy.wait(500)
-
-      //     // Fill in card details (using correct input names from form)
-      //     cy.get('input[name="number"]', { timeout: 5000 })
-      //       .clear()
-      //       .type('4111111111111111')
-      //     cy.get('input[name="holderName"]').clear().type('Test User')
-      //     cy.get('input[name="expiryDate"]').clear().type('12/28')
-      //     cy.get('input[name="cvv"]').clear().type('123')
-
-      //     // Select card type (credit)
-      //     cy.get('select').select('credit')
-
-      //     // Submit card form
-      //     cy.contains('button', 'Salvar Cartão').click()
-
-      //     // Wait for card to be saved and verify it appears
-      //     cy.wait(2000)
-
-      //     // Verify card was added successfully by checking for card display
-      //     cy.get('body').should('not.contain', 'Nenhum cartão cadastrado')
-      //   }
-      // })
 
       // Create a new order
       cy.visit('/catalog')
