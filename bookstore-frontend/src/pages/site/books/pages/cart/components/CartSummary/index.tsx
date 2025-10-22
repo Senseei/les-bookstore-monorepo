@@ -63,17 +63,18 @@ export const CartSummary = ({
 
       <S.TotalRow>
         <S.TotalLabel>Total</S.TotalLabel>
-        <S.TotalValue>{formatPrice(finalTotal)}</S.TotalValue>
+        <S.TotalValue data-testid="cart-total-price">{formatPrice(finalTotal)}</S.TotalValue>
       </S.TotalRow>
 
       <S.CheckoutButton
         onClick={onCheckout}
         disabled={isCheckingOut || summary.totalItems === 0}
+        data-testid="cart-checkout-button"
       >
         {isCheckingOut ? 'Processando...' : 'Finalizar Compra'}
       </S.CheckoutButton>
 
-      <S.ContinueShoppingButton onClick={handleContinueShopping}>
+      <S.ContinueShoppingButton onClick={handleContinueShopping} data-testid="cart-continue-shopping-button">
         <ShoppingCart size={16} />
         Continuar Comprando
       </S.ContinueShoppingButton>

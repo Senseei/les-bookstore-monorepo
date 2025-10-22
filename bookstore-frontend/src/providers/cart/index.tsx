@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { BookDTO, CartItemDTO, CartStateDTO, CartSummaryDTO } from '@/dtos'
 import { useToast } from '@/providers'
+import { OrderService } from '@/services'
 import { CartStorage } from '@/storage'
 
 import { CartContext } from './cart-context'
@@ -27,10 +28,13 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const calculateSummary = useCallback(
     (items: CartItemDTO[]): CartSummaryDTO => {
       const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-      const totalPrice = items.reduce(
-        (sum, item) => sum + item.book.price * item.quantity,
-        0,
-      )
+      const totalPrice = items.reduce((sum, item) => {
+        const price =
+          typeof item.book.price === 'string'
+            ? parseFloat(item.book.price)
+            : item.book.price
+        return sum + price * item.quantity
+      }, 0)
       const totalUniqueItems = items.length
 
       return {
@@ -255,6 +259,63 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     })
   }, [calculateSummary, cartState.items, saveCartState])
 
+  /**
+   * Checkout - Create order from cart items
+   */
+  const checkout = useCallback(
+    async (deliveryAddressId: string) => {
+      if (cartState.items.length === 0) {
+        return {
+          success: false,
+          error: 'Carrinho vazio. Adicione itens antes de finalizar o pedido.',
+        }
+      }
+
+      if (!deliveryAddressId) {
+        return {
+          success: false,
+          error: 'Endereço de entrega é obrigatório.',
+        }
+      }
+
+      try {
+        // Convert cart items to order format
+        const orderItems = cartState.items.map((item) => ({
+          bookId: item.bookId,
+          quantity: item.quantity,
+        }))
+
+        const orderData = { items: orderItems, deliveryAddressId }
+
+        // Create the order
+        const createdOrder = await OrderService.createOrder(orderData)
+
+        // Clear cart after successful order creation
+        clearCart()
+
+        toast.showSuccess(
+          `Pedido realizado com sucesso! Número do pedido: ${createdOrder.id}`,
+        )
+
+        return {
+          success: true,
+          orderId: createdOrder.id,
+        }
+      } catch {
+        const errorMessage =
+          'Erro ao finalizar pedido. Tente novamente ou entre em contato com o suporte.'
+
+        toast.showError(errorMessage)
+
+        return {
+          success: false,
+          error: errorMessage,
+        }
+      }
+    },
+    [cartState.items, clearCart, toast],
+  )
+
   // Computed properties
   const isEmpty = useMemo(() => cartState.items.length === 0, [cartState.items])
   const totalItems = useMemo(
@@ -295,6 +356,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     clearCart,
     getItem,
     hasItem,
+
+    // Checkout operations
+    checkout,
 
     // Utility methods
     refreshSummary,

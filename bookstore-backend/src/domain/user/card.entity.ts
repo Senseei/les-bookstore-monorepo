@@ -52,10 +52,6 @@ export class Card extends DomainEntity {
     return this.number.slice(-4);
   }
 
-  public override update(props: any): void {
-    throw new Error('Method not implemented.');
-  }
-
   public override equals(other: Card): boolean {
     return this.number === other.number;
   }

@@ -1,6 +1,7 @@
 import { BookOpen, Trash } from 'phosphor-react'
 
 import type { CartItemDTO } from '@/dtos'
+import { formatPrice } from '@/utils'
 
 import { QuantitySelector } from '../QuantitySelector'
 import * as S from './styles'
@@ -34,17 +35,13 @@ export const CartItem = ({
     onRemove(bookId)
   }
 
-  const totalPrice = book.price * quantity
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price)
-  }
+  // Ensure price is a number
+  const price =
+    typeof book.price === 'string' ? parseFloat(book.price) : book.price
+  const totalPrice = price * quantity
 
   return (
-    <S.CartItemContainer>
+    <S.CartItemContainer data-testid="cart-item">
       {book.imageUrl ? (
         <S.BookImage
           style={{ backgroundImage: `url(${book.imageUrl})` }}
@@ -77,6 +74,7 @@ export const CartItem = ({
         <S.RemoveButton
           onClick={handleRemove}
           aria-label={`Remover ${book.title}`}
+          data-testid="cart-item-remove-button"
         >
           <Trash size={16} />
           Remover

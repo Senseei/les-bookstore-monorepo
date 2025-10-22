@@ -1,6 +1,7 @@
 import { InvalidCardNumberException } from '@application/users/exceptions/invalid-card-number.exception';
 import { UsersService } from '@application/users/services';
 import { ConflictException, Injectable } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { Card } from '@/domain/user/card.entity';
 import { CardBrand } from '@/domain/user/enums/card-brand.enum';
@@ -10,6 +11,7 @@ import { CreateCardDTO } from '@/presentation/site/users/dtos';
 export class AddUserCard {
   constructor(private readonly usersService: UsersService) {}
 
+  @Transactional()
   public async execute(userId: string, dto: CreateCardDTO): Promise<Card> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
 

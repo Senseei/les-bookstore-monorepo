@@ -22,5 +22,6 @@ const USE_CASES = [CreateBook];
     BooksWebService,
     ...USE_CASES,
   ],
+  exports: [BooksService],
 })
 export class BooksModule {}
