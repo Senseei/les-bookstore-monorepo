@@ -39,6 +39,8 @@ export class CreateNewOrder {
     if (dto.ticketId) {
       const ticket = await this.ticketsService.findByIdOrThrow(dto.ticketId);
       order.ticket = ticket;
+      user.customerDetails.usedTickets.push(ticket);
+      await this.usersService.save(user);
     }
 
     for (const item of dto.items) {
