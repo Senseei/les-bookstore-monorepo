@@ -129,4 +129,8 @@ export class CustomerDetails extends DomainEntity {
     }
     return this.usedTickets.some((t) => t.equals(ticket));
   }
+
+  public reinstateTicket(ticket: Ticket): void {
+    this._usedTickets = this.usedTickets.filter((t) => !t.equals(ticket));
+  }
 }

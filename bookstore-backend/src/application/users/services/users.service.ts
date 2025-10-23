@@ -3,6 +3,7 @@ import { User } from '@domain/user/user.entity';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { UsersRepository } from '@/application/users/interfaces/users.repository';
+import { Ticket } from '@/domain/ticket/ticket.entity';
 import { UserRole } from '@/domain/user/enums/role.enum';
 
 @Injectable()
@@ -28,5 +29,11 @@ export class UsersService extends BaseService<User> {
       throw new Error(`User with id ${id} is not a customer`);
     }
     return user;
+  }
+
+  public async reinstateTicketForUser(userId: string, ticket: Ticket) {
+    const user = await this.findByIdOrThrow(userId);
+    user.customerDetails.reinstateTicket(ticket);
+    await this.usersRepository.save(user);
   }
 }
