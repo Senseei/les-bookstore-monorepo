@@ -72,8 +72,6 @@ export class UsersSiteWebService {
     userId: string,
     dto: CreateAddressDTO,
   ): Promise<AddressDTO> {
-    console.log('Creating address for user:', userId);
-    console.log('Address data:', dto);
     const address = await this.addUserAddress.execute(userId, dto);
     return new AddressDTO(address);
   }

@@ -22,6 +22,6 @@ export class MinUserDTO {
     this.phoneNumber = user.phone;
     // TODO refatorar addressess para logica de main address
     this.address = new MinAddressDTO(user.customerDetails.addresses[0]);
-    this.lastOrder = user.customerDetails.getMostRecentOrder().orderDate;
+    this.lastOrder = user.customerDetails.getMostRecentOrder()?.orderDate;
   }
 }

@@ -152,6 +152,7 @@ export const ProfileEdit = () => {
             onSave={handlePasswordChange}
             onCancel={() => setShowPasswordForm(false)}
             loading={saving}
+            editMode={isEditMode}
           />
         ) : showAddressForm ? (
           <AddressForm
@@ -162,6 +163,7 @@ export const ProfileEdit = () => {
               cancelAddressEditing()
             }}
             loading={saving}
+            editMode={isEditMode}
           />
         ) : (
           <>

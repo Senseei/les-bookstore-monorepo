@@ -47,7 +47,7 @@ export const BookCard = ({
   const showPlaceholder = !bookImageUrl || imageError
 
   return (
-    <S.Card onClick={handleCardClick}>
+    <S.Card onClick={handleCardClick} data-testid="book-card">
       <S.ImageContainer>
         {showPlaceholder ? (
           <S.PlaceholderContainer>
@@ -73,7 +73,7 @@ export const BookCard = ({
       </S.ImageContainer>
 
       <S.Content>
-        <S.Title>{book.title}</S.Title>
+        <S.Title data-testid="book-title">{book.title}</S.Title>
         <S.Author>{book.author}</S.Author>
         {book.publisher && <S.Publisher>{book.publisher}</S.Publisher>}
 
@@ -94,6 +94,7 @@ export const BookCard = ({
               disabled={isOutOfStock || isAddingToCart}
               loading={isAddingToCart}
               startIcon={<ShoppingCart size={16} weight="bold" />}
+              data-testid="book-add-to-cart-button"
             >
               {isOutOfStock ? 'Indisponível' : 'Adicionar'}
             </Button>

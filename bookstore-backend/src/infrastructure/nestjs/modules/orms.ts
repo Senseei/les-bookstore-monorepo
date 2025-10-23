@@ -1,6 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { addTransactionalDataSource } from 'typeorm-transactional';
 
 export const ORMS = {
   typeorm: () =>
@@ -34,13 +36,25 @@ export const ORMS = {
                     'true',
                 }
               : false,
-          // Test-specific optimizations
           logging: isTest ? false : ['error'],
           maxQueryExecutionTime: isTest ? 1000 : 10000,
-          // Add retry configuration for test environment
           retryAttempts: isTest ? 3 : 10,
           retryDelay: isTest ? 1000 : 3000,
         };
+      },
+      dataSourceFactory: async (options) => {
+        if (!options) {
+          throw new Error('Invalid TypeORM options passed');
+        }
+
+        // Create and initialize the DataSource
+        const dataSource = new DataSource(options);
+        await dataSource.initialize();
+
+        // Register the DataSource with typeorm-transactional
+        addTransactionalDataSource(dataSource);
+
+        return dataSource;
       },
     }),
 };

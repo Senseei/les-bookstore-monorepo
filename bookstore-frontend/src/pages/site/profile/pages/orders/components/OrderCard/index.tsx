@@ -72,7 +72,7 @@ export const OrderCard = ({
 
   return (
     <>
-      <Card>
+      <Card data-testid="order-card">
         <S.OrderHeader>
           <S.OrderInfo>
             <S.OrderDate>
@@ -92,7 +92,11 @@ export const OrderCard = ({
               <S.OrderTotal>{formatCurrency(totalPrice)}</S.OrderTotal>
             )}
           </S.OrderInfo>
-          <Badge variant={statusInfo.variant} size="sm">
+          <Badge
+            variant={statusInfo.variant}
+            size="sm"
+            data-testid="order-status-badge"
+          >
             {statusInfo.label}
           </Badge>
         </S.OrderHeader>
@@ -139,7 +143,12 @@ export const OrderCard = ({
         {(canCancel || canPay) && (
           <S.OrderFooter>
             {canPay && (
-              <Button variant="primary" size="sm" onClick={handlePayClick}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handlePayClick}
+                data-testid="order-pay-button"
+              >
                 <CreditCard size={14} />
                 Pagar
               </Button>
@@ -150,6 +159,7 @@ export const OrderCard = ({
                 size="sm"
                 onClick={handleCancelClick}
                 disabled={isCancelling}
+                data-testid="order-cancel-button"
               >
                 <X size={14} />
                 Cancelar Pedido
