@@ -19,6 +19,8 @@ export const Orders = () => {
     orderStatistics,
     isLoading,
     error,
+    showCancelled,
+    setShowCancelled,
     handleRefreshOrders,
     handleCancelOrder,
     formatCurrency,
@@ -101,6 +103,22 @@ export const Orders = () => {
             Atualizar
           </Button>
         </S.Header>
+
+        <S.FilterSection>
+          <S.FilterRow>
+            <S.CheckboxContainer>
+              <S.Checkbox
+                type="checkbox"
+                id="show-cancelled"
+                checked={showCancelled}
+                onChange={(e) => setShowCancelled(e.target.checked)}
+              />
+              <S.CheckboxLabel htmlFor="show-cancelled">
+                Mostrar pedidos cancelados
+              </S.CheckboxLabel>
+            </S.CheckboxContainer>
+          </S.FilterRow>
+        </S.FilterSection>
 
         {totalOrders > 0 && (
           <S.OrdersStats>
