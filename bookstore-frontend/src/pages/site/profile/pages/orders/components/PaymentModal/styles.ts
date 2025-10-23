@@ -199,13 +199,17 @@ export const TotalLabel = styled.span`
   font-size: 14px;
 `
 
-export const TotalValue = styled.span<{ variant?: 'primary' | 'error' }>`
+export const TotalValue = styled.span<{
+  variant?: 'primary' | 'error' | 'success'
+}>`
   color: ${({ theme, variant }) => {
     switch (variant) {
       case 'error':
         return theme.COLORS.ERROR_MAIN
       case 'primary':
         return theme.COLORS.PRIMARY_MAIN
+      case 'success':
+        return theme.COLORS.SUCCESS_MAIN
       default:
         return theme.COLORS.NEUTRAL_900
     }

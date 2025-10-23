@@ -31,6 +31,8 @@ export const CartSummary = ({
   }
 
   const shippingCost = 0 // For now, free shipping
+  const hasDiscount = summary.discount && summary.discount > 0
+  const subtotal = summary.originalPrice || summary.totalPrice
   const finalTotal = summary.totalPrice + shippingCost
 
   return (
@@ -42,7 +44,7 @@ export const CartSummary = ({
           {summary.totalUniqueItems} produto
           {summary.totalUniqueItems > 1 ? 's' : ''}
         </S.SummaryLabel>
-        <S.SummaryValue>{formatPrice(summary.totalPrice)}</S.SummaryValue>
+        <S.SummaryValue>{formatPrice(subtotal)}</S.SummaryValue>
       </S.SummaryRow>
 
       <S.SummaryRow>
@@ -53,6 +55,13 @@ export const CartSummary = ({
           {summary.totalItems} unidade{summary.totalItems > 1 ? 's' : ''}
         </S.SummaryValue>
       </S.SummaryRow>
+
+      {hasDiscount && (
+        <S.SummaryRow>
+          <S.SummaryLabel>Desconto</S.SummaryLabel>
+          <S.DiscountValue>-{formatPrice(summary.discount!)}</S.DiscountValue>
+        </S.SummaryRow>
+      )}
 
       <S.SummaryRow>
         <S.SummaryLabel>Entrega</S.SummaryLabel>

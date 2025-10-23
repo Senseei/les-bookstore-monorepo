@@ -52,7 +52,9 @@ export const PaymentModal = ({
           <S.OrderInfo>
             <S.OrderDetails>
               <S.OrderId>Pedido #{order.id.slice(-8)}</S.OrderId>
-              <S.OrderTotal>{formatCurrency(order.totalPrice)}</S.OrderTotal>
+              <S.OrderTotal>
+                {formatCurrency((order.subtotal || 0) - (order.discount || 0))}
+              </S.OrderTotal>
             </S.OrderDetails>
           </S.OrderInfo>
         </S.Header>
@@ -131,16 +133,32 @@ export const PaymentModal = ({
 
         {selectedCards.length > 0 && (
           <S.TotalSection>
+            {order.discount > 0 && (
+              <>
+                <S.TotalRow>
+                  <S.TotalLabel>Subtotal:</S.TotalLabel>
+                  <S.TotalValue>{formatCurrency(order.subtotal)}</S.TotalValue>
+                </S.TotalRow>
+                <S.TotalRow>
+                  <S.TotalLabel>Desconto:</S.TotalLabel>
+                  <S.TotalValue variant="success">
+                    -{formatCurrency(order.discount)}
+                  </S.TotalValue>
+                </S.TotalRow>
+              </>
+            )}
             <S.TotalRow>
               <S.TotalLabel>Total do pedido:</S.TotalLabel>
-              <S.TotalValue>{formatCurrency(order.totalPrice)}</S.TotalValue>
+              <S.TotalValue>
+                {formatCurrency((order.subtotal || 0) - (order.discount || 0))}
+              </S.TotalValue>
             </S.TotalRow>
             <S.TotalRow>
               <S.TotalLabel>Total selecionado:</S.TotalLabel>
               <S.TotalValue
                 variant={remainingAmount === 0 ? 'primary' : 'error'}
               >
-                {formatCurrency(totalSelectedAmount / 100)}
+                {formatCurrency(totalSelectedAmount)}
               </S.TotalValue>
             </S.TotalRow>
             <S.TotalRow>
@@ -148,7 +166,7 @@ export const PaymentModal = ({
               <S.TotalValue
                 variant={remainingAmount === 0 ? 'primary' : 'error'}
               >
-                {formatCurrency(Math.abs(remainingAmount) / 100)}
+                {formatCurrency(Math.abs(remainingAmount))}
               </S.TotalValue>
             </S.TotalRow>
           </S.TotalSection>
