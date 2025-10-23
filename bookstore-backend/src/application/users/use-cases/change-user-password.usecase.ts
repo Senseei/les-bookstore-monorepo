@@ -4,6 +4,8 @@ import { Transactional } from 'typeorm-transactional';
 
 import { InvalidCredentialsException } from '@/application/auth/exceptions/invalid-credentials.exception';
 
+import { InvalidCredentialsException } from '@/application/auth/exceptions/invalid-credentials.exception';
+
 import { UsersService } from '../services';
 
 @Injectable()

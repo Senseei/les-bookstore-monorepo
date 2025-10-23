@@ -3,6 +3,8 @@ import { Transactional } from 'typeorm-transactional';
 
 import { BaseRepository } from '@/application/base.repository';
 
+import { BaseRepository } from '@/application/base.repository';
+
 import { EntityNotFoundException } from './exceptions/entity-not-found.exception';
 import { UnactiveException } from './exceptions/unactive.exception';
 import { PaginatedResult } from './paginated-result';
