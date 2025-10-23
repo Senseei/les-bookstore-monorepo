@@ -24,5 +24,5 @@ class PaymentDTO {
   @IsNumber()
   @IsNotEmpty()
   @Type(() => Number)
-  amountInCents: number;
+  amount: number;
 }

@@ -105,12 +105,7 @@ export class Order extends DomainEntity {
   }
 
   public getTotalPaid(): number {
-    return (
-      this.getSuccessfulPayments().reduce(
-        (sum, p) => sum + p.amountInCents,
-        0,
-      ) / 100
-    );
+    return this.getSuccessfulPayments().reduce((sum, p) => sum + p.amount, 0);
   }
 
   public isFullyPaid(): boolean {

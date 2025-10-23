@@ -1,5 +1,6 @@
 import { Column, Entity } from 'typeorm';
 
+import { DecimalColumn } from '../decorators/decimal-column.decorator';
 import { DomainEntity } from '../domain.entity';
 import { InvalidInitializationException } from '../exceptions/invalid-initialization.exception';
 import { TicketType } from './enums/ticket-type.enum';
@@ -9,7 +10,7 @@ export class Ticket extends DomainEntity {
   @Column()
   code: string;
 
-  @Column()
+  @DecimalColumn()
   value: number;
 
   @Column({
@@ -18,14 +19,22 @@ export class Ticket extends DomainEntity {
   })
   type: TicketType;
 
-  @Column()
-  validUntil: Date;
+  @Column({ nullable: true })
+  validUntil?: Date;
+
+  @Column({ nullable: true })
+  description?: string;
+
+  @DecimalColumn({ nullable: true })
+  maxDiscount?: number;
 
   constructor(props: {
     code: string;
     value: number;
     type: TicketType;
-    validUntil: Date;
+    validUntil?: Date;
+    description?: string;
+    maxDiscount?: number;
   }) {
     super();
     if (props) {
@@ -33,6 +42,8 @@ export class Ticket extends DomainEntity {
       this.value = this.validateValue(props.value, props.type);
       this.type = props.type;
       this.validUntil = props.validUntil;
+      this.description = props.description;
+      this.maxDiscount = props.maxDiscount;
     }
   }
 
@@ -59,11 +70,15 @@ export class Ticket extends DomainEntity {
   }
 
   public applyTicket(value: number): number {
+    let discount: number;
     switch (this.type) {
       case TicketType.PERCENTAGE:
-        return (value * this.value) / 100;
+        discount = (value * this.value) / 100;
+        break;
       case TicketType.RAW:
-        return this.value;
+        discount = this.value;
+        break;
     }
+    return this.maxDiscount ? Math.min(discount, this.maxDiscount) : discount;
   }
 }

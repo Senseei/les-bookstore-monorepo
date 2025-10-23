@@ -15,4 +15,8 @@ export class TicketsRepositoryImpl
   constructor(@InjectRepository(Ticket) repository: Repository<Ticket>) {
     super(repository);
   }
+
+  findByCode(code: string): Promise<Ticket | null> {
+    return this.repository.findOne({ where: { code } });
+  }
 }

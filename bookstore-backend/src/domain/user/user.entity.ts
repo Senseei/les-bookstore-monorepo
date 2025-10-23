@@ -29,7 +29,10 @@ export class User extends DomainEntity implements UserAuthDetails {
   @Column()
   password: string;
 
-  @OneToOne(() => CustomerDetails, { cascade: true, eager: true })
+  @OneToOne(() => CustomerDetails, (customerDetails) => customerDetails.user, {
+    cascade: true,
+    eager: true,
+  })
   customerDetails: CustomerDetails;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })

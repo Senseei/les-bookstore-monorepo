@@ -10,6 +10,7 @@ import { CreateNewOrderDTO } from '@/presentation/site/orders/dtos/create-new-or
 
 import { OrdersService } from '../services/orders.service';
 import { TicketsService } from '../services/tickets.service';
+import { ValidateTicket } from './tickets/validate-ticket.usecase';
 
 @Injectable()
 export class CreateNewOrder {
@@ -18,13 +19,14 @@ export class CreateNewOrder {
     private readonly booksService: BooksService,
     private readonly usersService: UsersService,
     private readonly ticketsService: TicketsService,
+    private readonly validateTicket: ValidateTicket,
   ) {}
 
   @Transactional()
   public async execute(dto: CreateNewOrderDTO, userId: string): Promise<Order> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
 
-    this.validate(dto, user);
+    await this.validate(dto, user);
     const deliveryAddress = user.customerDetails.getAddress(
       dto.deliveryAddressId,
     );
@@ -60,17 +62,16 @@ export class CreateNewOrder {
     return await this.service.save(order);
   }
 
-  private validate(dto: CreateNewOrderDTO, user: User): void {
-    if (user.customerDetails.hasAddress(dto.deliveryAddressId)) {
+  private async validate(dto: CreateNewOrderDTO, user: User): Promise<void> {
+    if (!user.customerDetails.hasAddress(dto.deliveryAddressId)) {
       throw new BadRequestException(
         `User does not have an address with ID ${dto.deliveryAddressId}.`,
       );
     }
 
-    if (dto.ticketId && user.customerDetails.hasUsedTicket(dto.ticketId)) {
-      throw new BadRequestException(
-        `User has already used the ticket with ID ${dto.ticketId}.`,
-      );
+    if (dto.ticketId) {
+      const ticket = await this.ticketsService.findByIdOrThrow(dto.ticketId);
+      await this.validateTicket.execute(ticket, user);
     }
   }
 }
