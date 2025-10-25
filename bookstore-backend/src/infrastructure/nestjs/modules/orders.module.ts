@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
@@ -36,7 +36,7 @@ const CHANGE_STATUS_HANDLERS = [CancelOrderHandler];
   imports: [
     TypeOrmModule.forFeature([Order, OrderItem, Payment, Ticket]),
     BooksModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   controllers: [...CONTROLLERS],
   providers: [
@@ -62,5 +62,6 @@ const CHANGE_STATUS_HANDLERS = [CancelOrderHandler];
       useClass: MockPaymentGateway,
     },
   ],
+  exports: [...BUSINESS_SERVICES],
 })
 export class OrdersModule {}
