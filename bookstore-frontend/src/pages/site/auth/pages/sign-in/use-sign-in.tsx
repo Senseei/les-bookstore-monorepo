@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router'
 
 import { useAuth } from '@/providers'
 import { useToast } from '@/providers/toast/use-toast'
-import { ROUTES } from '@/routes/advanced'
+import { ROUTES } from '@/routes/constants'
 import { type SignInFormData, signInSchema } from '@/schemas/auth-schemas'
+import { getUserFromToken } from '@/utils'
 
 export const useSignIn = () => {
   const { signIn, isLoading, error, clearError } = useAuth()
@@ -25,11 +26,16 @@ export const useSignIn = () => {
 
     const result = await signIn(data)
 
-    if (result.success) {
-      navigate(ROUTES.HOME)
-    } else {
+    if (!result.success) {
       showError(result.error || 'Erro ao fazer login')
+      return
     }
+
+    // Check if user is admin from token and redirect accordingly
+    const user = getUserFromToken(result.data?.accessToken || '')
+    const isAdmin = user?.role === 'admin'
+
+    navigate(isAdmin ? ROUTES.ADMIN : ROUTES.HOME)
   }
 
   return {
