@@ -1,11 +1,9 @@
 import {
   Body,
   Controller,
-  Get,
   Param,
   Patch,
   Post,
-  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,8 +13,6 @@ import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
 import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
 import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
-import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
-import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
 
 import { ChangeOrderStatusDTO } from './dtos/change-order-status.dto';
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
@@ -36,16 +32,6 @@ export class OrdersSiteController {
   ): Promise<OrderDTO> {
     const userId = req.user.userId;
     return await this.webService.createOrder(dto, userId);
-  }
-
-  @Get()
-  public async getOrders(
-    @Request() req: AuthenticatedRequest,
-    @Query() query: PaginationParamsDTO,
-    @Query() filters: Record<string, any> = {},
-  ): Promise<PaginatedResultDTO<OrderDTO>> {
-    const userId = req.user.userId;
-    return this.webService.findByUser(userId, query, filters);
   }
 
   @Post(':id/pay')

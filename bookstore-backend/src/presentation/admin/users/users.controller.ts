@@ -42,11 +42,11 @@ export class UsersController {
   }
 
   @Get(':id/orders')
-  public async getUserOrders(
+  public async getOrders(
     @Param('id') id: string,
     @Query() query: PaginationParamsDTO,
     @Query() filters: Record<string, any> = {},
   ) {
-    return this.usersWebService.getUserOrders(id, query, filters);
+    return this.usersWebService.getOrders(id, query, filters);
   }
 }
