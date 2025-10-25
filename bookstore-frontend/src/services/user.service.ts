@@ -1,4 +1,5 @@
 import type { PaginatedResultDTO } from '@/dtos/common'
+import type { OrderDTO } from '@/dtos/order'
 import type { AddressDTO } from '@/dtos/user/address'
 import type { CustomerDTO } from '@/dtos/user/customer.dto'
 import type { MinUserDTO } from '@/dtos/user/min-user'
@@ -13,6 +14,15 @@ export interface GetUsersParams {
   search?: string
   status?: string
   ranking?: string
+}
+
+export interface GetOrdersParams {
+  page?: number
+  pageSize?: number
+  search?: string
+  status?: string
+  startDate?: string
+  endDate?: string
 }
 
 export interface UpdateUserData {
@@ -147,6 +157,61 @@ export class UserService {
    */
   static async getUserAddresses(): Promise<AddressDTO[]> {
     const response = await AxiosApp.get<AddressDTO[]>(`/me/addresses`)
+    return response.data
+  }
+
+  /**
+   * Get user orders with pagination
+   */
+  static async getUserOrders(
+    params: GetOrdersParams = {},
+  ): Promise<PaginatedResultDTO<OrderDTO>> {
+    const queryParams: string[] = []
+
+    if (params.page) queryParams.push(`page=${params.page}`)
+    if (params.pageSize) queryParams.push(`pageSize=${params.pageSize}`)
+    if (params.search)
+      queryParams.push(`search=${encodeURIComponent(params.search)}`)
+    if (params.status)
+      queryParams.push(`status=${encodeURIComponent(params.status)}`)
+    if (params.startDate)
+      queryParams.push(`startDate=${encodeURIComponent(params.startDate)}`)
+    if (params.endDate)
+      queryParams.push(`endDate=${encodeURIComponent(params.endDate)}`)
+
+    const queryString = queryParams.join('&')
+    const url = queryString ? `/me/orders?${queryString}` : '/me/orders'
+
+    const response = await AxiosApp.get<PaginatedResultDTO<OrderDTO>>(url)
+    return response.data
+  }
+
+  /**
+   * Get orders for a specific user (Admin)
+   */
+  static async getUserOrdersById(
+    userId: string,
+    params: GetOrdersParams = {},
+  ): Promise<PaginatedResultDTO<OrderDTO>> {
+    const queryParams: string[] = []
+
+    if (params.page) queryParams.push(`page=${params.page}`)
+    if (params.pageSize) queryParams.push(`pageSize=${params.pageSize}`)
+    if (params.search)
+      queryParams.push(`search=${encodeURIComponent(params.search)}`)
+    if (params.status)
+      queryParams.push(`status=${encodeURIComponent(params.status)}`)
+    if (params.startDate)
+      queryParams.push(`startDate=${encodeURIComponent(params.startDate)}`)
+    if (params.endDate)
+      queryParams.push(`endDate=${encodeURIComponent(params.endDate)}`)
+
+    const queryString = queryParams.join('&')
+    const url = queryString
+      ? `/users/${userId}/orders?${queryString}`
+      : `/users/${userId}/orders`
+
+    const response = await AxiosApp.get<PaginatedResultDTO<OrderDTO>>(url)
     return response.data
   }
 

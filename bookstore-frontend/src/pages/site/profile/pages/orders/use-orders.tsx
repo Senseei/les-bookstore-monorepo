@@ -15,18 +15,23 @@ export const useOrders = () => {
   const {
     isLoading: orderIsLoading,
     error: orderError,
+    orders,
     totalOrders,
     orderStatistics,
-    sortedOrders,
     recentOrders,
+    currentPage,
+    pageSize,
+    totalPages,
     refreshOrders,
     cancelOrder,
     filterOrdersByDateRange,
+    goToPage,
+    changePageSize,
   } = useOrder()
 
   const { addToast } = useToast()
   const [filters, setFilters] = useState<OrderFilters>({})
-  const [filteredOrders, setFilteredOrders] = useState(sortedOrders)
+  const [filteredOrders, setFilteredOrders] = useState(orders)
   const [hasInitialLoad, setHasInitialLoad] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hasLoadError, setHasLoadError] = useState(false)
@@ -34,7 +39,7 @@ export const useOrders = () => {
 
   // Apply filters when orders or filters change
   useEffect(() => {
-    let filtered = [...sortedOrders]
+    let filtered = [...orders]
 
     // Filter by cancelled status
     if (!showCancelled) {
@@ -60,7 +65,7 @@ export const useOrders = () => {
     }
 
     setFilteredOrders(filtered)
-  }, [sortedOrders, filters, filterOrdersByDateRange, showCancelled])
+  }, [orders, filters, filterOrdersByDateRange, showCancelled])
 
   // Load orders data
   const loadOrders = useCallback(async () => {
@@ -163,5 +168,11 @@ export const useOrders = () => {
     formatDate: formatDateTime,
     handleRefreshOrders,
     handleCancelOrder,
+    // Pagination
+    currentPage,
+    pageSize,
+    totalPages,
+    goToPage,
+    changePageSize,
   }
 }
