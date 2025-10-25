@@ -8,13 +8,13 @@ import {
   CardTitle,
   NavigationButton,
 } from '@/components'
-import type { UserDTO } from '@/dtos/user/user'
+import type { CustomerDTO } from '@/dtos/user/customer.dto'
 import { createRoute } from '@/routes/constants'
 
 import * as S from './styles'
 
 interface OrderHistorySidebarProps {
-  customer: UserDTO | null
+  customer: CustomerDTO | null
 }
 
 export const OrderHistorySidebar = ({ customer }: OrderHistorySidebarProps) => {
@@ -69,7 +69,7 @@ export const OrderHistorySidebar = ({ customer }: OrderHistorySidebarProps) => {
     }
   }
 
-  const orders = customer?.orders || []
+  const orders = customer?.recentOrders || []
   const recentOrders = orders.slice(0, 5) // Show only 5 most recent orders
 
   const showAllOrdersRoute = customer

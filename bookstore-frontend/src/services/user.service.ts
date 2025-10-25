@@ -1,5 +1,6 @@
 import type { PaginatedResultDTO } from '@/dtos/common'
 import type { AddressDTO } from '@/dtos/user/address'
+import type { CustomerDTO } from '@/dtos/user/customer.dto'
 import type { MinUserDTO } from '@/dtos/user/min-user'
 import type { UserDTO } from '@/dtos/user/user'
 import type { Gender } from '@/utils/types'
@@ -71,10 +72,10 @@ export class UserService {
   }
 
   /**
-   * Get user by ID
+   * Get user by ID (Admin - returns CustomerDTO with recent orders)
    */
-  static async getUserById(id: string): Promise<UserDTO> {
-    const response = await AxiosApp.get<UserDTO>(`/users/${id}`)
+  static async getUserById(id: string): Promise<CustomerDTO> {
+    const response = await AxiosApp.get<CustomerDTO>(`/users/${id}`)
     return response.data
   }
 

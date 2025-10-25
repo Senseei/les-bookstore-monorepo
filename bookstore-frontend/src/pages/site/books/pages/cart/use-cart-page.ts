@@ -61,7 +61,7 @@ export const useCartPage = (): UseCartPageReturn => {
   const [currentUserWithAddresses, setCurrentUserWithAddresses] =
     useState<UserDTO | null>(null)
 
-  // Load current user with addresses
+  // Load current user with addresses using getCurrentUser from useUser hook
   useEffect(() => {
     const loadCurrentUser = async () => {
       if (isAuthenticated && !currentUserWithAddresses) {
