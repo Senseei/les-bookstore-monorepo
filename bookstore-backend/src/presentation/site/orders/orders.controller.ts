@@ -17,6 +17,7 @@ import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
 import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
 
+import { ChangeOrderStatusDTO } from './dtos/change-order-status.dto';
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
 import { OrdersWebService } from './orders.webservice';
@@ -53,12 +54,13 @@ export class OrdersController {
     return await this.webService.pay(orderId, dto);
   }
 
-  @Patch(':id/cancel')
-  public async cancelOrder(
+  @Patch(':id')
+  public async changeOrderStatus(
     @Param('id') orderId: string,
+    @Body() dto: ChangeOrderStatusDTO,
     @Request() req: AuthenticatedRequest,
   ): Promise<OrderDTO> {
     const userId = req.user.userId;
-    return this.webService.cancel(orderId, userId);
+    return this.webService.changeStatus(orderId, userId, dto.status);
   }
 }

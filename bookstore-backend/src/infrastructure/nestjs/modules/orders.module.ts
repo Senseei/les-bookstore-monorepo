@@ -3,7 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
 import { TicketsService } from '@/application/orders/services/tickets.service';
-import { CancelOrder } from '@/application/orders/use-cases/cancel-order.usecase';
+import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
+import { CancelOrderHandler } from '@/application/orders/use-cases/change-order-status/handlers/cancel-order.handler';
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
 import { ValidateTicket } from '@/application/orders/use-cases/tickets/validate-ticket.usecase';
@@ -26,8 +27,10 @@ import { UsersModule } from './users.module';
 
 const CONTROLLERS = [OrdersController, TicketsSiteController];
 const WEB_SERVICES = [OrdersWebService, TicketsSiteWebService];
-const USE_CASES = [CreateNewOrder, PayOrder, CancelOrder, ValidateTicket];
+const USE_CASES = [CreateNewOrder, PayOrder, ValidateTicket, ChangeOrderStatus];
 const BUSINESS_SERVICES = [TicketsService, OrdersService];
+
+const CHANGE_STATUS_HANDLERS = [CancelOrderHandler];
 
 @Module({
   imports: [
@@ -40,6 +43,12 @@ const BUSINESS_SERVICES = [TicketsService, OrdersService];
     ...WEB_SERVICES,
     ...USE_CASES,
     ...BUSINESS_SERVICES,
+    ...CHANGE_STATUS_HANDLERS,
+    {
+      provide: 'OrderStatusChangeHandlers',
+      useFactory: (...handlers: typeof CHANGE_STATUS_HANDLERS) => handlers,
+      inject: [...CHANGE_STATUS_HANDLERS],
+    },
     {
       provide: 'OrdersRepository',
       useClass: OrdersRepositoryImpl,

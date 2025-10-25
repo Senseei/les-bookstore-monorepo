@@ -131,11 +131,4 @@ export class Order extends DomainEntity {
   public canBeCancelled(): boolean {
     return this.status === OrderStatus.PENDING;
   }
-
-  public cancel(): void {
-    if (!this.canBeCancelled()) {
-      throw new Error('Order cannot be cancelled in its current status.');
-    }
-    this.status = OrderStatus.CANCELLED;
-  }
 }

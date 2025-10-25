@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
-import { CancelOrder } from '@/application/orders/use-cases/cancel-order.usecase';
+import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
 import { OrderStatus } from '@/domain/order/status.enum';
@@ -16,7 +16,7 @@ export class OrdersWebService {
     private readonly service: OrdersService,
     private readonly createNewOrder: CreateNewOrder,
     private readonly payOrder: PayOrder,
-    private readonly cancelOrder: CancelOrder,
+    private readonly changeOrderStatus: ChangeOrderStatus,
   ) {}
 
   public async createOrder(
@@ -24,10 +24,6 @@ export class OrdersWebService {
     userId: string,
   ): Promise<OrderDTO> {
     return new OrderDTO(await this.createNewOrder.execute(dto, userId));
-  }
-
-  public async cancel(orderId: string, userId: string): Promise<OrderDTO> {
-    return new OrderDTO(await this.cancelOrder.execute(orderId, userId));
   }
 
   public async findByUserAndStatus(
@@ -40,5 +36,15 @@ export class OrdersWebService {
 
   public async pay(orderId: string, dto: PaymentsDTO): Promise<OrderDTO> {
     return new OrderDTO(await this.payOrder.execute(orderId, dto));
+  }
+
+  public async changeStatus(
+    orderId: string,
+    userId: string,
+    status: OrderStatus,
+  ): Promise<OrderDTO> {
+    return new OrderDTO(
+      await this.changeOrderStatus.execute(orderId, userId, status),
+    );
   }
 }
