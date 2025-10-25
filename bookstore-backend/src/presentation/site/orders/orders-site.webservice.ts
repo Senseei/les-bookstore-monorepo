@@ -11,7 +11,7 @@ import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
 
 @Injectable()
-export class OrdersWebService {
+export class OrdersSiteWebService {
   constructor(
     private readonly service: OrdersService,
     private readonly createNewOrder: CreateNewOrder,

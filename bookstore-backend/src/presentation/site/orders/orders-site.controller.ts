@@ -20,13 +20,13 @@ import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
 import { ChangeOrderStatusDTO } from './dtos/change-order-status.dto';
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
-import { OrdersWebService } from './orders.webservice';
+import { OrdersSiteWebService } from './orders-site.webservice';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.USER)
 @Controller('orders')
-export class OrdersController {
-  constructor(private readonly webService: OrdersWebService) {}
+export class OrdersSiteController {
+  constructor(private readonly webService: OrdersSiteWebService) {}
 
   @Post()
   public async createOrder(

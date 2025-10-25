@@ -17,16 +17,16 @@ import {
   OrdersRepositoryImpl,
   TicketsRepositoryImpl,
 } from '@/infrastructure/persistence/typeorm/repositories';
-import { OrdersController } from '@/presentation/site/orders/orders.controller';
-import { OrdersWebService } from '@/presentation/site/orders/orders.webservice';
+import { OrdersSiteController } from '@/presentation/site/orders/orders-site.controller';
+import { OrdersSiteWebService } from '@/presentation/site/orders/orders-site.webservice';
 import { TicketsSiteController } from '@/presentation/site/tickets/tickets-site.controller';
 import { TicketsSiteWebService } from '@/presentation/site/tickets/tickets-site.webservice';
 
 import { BooksModule } from './books.module';
 import { UsersModule } from './users.module';
 
-const CONTROLLERS = [OrdersController, TicketsSiteController];
-const WEB_SERVICES = [OrdersWebService, TicketsSiteWebService];
+const CONTROLLERS = [OrdersSiteController, TicketsSiteController];
+const WEB_SERVICES = [OrdersSiteWebService, TicketsSiteWebService];
 const USE_CASES = [CreateNewOrder, PayOrder, ValidateTicket, ChangeOrderStatus];
 const BUSINESS_SERVICES = [TicketsService, OrdersService];
 
