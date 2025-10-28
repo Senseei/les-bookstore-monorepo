@@ -16,6 +16,7 @@ interface OrdersListSectionProps {
   onPageSizeChange: (pageSize: number) => void
   formatCurrency: (value: number) => string
   formatDate: (date: Date | string) => string
+  onOrderUpdate?: () => void
 }
 
 export const OrdersListSection = ({
@@ -28,6 +29,7 @@ export const OrdersListSection = ({
   onPageSizeChange,
   formatCurrency,
   formatDate,
+  onOrderUpdate,
 }: OrdersListSectionProps) => {
   if (isLoading) {
     return (
@@ -71,6 +73,7 @@ export const OrdersListSection = ({
                 order={order}
                 formatCurrency={formatCurrency}
                 formatDate={formatDate}
+                onOrderUpdate={onOrderUpdate}
               />
             ))}
           </S.OrdersList>

@@ -27,10 +27,8 @@ export const Orders = () => {
     formatDate,
     // Pagination
     currentPage,
-    pageSize,
     totalPages,
     goToPage,
-    changePageSize,
   } = useOrders()
 
   const { getCards } = useCard()
@@ -173,6 +171,7 @@ export const Orders = () => {
                   formatDate={formatDate}
                   onCancelOrder={handleCancelOrder}
                   onPayOrder={handlePayOrder}
+                  onOrderUpdate={handleRefreshOrders}
                 />
               ))}
             </S.OrdersList>

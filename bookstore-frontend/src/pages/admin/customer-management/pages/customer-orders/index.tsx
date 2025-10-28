@@ -145,6 +145,7 @@ export const CustomerOrders = () => {
           onPageSizeChange={setPageSize}
           formatCurrency={formatCurrency}
           formatDate={formatDate}
+          onOrderUpdate={refreshOrders}
         />
       )}
     </S.ContentContainer>

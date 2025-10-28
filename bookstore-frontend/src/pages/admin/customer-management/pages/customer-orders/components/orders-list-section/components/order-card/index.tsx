@@ -1,7 +1,9 @@
 import { Calendar, Package } from 'phosphor-react'
 
-import { Badge } from '@/components'
+import { ADMIN_STATUS_CHANGES, Badge, OrderStatusChanger } from '@/components'
 import type { OrderDTO } from '@/dtos'
+import type { OrderStatusType } from '@/dtos'
+import { useOrderStatus } from '@/hooks'
 
 import * as S from './styles'
 
@@ -9,13 +11,24 @@ interface OrderCardProps {
   order: OrderDTO
   formatCurrency: (value: number) => string
   formatDate: (date: Date | string) => string
+  onOrderUpdate?: () => void
 }
 
 export const OrderCard = ({
   order,
   formatCurrency,
   formatDate,
+  onOrderUpdate,
 }: OrderCardProps) => {
+  const { changeOrderStatus, isLoading } = useOrderStatus()
+
+  const handleStatusChange = async (
+    orderId: string,
+    newStatus: OrderStatusType,
+  ) => {
+    await changeOrderStatus(orderId, newStatus)
+    onOrderUpdate?.()
+  }
   const getStatusInfo = (status: string) => {
     switch (status) {
       case 'pending':
@@ -90,6 +103,13 @@ export const OrderCard = ({
             <S.DiscountValue>-{formatCurrency(order.discount)}</S.DiscountValue>
           </S.OrderDiscount>
         )}
+
+        <OrderStatusChanger
+          order={order}
+          availableChanges={ADMIN_STATUS_CHANGES}
+          onStatusChange={handleStatusChange}
+          isLoading={isLoading}
+        />
       </S.OrderContent>
     </S.OrderCard>
   )
