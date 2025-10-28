@@ -21,6 +21,7 @@ export {
   OrderStatusChanger,
   USER_STATUS_CHANGES,
 } from './OrderStatusChanger'
+export { ProfileMenu } from './ProfileMenu'
 export { ProtectedRoute } from './ProtectedRoute'
 export { Select } from './Select'
 export { Textarea } from './Textarea'

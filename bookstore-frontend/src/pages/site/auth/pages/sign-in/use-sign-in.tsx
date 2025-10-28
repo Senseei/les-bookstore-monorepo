@@ -6,7 +6,6 @@ import { useAuth } from '@/providers'
 import { useToast } from '@/providers/toast/use-toast'
 import { ROUTES } from '@/routes/constants'
 import { type SignInFormData, signInSchema } from '@/schemas/auth-schemas'
-import { getUserFromToken } from '@/utils'
 
 export const useSignIn = () => {
   const { signIn, isLoading, error, clearError } = useAuth()
@@ -31,11 +30,8 @@ export const useSignIn = () => {
       return
     }
 
-    // Check if user is admin from token and redirect accordingly
-    const user = getUserFromToken(result.data?.accessToken || '')
-    const isAdmin = user?.role === 'admin'
-
-    navigate(isAdmin ? ROUTES.ADMIN : ROUTES.HOME)
+    // Always redirect to home page regardless of role
+    navigate(ROUTES.HOME)
   }
 
   return {
