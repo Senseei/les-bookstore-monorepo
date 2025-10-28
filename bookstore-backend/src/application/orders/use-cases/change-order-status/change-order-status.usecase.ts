@@ -24,10 +24,12 @@ export class ChangeOrderStatus {
   @Transactional()
   public async execute(
     orderId: string,
-    userId: string,
     status: OrderStatus,
+    userId?: string,
   ): Promise<Order> {
-    const order = await this.service.findByIdAndUserOrThrow(orderId, userId);
+    const order = userId
+      ? await this.service.findByIdAndUserOrThrow(orderId, userId)
+      : await this.service.findByIdOrThrow(orderId);
 
     const handler = this.handlers.get(status);
     if (handler) {

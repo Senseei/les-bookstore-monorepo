@@ -42,6 +42,7 @@ export class OrdersSiteController {
     return await this.webService.pay(orderId, dto);
   }
 
+  @Roles(UserRole.ADMIN, UserRole.USER)
   @Patch(':id')
   public async changeOrderStatus(
     @Param('id') orderId: string,

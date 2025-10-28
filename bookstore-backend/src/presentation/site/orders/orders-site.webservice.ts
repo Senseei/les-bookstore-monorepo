@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { OrdersService } from '@/application/orders/services/orders.service';
 import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
+import { UsersService } from '@/application/users/services';
 import { OrderStatus } from '@/domain/order/status.enum';
 import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
 
@@ -13,7 +13,7 @@ import { PaymentsDTO } from './dtos/payments.dto';
 @Injectable()
 export class OrdersSiteWebService {
   constructor(
-    private readonly service: OrdersService,
+    private readonly usersService: UsersService,
     private readonly createNewOrder: CreateNewOrder,
     private readonly payOrder: PayOrder,
     private readonly changeOrderStatus: ChangeOrderStatus,
@@ -35,8 +35,14 @@ export class OrdersSiteWebService {
     userId: string,
     status: OrderStatus,
   ): Promise<OrderDTO> {
+    const loggedUser = await this.usersService.findByIdOrThrow(userId);
+
     return new OrderDTO(
-      await this.changeOrderStatus.execute(orderId, userId, status),
+      await this.changeOrderStatus.execute(
+        orderId,
+        status,
+        loggedUser.isAdmin() ? undefined : userId,
+      ),
     );
   }
 }
