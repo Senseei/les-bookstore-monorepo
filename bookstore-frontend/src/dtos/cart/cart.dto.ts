@@ -1,5 +1,5 @@
 import type { BookDTO } from '../book/book.dto'
-import type { TicketDTO } from '../ticket'
+import type { ApplyTicketsResultDTO, TicketDTO } from '../ticket'
 
 export interface CartItemDTO {
   bookId: string
@@ -21,5 +21,6 @@ export interface CartStateDTO {
   summary: CartSummaryDTO
   lastUpdated: Date
   isLoading: boolean
-  appliedTicket: TicketDTO | null
+  selectedTickets: TicketDTO[]
+  appliedTicketsResult?: ApplyTicketsResultDTO
 }

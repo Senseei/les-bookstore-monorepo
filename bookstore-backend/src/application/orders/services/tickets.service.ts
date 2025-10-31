@@ -39,6 +39,16 @@ export class TicketsService extends BaseService<Ticket> {
     );
   }
 
+  /**
+   * Find all tickets available for a user to use
+   * Includes:
+   * - User's personal tickets (owner_id = userId)
+   * - Public promotional tickets (owner_id IS NULL AND nature = promotional)
+   */
+  public async findAvailableForUser(userId: string): Promise<Ticket[]> {
+    return this.repository.findAvailableForUser(userId);
+  }
+
   public async markAsUsed(ticket: Ticket): Promise<Ticket> {
     // Cupons têm uso único - sempre marcam como USED
     ticket.status = TicketStatus.USED;

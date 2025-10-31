@@ -9,4 +9,5 @@ export interface TicketsRepository extends BaseRepository<Ticket> {
     ownerId: string,
     nature: TicketNature,
   ): Promise<Ticket[]>;
+  findAvailableForUser(userId: string): Promise<Ticket[]>;
 }

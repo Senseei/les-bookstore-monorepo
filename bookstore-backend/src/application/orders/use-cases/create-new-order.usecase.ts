@@ -36,12 +36,8 @@ export class CreateNewOrder {
       deliveryAddress,
     });
 
-    if (dto.ticketId) {
-      const ticket = await this.ticketsService.findByIdOrThrow(dto.ticketId);
-      order.ticket = ticket;
-      user.customerDetails.usedTickets.push(ticket);
-      await this.usersService.save(user);
-    }
+    // Tickets are now applied AFTER order creation using ApplyTicketsToOrder use case
+    // This allows for multi-ticket optimization (RN0036)
 
     for (const item of dto.items) {
       const book = await this.booksService.findByIdOrThrow(item.bookId);
@@ -71,9 +67,6 @@ export class CreateNewOrder {
       );
     }
 
-    if (dto.ticketId) {
-      const ticket = await this.ticketsService.findByIdOrThrow(dto.ticketId);
-      await this.validateTicket.execute(ticket, user);
-    }
+    // Ticket validation is now done in ApplyTicketsToOrder use case
   }
 }

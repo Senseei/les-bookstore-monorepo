@@ -35,7 +35,17 @@ export class Order extends DomainEntity {
   _payments: Payment[];
 
   @ManyToMany(() => Ticket, { eager: true })
-  @JoinTable({ name: 'tb_order_tickets' })
+  @JoinTable({
+    name: 'tb_order_tickets',
+    joinColumn: {
+      name: 'order_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'ticket_id',
+      referencedColumnName: 'id',
+    },
+  })
   tickets: Ticket[];
 
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
@@ -106,6 +116,37 @@ export class Order extends DomainEntity {
 
     // Desconto não pode ser maior que subtotal
     return Math.min(totalDiscount, subtotal);
+  }
+
+  /**
+   * Calculate the overpayment amount from exchange tickets
+   * Returns the change that should be returned as a new exchange ticket (RN0036)
+   */
+  public getExchangeTicketsOverpayment(): number {
+    if (!this.tickets || this.tickets.length === 0) return 0;
+
+    const subtotal = this.getSubtotal();
+    
+    // 1. Apply promotional discount first
+    const promotional = this.getPromotionalTicket();
+    let remainingAmount = subtotal;
+    if (promotional) {
+      remainingAmount -= promotional.applyTicket(subtotal);
+    }
+
+    // 2. Calculate total value of exchange tickets used
+    const exchangeTickets = this.getExchangeTickets();
+    const totalExchangeValue = exchangeTickets.reduce(
+      (sum, ticket) => sum + ticket.value,
+      0,
+    );
+
+    // 3. Calculate overpayment (change to be returned)
+    if (totalExchangeValue > remainingAmount) {
+      return totalExchangeValue - remainingAmount;
+    }
+
+    return 0;
   }
 
   public getTotalItems(): number {

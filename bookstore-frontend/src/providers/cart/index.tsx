@@ -24,19 +24,18 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     },
     lastUpdated: new Date(),
     isLoading: true,
-    appliedTicket: null,
+    selectedTickets: [],
+    appliedTicketsResult: undefined,
   })
 
   const toast = useToast()
 
   /**
-   * Calculate cart summary from items
+   * Calculate cart summary from items and selected tickets
+   * This is a PREVIEW estimation - final discount is calculated by backend
    */
   const calculateSummary = useCallback(
-    (
-      items: CartItemDTO[],
-      appliedTicket?: TicketDTO | null,
-    ): CartSummaryDTO => {
+    (items: CartItemDTO[], selectedTickets: TicketDTO[]): CartSummaryDTO => {
       const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
       const originalPrice = items.reduce((sum, item) => {
         const price =
@@ -47,24 +46,68 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       }, 0)
       const totalUniqueItems = items.length
 
-      // Use backend-calculated values if ticket is applied
-      if (appliedTicket) {
+      // If no tickets selected, return original price
+      if (!selectedTickets || selectedTickets.length === 0) {
         return {
           totalItems,
-          totalPrice: appliedTicket.finalOrderValue,
+          totalPrice: originalPrice,
           totalUniqueItems,
           originalPrice,
-          discount: appliedTicket.discountAmount,
+          discount: 0,
         }
       }
 
-      // No ticket applied - use original price
+      // Estimate discount (preview only - backend will optimize)
+      let estimatedDiscount = 0
+      let remainingAmount = originalPrice
+
+      // Apply promotional tickets first
+      const promotionalTickets = selectedTickets.filter(
+        (t) => t.nature === 'promotional',
+      )
+      const exchangeTickets = selectedTickets.filter(
+        (t) => t.nature === 'exchange',
+      )
+
+      // Apply first promotional ticket (backend enforces max 1)
+      if (promotionalTickets.length > 0) {
+        const ticket = promotionalTickets[0]
+        let ticketDiscount = 0
+
+        if (ticket.type === 'percentage') {
+          ticketDiscount = (remainingAmount * ticket.value) / 100
+        } else {
+          // raw value
+          ticketDiscount = ticket.value
+        }
+
+        // Apply max discount limit if exists
+        if (ticket.maxDiscount && ticketDiscount > ticket.maxDiscount) {
+          ticketDiscount = ticket.maxDiscount
+        }
+
+        estimatedDiscount += Math.min(ticketDiscount, remainingAmount)
+        remainingAmount -= ticketDiscount
+      }
+
+      // Apply exchange tickets
+      for (const ticket of exchangeTickets) {
+        if (remainingAmount <= 0) break
+        const ticketValue = Math.min(ticket.value, remainingAmount)
+        estimatedDiscount += ticketValue
+        remainingAmount -= ticketValue
+      }
+
+      // Ensure discount doesn't exceed original price
+      estimatedDiscount = Math.min(estimatedDiscount, originalPrice)
+      const finalPrice = Math.max(0, originalPrice - estimatedDiscount)
+
       return {
         totalItems,
-        totalPrice: originalPrice,
+        totalPrice: finalPrice,
         totalUniqueItems,
         originalPrice,
-        discount: 0,
+        discount: estimatedDiscount,
       }
     },
     [],
@@ -82,16 +125,16 @@ export const CartProvider = ({ children }: CartProviderProps) => {
           lastUpdated: new Date(),
         }
 
-        // Recalculate summary if items or ticket changed
+        // Recalculate summary if items or tickets changed
         if (
           newState.items !== undefined ||
-          newState.appliedTicket !== undefined
+          newState.selectedTickets !== undefined
         ) {
           updatedState.summary = calculateSummary(
             newState.items || prevState.items,
-            newState.appliedTicket !== undefined
-              ? newState.appliedTicket
-              : prevState.appliedTicket,
+            newState.selectedTickets !== undefined
+              ? newState.selectedTickets
+              : prevState.selectedTickets,
           )
         }
 
@@ -114,10 +157,11 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         // Recalculate summary to ensure consistency
         const summary = calculateSummary(
           storedCart.items,
-          storedCart.appliedTicket,
+          storedCart.selectedTickets || [],
         )
         setCartState({
           ...storedCart,
+          selectedTickets: storedCart.selectedTickets || [],
           summary,
           isLoading: false,
         })
@@ -162,7 +206,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
           toast.showSuccess(`Adicionado ao carrinho: ${book.title}`)
         }
 
-        const summary = calculateSummary(newItems, prevState.appliedTicket)
+        const summary = calculateSummary(newItems, prevState.selectedTickets)
         const updatedState: CartStateDTO = {
           ...prevState,
           items: newItems,
@@ -191,7 +235,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         const newItems = prevState.items.filter(
           (item) => item.bookId !== bookId,
         )
-        const summary = calculateSummary(newItems, prevState.appliedTicket)
+        const summary = calculateSummary(newItems, prevState.selectedTickets)
 
         const updatedState: CartStateDTO = {
           ...prevState,
@@ -227,7 +271,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         const newItems = prevState.items.map((item) =>
           item.bookId === bookId ? { ...item, quantity } : item,
         )
-        const summary = calculateSummary(newItems, prevState.appliedTicket)
+        const summary = calculateSummary(newItems, prevState.selectedTickets)
 
         const updatedState: CartStateDTO = {
           ...prevState,
@@ -258,7 +302,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       },
       lastUpdated: new Date(),
       isLoading: false,
-      appliedTicket: null,
+      selectedTickets: [],
+      appliedTicketsResult: undefined,
     }
 
     setCartState(updatedState)
@@ -291,12 +336,12 @@ export const CartProvider = ({ children }: CartProviderProps) => {
    */
   const refreshSummary = useCallback(() => {
     saveCartState({
-      summary: calculateSummary(cartState.items, cartState.appliedTicket),
+      summary: calculateSummary(cartState.items, cartState.selectedTickets),
     })
   }, [
     calculateSummary,
     cartState.items,
-    cartState.appliedTicket,
+    cartState.selectedTickets,
     saveCartState,
   ])
 
@@ -329,18 +374,14 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         const orderData = {
           items: orderItems,
           deliveryAddressId,
-          ticketId: cartState.appliedTicket?.id || null,
+          // ticketId removed - tickets will be applied via separate API call after order creation
         }
 
-        // Create the order
+        // Create the order (without tickets - they'll be applied separately)
         const createdOrder = await OrderService.createOrder(orderData)
 
-        // Clear cart after successful order creation
-        clearCart()
-
-        toast.showSuccess(
-          `Pedido realizado com sucesso! Número do pedido: ${createdOrder.id}`,
-        )
+        // Note: Cart is NOT cleared here - will be cleared after successful ticket application
+        // This allows preserving selected tickets for the apply-tickets API call
 
         return {
           success: true,
@@ -358,30 +399,58 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         }
       }
     },
-    [cartState.items, cartState.appliedTicket, clearCart, toast],
+    [cartState.items, toast],
   )
 
   /**
-   * Apply ticket to cart
+   * Select tickets for cart (replace all selected tickets)
    */
-  const applyTicket = useCallback(
-    (ticket: TicketDTO) => {
-      saveCartState({ appliedTicket: ticket })
-      toast.showSuccess(`Cupom "${ticket.code}" aplicado com sucesso!`)
+  const selectTickets = useCallback(
+    (tickets: TicketDTO[]) => {
+      saveCartState({ selectedTickets: tickets })
+      if (tickets.length > 0) {
+        toast.showSuccess(
+          `${tickets.length} cupom${tickets.length > 1 ? 's' : ''} selecionado${tickets.length > 1 ? 's' : ''}`,
+        )
+      }
     },
     [saveCartState, toast],
   )
 
   /**
-   * Remove ticket from cart
+   * Clear all selected tickets
    */
-  const removeTicket = useCallback(() => {
-    const ticketCode = cartState.appliedTicket?.code
-    saveCartState({ appliedTicket: null })
-    if (ticketCode) {
-      toast.showSuccess(`Cupom "${ticketCode}" removido`)
+  const clearSelectedTickets = useCallback(() => {
+    const count = cartState.selectedTickets.length
+    saveCartState({ selectedTickets: [], appliedTicketsResult: undefined })
+    if (count > 0) {
+      toast.showSuccess('Cupons removidos')
     }
-  }, [cartState.appliedTicket?.code, saveCartState, toast])
+  }, [cartState.selectedTickets.length, saveCartState, toast])
+
+  /**
+   * Toggle ticket selection (add if not selected, remove if already selected)
+   */
+  const toggleTicketSelection = useCallback(
+    (ticket: TicketDTO) => {
+      const isSelected = cartState.selectedTickets.some((t) => t.id === ticket.id)
+
+      if (isSelected) {
+        // Remove ticket
+        const newTickets = cartState.selectedTickets.filter(
+          (t) => t.id !== ticket.id,
+        )
+        saveCartState({ selectedTickets: newTickets })
+        toast.showSuccess(`Cupom "${ticket.code}" removido`)
+      } else {
+        // Add ticket
+        const newTickets = [...cartState.selectedTickets, ticket]
+        saveCartState({ selectedTickets: newTickets })
+        toast.showSuccess(`Cupom "${ticket.code}" selecionado`)
+      }
+    },
+    [cartState.selectedTickets, saveCartState, toast],
+  )
 
   // Computed properties
   const isEmpty = useMemo(() => cartState.items.length === 0, [cartState.items])
@@ -409,7 +478,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     summary: cartState.summary,
     isLoading: cartState.isLoading,
     lastUpdated: cartState.lastUpdated,
-    appliedTicket: cartState.appliedTicket,
+    selectedTickets: cartState.selectedTickets,
+    appliedTicketsResult: cartState.appliedTicketsResult,
 
     // Computed properties
     isEmpty,
@@ -426,8 +496,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     hasItem,
 
     // Ticket operations
-    applyTicket,
-    removeTicket,
+    selectTickets,
+    clearSelectedTickets,
+    toggleTicketSelection,
 
     // Checkout operations
     checkout,
