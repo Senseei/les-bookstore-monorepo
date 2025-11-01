@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { Ticket } from '@/domain/ticket/ticket.entity';
 import { TicketNature } from '@/domain/ticket/enums/ticket-nature.enum';
+import { Ticket } from '@/domain/ticket/ticket.entity';
 
 import { OrdersService } from '../services/orders.service';
 import { TicketsService } from '../services/tickets.service';
@@ -91,7 +91,8 @@ export class ApplyTicketsToOrder {
     // 6. Preparar lista de tickets removidos
     const removedTickets = optimization.removed.map((ticket) => ({
       ticket,
-      reason: 'Combinação não otimizada (RN0036) - geraria desperdício desnecessário',
+      reason:
+        'Combinação não otimizada (RN0036) - geraria desperdício desnecessário',
     }));
 
     return {
@@ -109,7 +110,7 @@ export class ApplyTicketsToOrder {
   /**
    * RN0036: Otimização FORÇADA para não desperdiçar cupons.
    * Sistema decide automaticamente qual combinação usar.
-   * 
+   *
    * Exemplo: R$50 de compra, cupons [R$20, R$40, R$35]
    * Resultado: usa [R$20, R$35] automaticamente, remove [R$40]
    * Gera troco de R$5

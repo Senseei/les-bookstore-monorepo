@@ -18,7 +18,7 @@ import { UserValidator } from '@application/users/validators/user.validator';
 import { Address } from '@domain/user/address.entity';
 import { CustomerDetails } from '@domain/user/customer-details.entity';
 import { User } from '@domain/user/user.entity';
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersController } from '@presentation/admin/users/users.controller';
 import { UsersWebService } from '@presentation/admin/users/users.webservice';

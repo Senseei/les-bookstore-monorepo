@@ -123,12 +123,13 @@ export const usePaymentModal = ({
     try {
       // If order is fully covered by tickets (R$0.00), send empty payments array
       const payments: PaymentsDTO = {
-        payments: orderTotal === 0 
-          ? [] 
-          : selectedCards.map((card) => ({
-              cardId: card.id,
-              amount: card.amount,
-            })),
+        payments:
+          orderTotal === 0
+            ? []
+            : selectedCards.map((card) => ({
+                cardId: card.id,
+                amount: card.amount,
+              })),
       }
 
       await onPayment(payments)

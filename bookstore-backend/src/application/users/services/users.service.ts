@@ -1,11 +1,11 @@
 import { BaseService } from '@application/base.service';
 import { User } from '@domain/user/user.entity';
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 
 import { TicketsService } from '@/application/orders/services/tickets.service';
 import { UsersRepository } from '@/application/users/interfaces/users.repository';
-import { Ticket } from '@/domain/ticket/ticket.entity';
 import { TicketStatus } from '@/domain/ticket/enums/ticket-status.enum';
+import { Ticket } from '@/domain/ticket/ticket.entity';
 import { UserRole } from '@/domain/user/enums/role.enum';
 
 @Injectable()

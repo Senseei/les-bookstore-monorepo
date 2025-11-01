@@ -1,4 +1,4 @@
-import { Info, Ticket } from '@phosphor-icons/react'
+import { Info, Ticket } from 'phosphor-react'
 import { useEffect, useMemo } from 'react'
 
 import type { TicketDTO } from '@/dtos'
@@ -34,7 +34,9 @@ export const TicketSelector = ({
     let remainingAmount = cartSubtotal
 
     // Apply promotional tickets first
-    const promotional = selectedTickets.filter((t) => t.nature === 'promotional')
+    const promotional = selectedTickets.filter(
+      (t) => t.nature === 'promotional',
+    )
     const exchange = selectedTickets.filter((t) => t.nature === 'exchange')
 
     // Apply first promotional ticket
@@ -158,9 +160,7 @@ export const TicketSelector = ({
           <S.TicketIcon>
             <Ticket size={20} />
           </S.TicketIcon>
-          <S.TicketTitle>
-            Cupons Disponíveis ({tickets.length})
-          </S.TicketTitle>
+          <S.TicketTitle>Cupons Disponíveis ({tickets.length})</S.TicketTitle>
         </S.TicketHeaderLeft>
         {selectedTickets.length > 0 && (
           <S.ClearButton onClick={onClearSelection}>
@@ -201,7 +201,9 @@ export const TicketSelector = ({
               </S.TicketMainInfo>
               <S.TicketDetails>
                 {ticket.description && (
-                  <S.TicketDescription>{ticket.description}</S.TicketDescription>
+                  <S.TicketDescription>
+                    {ticket.description}
+                  </S.TicketDescription>
                 )}
                 {ticket.validUntil && (
                   <S.TicketExpiration data-testid="ticket-expiration">
@@ -252,4 +254,3 @@ export const TicketSelector = ({
     </S.TicketContainer>
   )
 }
-

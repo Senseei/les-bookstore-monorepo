@@ -433,7 +433,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
    */
   const toggleTicketSelection = useCallback(
     (ticket: TicketDTO) => {
-      const isSelected = cartState.selectedTickets.some((t) => t.id === ticket.id)
+      const isSelected = cartState.selectedTickets.some(
+        (t) => t.id === ticket.id,
+      )
 
       if (isSelected) {
         // Remove ticket

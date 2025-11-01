@@ -139,7 +139,9 @@ export const TicketCode = styled.span`
   text-transform: uppercase;
 `
 
-export const TicketNatureBadge = styled.span<{ $nature: 'promotional' | 'exchange' }>`
+export const TicketNatureBadge = styled.span<{
+  $nature: 'promotional' | 'exchange'
+}>`
   font-size: ${(props) => props.theme.FONT_SIZE.XSMALL};
   font-weight: ${(props) => props.theme.FONT_WEIGHT.MEDIUM};
   color: ${(props) =>
@@ -249,4 +251,3 @@ export const HintText = styled.p`
   margin: 0;
   line-height: 1.5;
 `
-

@@ -51,4 +51,3 @@ export class AddTicketColumns1761866250243 implements MigrationInterface {
     `);
   }
 }
-

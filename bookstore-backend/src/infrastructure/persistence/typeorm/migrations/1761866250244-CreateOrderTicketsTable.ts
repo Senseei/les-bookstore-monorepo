@@ -56,4 +56,3 @@ export class CreateOrderTicketsTable1761866250244
     await queryRunner.query(`DROP TABLE IF EXISTS tb_order_tickets`);
   }
 }
-

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
-import { Ticket } from '@/domain/ticket/ticket.entity';
 import { TicketNature } from '@/domain/ticket/enums/ticket-nature.enum';
 import { TicketStatus } from '@/domain/ticket/enums/ticket-status.enum';
 import { TicketType } from '@/domain/ticket/enums/ticket-type.enum';
+import { Ticket } from '@/domain/ticket/ticket.entity';
 
 import { TicketsService } from '../services/tickets.service';
 

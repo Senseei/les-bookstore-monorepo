@@ -75,11 +75,15 @@ export const PaymentModal = ({
                       <S.TicketCode>{ticket.code}</S.TicketCode>
                       <Badge
                         variant={
-                          ticket.nature === 'promotional' ? 'default' : 'success'
+                          ticket.nature === 'promotional'
+                            ? 'default'
+                            : 'success'
                         }
                         size="sm"
                       >
-                        {ticket.nature === 'promotional' ? 'Promocional' : 'Troca'}
+                        {ticket.nature === 'promotional'
+                          ? 'Promocional'
+                          : 'Troca'}
                       </Badge>
                     </S.TicketHeader>
                     {ticket.description && (

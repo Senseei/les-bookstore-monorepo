@@ -1,8 +1,16 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { DomainEntity } from '../domain.entity';
-import { Ticket } from '../ticket/ticket.entity';
 import { TicketNature } from '../ticket/enums/ticket-nature.enum';
+import { Ticket } from '../ticket/ticket.entity';
 import { Address } from '../user/address.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
 import { OrderItem } from './order-item.entity';
@@ -126,7 +134,7 @@ export class Order extends DomainEntity {
     if (!this.tickets || this.tickets.length === 0) return 0;
 
     const subtotal = this.getSubtotal();
-    
+
     // 1. Apply promotional discount first
     const promotional = this.getPromotionalTicket();
     let remainingAmount = subtotal;

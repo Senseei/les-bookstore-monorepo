@@ -18,10 +18,10 @@ import { ApplyTicketsDto } from '../../dtos/ticket.dto';
 
 /**
  * Exemplo de resposta do endpoint:
- * 
+ *
  * POST /orders/:orderId/apply-tickets
  * Body: { availableTicketCodes: ["TROCA-001", "TROCA-002", "TROCA-003"] }
- * 
+ *
  * Response:
  * {
  *   "success": true,

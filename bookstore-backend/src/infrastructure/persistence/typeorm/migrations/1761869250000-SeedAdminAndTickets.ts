@@ -225,4 +225,3 @@ export class SeedAdminAndTickets1761869250000 implements MigrationInterface {
     `);
   }
 }
-

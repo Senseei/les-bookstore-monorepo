@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
@@ -18,8 +18,8 @@ import {
   OrdersRepositoryImpl,
   TicketsRepositoryImpl,
 } from '@/infrastructure/persistence/typeorm/repositories';
-import { OrdersController } from '@/presentation/site/orders/orders.controller';
 import { OrderTicketsController } from '@/presentation/site/orders/order-tickets.controller';
+import { OrdersController } from '@/presentation/site/orders/orders.controller';
 import { OrdersWebService } from '@/presentation/site/orders/orders.webservice';
 import { TicketsSiteController } from '@/presentation/site/tickets/tickets-site.controller';
 import { TicketsSiteWebService } from '@/presentation/site/tickets/tickets-site.webservice';
@@ -27,9 +27,20 @@ import { TicketsSiteWebService } from '@/presentation/site/tickets/tickets-site.
 import { BooksModule } from './books.module';
 import { UsersModule } from './users.module';
 
-const CONTROLLERS = [OrdersController, TicketsSiteController, OrderTicketsController];
+const CONTROLLERS = [
+  OrdersController,
+  TicketsSiteController,
+  OrderTicketsController,
+];
 const WEB_SERVICES = [OrdersWebService, TicketsSiteWebService];
-const USE_CASES = [CreateNewOrder, PayOrder, CancelOrder, ValidateTicket, ApplyTicketsToOrder, GenerateExchangeTicket];
+const USE_CASES = [
+  CreateNewOrder,
+  PayOrder,
+  CancelOrder,
+  ValidateTicket,
+  ApplyTicketsToOrder,
+  GenerateExchangeTicket,
+];
 const BUSINESS_SERVICES = [TicketsService, OrdersService];
 
 @Module({

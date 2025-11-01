@@ -1,4 +1,11 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 import { TicketNature } from '@/domain/ticket/enums/ticket-nature.enum';
 import { TicketType } from '@/domain/ticket/enums/ticket-type.enum';

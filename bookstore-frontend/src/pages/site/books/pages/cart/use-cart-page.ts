@@ -112,9 +112,7 @@ export const useCartPage = (): UseCartPageReturn => {
         const result = await checkout(deliveryAddressId)
 
         if (!result.success || !result.orderId) {
-          showError(
-            result.error || 'Erro ao criar pedido. Tente novamente.',
-          )
+          showError(result.error || 'Erro ao criar pedido. Tente novamente.')
           return
         }
 
@@ -129,9 +127,7 @@ export const useCartPage = (): UseCartPageReturn => {
 
             // Show optimization result to user
             if (applyResult.removedTickets.length > 0) {
-              showInfo(
-                `Sistema otimizou cupons: ${applyResult.message}`,
-              )
+              showInfo(`Sistema otimizou cupons: ${applyResult.message}`)
             }
 
             // Show applied tickets info
@@ -150,9 +146,7 @@ export const useCartPage = (): UseCartPageReturn => {
 
         // Step 3: Clear cart and navigate to orders page
         clearCart()
-        showSuccess(
-          `Pedido ${result.orderId} criado com sucesso!`,
-        )
+        showSuccess(`Pedido ${result.orderId} criado com sucesso!`)
         navigate('/orders')
       } catch (error) {
         showError('Erro inesperado ao finalizar pedido. Tente novamente.')
