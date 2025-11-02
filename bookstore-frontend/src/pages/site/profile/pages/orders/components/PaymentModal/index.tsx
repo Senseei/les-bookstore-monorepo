@@ -1,6 +1,6 @@
-import { CreditCard, Plus } from 'phosphor-react'
+import { CreditCard, Plus, Ticket } from 'phosphor-react'
 
-import { Button, Input, Modal } from '@/components'
+import { Badge, Button, Input, Modal } from '@/components'
 import type { OrderDTO, PaymentsDTO } from '@/dtos'
 import { formatCurrency } from '@/utils'
 
@@ -44,6 +44,8 @@ export const PaymentModal = ({
 
   if (!order) return null
 
+  const hasTickets = order.tickets && order.tickets.length > 0
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <S.ModalContent>
@@ -58,6 +60,48 @@ export const PaymentModal = ({
             </S.OrderDetails>
           </S.OrderInfo>
         </S.Header>
+
+        {hasTickets && (
+          <S.TicketsSection>
+            <S.SectionTitle>
+              <Ticket size={20} />
+              Cupons Aplicados
+            </S.SectionTitle>
+            <S.TicketsList>
+              {order.tickets.map((ticket) => (
+                <S.TicketItem key={ticket.id}>
+                  <S.TicketInfo>
+                    <S.TicketHeader>
+                      <S.TicketCode>{ticket.code}</S.TicketCode>
+                      <Badge
+                        variant={
+                          ticket.nature === 'promotional'
+                            ? 'default'
+                            : 'success'
+                        }
+                        size="sm"
+                      >
+                        {ticket.nature === 'promotional'
+                          ? 'Promocional'
+                          : 'Troca'}
+                      </Badge>
+                    </S.TicketHeader>
+                    {ticket.description && (
+                      <S.TicketDescription>
+                        {ticket.description}
+                      </S.TicketDescription>
+                    )}
+                  </S.TicketInfo>
+                  <S.TicketValue>
+                    {ticket.type === 'percentage'
+                      ? `${ticket.value}%`
+                      : formatCurrency(ticket.value)}
+                  </S.TicketValue>
+                </S.TicketItem>
+              ))}
+            </S.TicketsList>
+          </S.TicketsSection>
+        )}
 
         <S.CardsSection>
           <S.SectionTitle>

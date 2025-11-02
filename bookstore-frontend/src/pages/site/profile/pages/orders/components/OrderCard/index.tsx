@@ -9,8 +9,7 @@ import {
   OrderStatusChanger,
   USER_STATUS_CHANGES,
 } from '@/components'
-import type { OrderDTO } from '@/dtos'
-import type { OrderStatusType } from '@/dtos'
+import type { OrderDTO, OrderStatusType } from '@/dtos'
 import { useOrderStatus } from '@/hooks'
 import { calculateOrderTotal } from '@/utils'
 
@@ -132,7 +131,11 @@ export const OrderCard = ({
             {order.discount > 0 && (
               <S.SummaryItem>
                 <Ticket size={16} />
-                <span>Desconto: {formatCurrency(order.discount)}</span>
+                <span>
+                  {order.tickets && order.tickets.length > 0
+                    ? `${order.tickets.length} cupom${order.tickets.length > 1 ? 's' : ''} aplicado${order.tickets.length > 1 ? 's' : ''}`
+                    : `Desconto: ${formatCurrency(order.discount)}`}
+                </span>
               </S.SummaryItem>
             )}
           </S.OrderSummary>

@@ -58,7 +58,7 @@ export const Orders = () => {
     try {
       await payOrder(selectedOrder.id, payments)
       showSuccess('Seu pagamento foi processado com sucesso!')
-      handleRefreshOrders() // Refresh orders to get updated status
+      await handleRefreshOrders() // Wait for orders to refresh before closing modal
       handleClosePaymentModal()
     } catch {
       showError('Não foi possível processar o pagamento. Tente novamente.')

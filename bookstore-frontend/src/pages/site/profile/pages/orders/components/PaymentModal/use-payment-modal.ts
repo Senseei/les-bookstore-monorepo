@@ -45,12 +45,15 @@ export const usePaymentModal = ({
   const orderTotal = order ? (order.subtotal || 0) - (order.discount || 0) : 0
   const remainingAmount = order ? orderTotal - totalSelectedAmount : 0
 
-  // Check if payment is valid (amount matches order total and has at least one card)
+  // Check if payment is valid
+  // Case 1: Order fully covered by tickets (R$0.00) - no cards needed
+  // Case 2: Traditional payment - cards must match order total
   const isPaymentValid =
-    selectedCards.length > 0 &&
-    remainingAmount === 0 &&
-    selectedCards.length <= 2 &&
-    selectedCards.every((card) => card.amount > 0)
+    orderTotal === 0 ||
+    (selectedCards.length > 0 &&
+      remainingAmount === 0 &&
+      selectedCards.length <= 2 &&
+      selectedCards.every((card) => card.amount > 0))
 
   const handleCardSelection = (card: CardDTO) => {
     setSelectedCards((prev) => {
@@ -118,11 +121,15 @@ export const usePaymentModal = ({
     if (!isPaymentValid || !order) return
 
     try {
+      // If order is fully covered by tickets (R$0.00), send empty payments array
       const payments: PaymentsDTO = {
-        payments: selectedCards.map((card) => ({
-          cardId: card.id,
-          amount: card.amount,
-        })),
+        payments:
+          orderTotal === 0
+            ? []
+            : selectedCards.map((card) => ({
+                cardId: card.id,
+                amount: card.amount,
+              })),
       }
 
       await onPayment(payments)

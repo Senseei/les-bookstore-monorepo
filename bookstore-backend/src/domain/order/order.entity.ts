@@ -1,6 +1,15 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { DomainEntity } from '../domain.entity';
+import { TicketNature } from '../ticket/enums/ticket-nature.enum';
 import { Ticket } from '../ticket/ticket.entity';
 import { Address } from '../user/address.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
@@ -33,9 +42,19 @@ export class Order extends DomainEntity {
   })
   _payments: Payment[];
 
-  @ManyToOne(() => Ticket, { eager: true, nullable: true })
-  @JoinColumn()
-  ticket?: Ticket;
+  @ManyToMany(() => Ticket, { eager: true })
+  @JoinTable({
+    name: 'tb_order_tickets',
+    joinColumn: {
+      name: 'order_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'ticket_id',
+      referencedColumnName: 'id',
+    },
+  })
+  tickets: Ticket[];
 
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
   @JoinColumn()
@@ -44,13 +63,13 @@ export class Order extends DomainEntity {
   constructor(props: {
     customer: CustomerDetails;
     deliveryAddress: Address;
-    ticket?: Ticket;
+    tickets?: Ticket[];
   }) {
     super();
     if (props) {
       this.customer = props.customer;
       this.deliveryAddress = props.deliveryAddress;
-      this.ticket = props.ticket;
+      this.tickets = props.tickets || [];
     }
   }
 
@@ -66,6 +85,76 @@ export class Order extends DomainEntity {
       this._payments = [];
     }
     return this._payments;
+  }
+
+  public getPromotionalTicket(): Ticket | null {
+    if (!this.tickets) return null;
+    return (
+      this.tickets.find((t) => t.nature === TicketNature.PROMOTIONAL) || null
+    );
+  }
+
+  public getExchangeTickets(): Ticket[] {
+    if (!this.tickets) return [];
+    return this.tickets.filter((t) => t.nature === TicketNature.EXCHANGE);
+  }
+
+  public getTotalTicketsDiscount(): number {
+    if (!this.tickets || this.tickets.length === 0) return 0;
+
+    const subtotal = this.getSubtotal();
+    let totalDiscount = 0;
+
+    // 1. Aplicar cupom promocional primeiro (se houver)
+    const promotional = this.getPromotionalTicket();
+    if (promotional) {
+      totalDiscount += promotional.applyTicket(subtotal);
+    }
+
+    // 2. Aplicar cupons de troca (uso integral de cada cupom)
+    const remainingAmount = subtotal - totalDiscount;
+    const exchangeTickets = this.getExchangeTickets();
+
+    for (const ticket of exchangeTickets) {
+      if (remainingAmount <= 0) break;
+
+      const discountFromThisTicket = Math.min(ticket.value, remainingAmount);
+      totalDiscount += discountFromThisTicket;
+    }
+
+    // Desconto não pode ser maior que subtotal
+    return Math.min(totalDiscount, subtotal);
+  }
+
+  /**
+   * Calculate the overpayment amount from exchange tickets
+   * Returns the change that should be returned as a new exchange ticket (RN0036)
+   */
+  public getExchangeTicketsOverpayment(): number {
+    if (!this.tickets || this.tickets.length === 0) return 0;
+
+    const subtotal = this.getSubtotal();
+
+    // 1. Apply promotional discount first
+    const promotional = this.getPromotionalTicket();
+    let remainingAmount = subtotal;
+    if (promotional) {
+      remainingAmount -= promotional.applyTicket(subtotal);
+    }
+
+    // 2. Calculate total value of exchange tickets used
+    const exchangeTickets = this.getExchangeTickets();
+    const totalExchangeValue = exchangeTickets.reduce(
+      (sum, ticket) => sum + ticket.value,
+      0,
+    );
+
+    // 3. Calculate overpayment (change to be returned)
+    if (totalExchangeValue > remainingAmount) {
+      return totalExchangeValue - remainingAmount;
+    }
+
+    return 0;
   }
 
   public getTotalItems(): number {
@@ -84,7 +173,7 @@ export class Order extends DomainEntity {
   }
 
   public getDiscount(): number {
-    return this.ticket?.applyTicket(this.getSubtotal()) || 0;
+    return this.getTotalTicketsDiscount();
   }
 
   public addItem(item: OrderItem): void {

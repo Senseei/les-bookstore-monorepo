@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type {
+  ApplyTicketsResultDTO,
   BookDTO,
   CartItemDTO,
   CartStateDTO,
@@ -14,7 +15,8 @@ export interface CartContextValue {
   summary: CartSummaryDTO
   isLoading: boolean
   lastUpdated: Date
-  appliedTicket: TicketDTO | null
+  selectedTickets: TicketDTO[]
+  appliedTicketsResult?: ApplyTicketsResultDTO
 
   // Computed properties
   isEmpty: boolean
@@ -31,8 +33,9 @@ export interface CartContextValue {
   hasItem: (bookId: string) => boolean
 
   // Ticket operations
-  applyTicket: (ticket: TicketDTO) => void
-  removeTicket: () => void
+  selectTickets: (tickets: TicketDTO[]) => void
+  clearSelectedTickets: () => void
+  toggleTicketSelection: (ticket: TicketDTO) => void
 
   // Checkout operations
   checkout: (deliveryAddressId: string) => Promise<{

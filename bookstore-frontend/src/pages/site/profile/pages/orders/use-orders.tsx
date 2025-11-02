@@ -16,6 +16,7 @@ export const useOrders = () => {
     isLoading: orderIsLoading,
     error: orderError,
     orders,
+    sortedOrders,
     totalOrders,
     orderStatistics,
     recentOrders,
@@ -46,6 +47,11 @@ export const useOrders = () => {
       filtered = filtered.filter((order) => order.status !== 'cancelled')
     }
 
+    // Filter by cancelled status
+    if (!showCancelled) {
+      filtered = filtered.filter((order) => order.status !== 'cancelled')
+    }
+
     // Filter by date range
     if (filters.startDate && filters.endDate) {
       filtered = filterOrdersByDateRange(filters.startDate, filters.endDate)
@@ -65,7 +71,7 @@ export const useOrders = () => {
     }
 
     setFilteredOrders(filtered)
-  }, [orders, filters, filterOrdersByDateRange, showCancelled])
+  }, [sortedOrders, filters, filterOrdersByDateRange, showCancelled])
 
   // Load orders data
   const loadOrders = useCallback(async () => {
