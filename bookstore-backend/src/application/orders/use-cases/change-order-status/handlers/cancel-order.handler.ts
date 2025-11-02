@@ -25,8 +25,9 @@ export class CancelOrderHandler implements OrderStatusChangeHandler {
       item.book.increaseStock(item.quantity);
     }
 
-    if (order.ticket) {
-      await this.usersService.reinstateTicketForUser(userId, order.ticket);
+    // Reinstate all tickets used in this order
+    if (order.tickets && order.tickets.length > 0) {
+      await this.usersService.reinstateTicketsForUser(userId, order.tickets);
     }
 
     await this.booksService.saveAll(order.items.map((item) => item.book));

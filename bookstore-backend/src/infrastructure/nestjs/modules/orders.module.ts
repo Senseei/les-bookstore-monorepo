@@ -21,8 +21,6 @@ import {
   TicketsRepositoryImpl,
 } from '@/infrastructure/persistence/typeorm/repositories';
 import { OrderTicketsController } from '@/presentation/site/orders/order-tickets.controller';
-import { OrdersController } from '@/presentation/site/orders/orders.controller';
-import { OrdersWebService } from '@/presentation/site/orders/orders.webservice';
 import { OrdersSiteController } from '@/presentation/site/orders/orders-site.controller';
 import { OrdersSiteWebService } from '@/presentation/site/orders/orders-site.webservice';
 import { TicketsSiteController } from '@/presentation/site/tickets/tickets-site.controller';
@@ -33,15 +31,10 @@ import { UsersModule } from './users.module';
 
 const CONTROLLERS = [
   OrdersSiteController,
-  OrdersController,
   TicketsSiteController,
   OrderTicketsController,
 ];
-const WEB_SERVICES = [
-  OrdersSiteWebService,
-  OrdersWebService,
-  TicketsSiteWebService,
-];
+const WEB_SERVICES = [OrdersSiteWebService, TicketsSiteWebService];
 const USE_CASES = [
   CreateNewOrder,
   PayOrder,
