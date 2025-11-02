@@ -454,28 +454,6 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     [cartState.selectedTickets, saveCartState, toast],
   )
 
-  /**
-   * Apply ticket to cart
-   */
-  const applyTicket = useCallback(
-    (ticket: TicketDTO) => {
-      saveCartState({ appliedTicket: ticket })
-      toast.showSuccess(`Cupom "${ticket.code}" aplicado com sucesso!`)
-    },
-    [saveCartState, toast],
-  )
-
-  /**
-   * Remove ticket from cart
-   */
-  const removeTicket = useCallback(() => {
-    const ticketCode = cartState.appliedTicket?.code
-    saveCartState({ appliedTicket: null })
-    if (ticketCode) {
-      toast.showSuccess(`Cupom "${ticketCode}" removido`)
-    }
-  }, [cartState.appliedTicket?.code, saveCartState, toast])
-
   // Computed properties
   const isEmpty = useMemo(() => cartState.items.length === 0, [cartState.items])
   const totalItems = useMemo(
