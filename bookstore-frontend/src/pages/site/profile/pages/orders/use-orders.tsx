@@ -52,6 +52,11 @@ export const useOrders = () => {
       filtered = filtered.filter((order) => order.status !== 'cancelled')
     }
 
+    // Filter by cancelled status
+    if (!showCancelled) {
+      filtered = filtered.filter((order) => order.status !== 'cancelled')
+    }
+
     // Filter by date range
     if (filters.startDate && filters.endDate) {
       filtered = filterOrdersByDateRange(filters.startDate, filters.endDate)

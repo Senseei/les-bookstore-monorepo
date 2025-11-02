@@ -26,7 +26,7 @@ export class CreateNewOrder {
   public async execute(dto: CreateNewOrderDTO, userId: string): Promise<Order> {
     const user = await this.usersService.findActiveByIdOrThrow(userId);
 
-    await this.validate(dto, user);
+    this.validate(dto, user);
     const deliveryAddress = user.customerDetails.getAddress(
       dto.deliveryAddressId,
     );
