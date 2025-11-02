@@ -130,6 +130,12 @@ export class CustomerDetails extends DomainEntity {
     return this.usedTickets.some((t) => t.equals(ticket));
   }
 
+  public addUsedTicket(ticket: Ticket): void {
+    if (!this.hasUsedTicket(ticket)) {
+      this._usedTickets.push(ticket);
+    }
+  }
+
   public reinstateTicket(ticket: Ticket): void {
     this._usedTickets = this.usedTickets.filter((t) => !t.equals(ticket));
   }

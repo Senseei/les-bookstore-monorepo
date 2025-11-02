@@ -3,7 +3,7 @@ import {
   CartItem,
   CartSummary,
   EmptyCart,
-  TicketInput,
+  TicketSelector,
 } from './components'
 import * as S from './styles'
 import { useCartPage } from './use-cart-page'
@@ -12,15 +12,15 @@ export const Cart = () => {
   const {
     items,
     summary,
-    appliedTicket,
+    selectedTickets,
     isEmpty,
     currentUserWithAddresses,
     isCheckingOut,
-    isValidatingTicket,
     showAddressModal,
     updateQuantity,
     removeItem,
-    handleApplyTicket,
+    onToggleTicket,
+    onClearTickets,
     handleCheckout,
     handleAddressSelected,
     setShowAddressModal,
@@ -52,17 +52,11 @@ export const Cart = () => {
         </S.CartItemsList>
 
         <S.CartSidePanel>
-          <TicketInput
-            onApplyTicket={handleApplyTicket}
-            appliedTicket={
-              appliedTicket
-                ? {
-                    code: appliedTicket.code,
-                    discount: appliedTicket.discountAmount,
-                  }
-                : null
-            }
-            isLoading={isValidatingTicket}
+          <TicketSelector
+            selectedTickets={selectedTickets}
+            onToggleTicket={onToggleTicket}
+            onClearSelection={onClearTickets}
+            cartSubtotal={summary.originalPrice || summary.totalPrice}
           />
           <CartSummary
             summary={summary}

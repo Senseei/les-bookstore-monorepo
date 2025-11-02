@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
+import type { TicketDTO } from '@/dtos'
 import type { UserDTO } from '@/dtos/user'
-import { useTicket, useUser } from '@/hooks'
+import { useUser } from '@/hooks'
 import { useAuth, useCart, useToast } from '@/providers'
+import { TicketService } from '@/services'
 
 interface UseCartPageReturn {
   // Cart state
   items: ReturnType<typeof useCart>['items']
   summary: ReturnType<typeof useCart>['summary']
-  appliedTicket: ReturnType<typeof useCart>['appliedTicket']
+  selectedTickets: ReturnType<typeof useCart>['selectedTickets']
   isEmpty: boolean
 
   // User state
@@ -17,7 +20,6 @@ interface UseCartPageReturn {
 
   // Loading states
   isCheckingOut: boolean
-  isValidatingTicket: boolean
 
   // Modal state
   showAddressModal: boolean
@@ -27,7 +29,8 @@ interface UseCartPageReturn {
   removeItem: (bookId: string) => void
 
   // Ticket operations
-  handleApplyTicket: (ticketCode: string) => Promise<void>
+  onToggleTicket: (ticket: TicketDTO) => void
+  onClearTickets: () => void
 
   // Checkout operations
   handleCheckout: () => Promise<void>
@@ -44,16 +47,17 @@ export const useCartPage = (): UseCartPageReturn => {
     updateQuantity,
     removeItem,
     checkout,
-    appliedTicket,
-    applyTicket,
-    removeTicket,
+    selectedTickets,
+    toggleTicketSelection,
+    clearSelectedTickets,
+    clearCart,
     isEmpty,
   } = useCart()
 
-  const { showSuccess, showError } = useToast()
+  const { showSuccess, showError, showInfo } = useToast()
   const { isAuthenticated } = useAuth()
   const { getCurrentUser } = useUser()
-  const { validateTicket, isValidating } = useTicket()
+  const navigate = useNavigate()
 
   // Local state
   const [isCheckingOut, setIsCheckingOut] = useState(false)
@@ -104,70 +108,83 @@ export const useCartPage = (): UseCartPageReturn => {
       setIsCheckingOut(true)
 
       try {
+        // Step 1: Create order
         const result = await checkout(deliveryAddressId)
 
-        if (result.success) {
-          showSuccess(
-            `Pedido realizado com sucesso! Número do pedido: ${result.orderId}`,
-          )
-          // The cart will be automatically cleared by the checkout function
-        } else {
-          showError(
-            result.error || 'Erro ao finalizar pedido. Tente novamente.',
-          )
+        if (!result.success || !result.orderId) {
+          showError(result.error || 'Erro ao criar pedido. Tente novamente.')
+          return
         }
-      } catch {
+
+        // Step 2: Apply selected tickets (if any)
+        if (selectedTickets.length > 0) {
+          try {
+            const ticketCodes = selectedTickets.map((t) => t.code)
+            const applyResult = await TicketService.applyTicketsToOrder(
+              result.orderId,
+              ticketCodes,
+            )
+
+            // Show optimization result to user
+            if (applyResult.removedTickets.length > 0) {
+              showInfo(`Sistema otimizou cupons: ${applyResult.message}`)
+            }
+
+            // Show applied tickets info
+            if (applyResult.appliedTickets.length > 0) {
+              showSuccess(
+                `${applyResult.appliedTickets.length} cupom${applyResult.appliedTickets.length > 1 ? 's' : ''} aplicado${applyResult.appliedTickets.length > 1 ? 's' : ''} com sucesso!`,
+              )
+            }
+          } catch (error) {
+            console.error('Erro ao aplicar cupons:', error)
+
+            // If ticket application fails, warn user but don't block order
+            showInfo(
+              'Pedido criado, mas houve erro ao aplicar cupons. Você pode aplicá-los manualmente na página de pedidos.',
+            )
+          }
+        }
+
+        // Step 3: Clear cart and navigate to orders page
+        clearCart()
+        showSuccess(`Pedido ${result.orderId} criado com sucesso!`)
+        navigate('/orders')
+      } catch (error) {
+        console.error('Erro ao finalizar pedido:', error)
         showError('Erro inesperado ao finalizar pedido. Tente novamente.')
       } finally {
         setIsCheckingOut(false)
       }
     },
-    [checkout, showSuccess, showError, currentUserWithAddresses],
+    [
+      checkout,
+      selectedTickets,
+      clearCart,
+      navigate,
+      showSuccess,
+      showError,
+      showInfo,
+    ],
   )
 
-  // Ticket application handler
-  const handleApplyTicket = useCallback(
-    async (ticketCode: string) => {
-      if (!ticketCode.trim()) {
-        removeTicket()
-        return
-      }
-
-      // Get the current cart total (without any applied ticket)
-      const currentOrderValue = items.reduce((sum, item) => {
-        const price =
-          typeof item.book.price === 'string'
-            ? parseFloat(item.book.price)
-            : item.book.price
-        return sum + price * item.quantity
-      }, 0)
-
-      if (currentOrderValue <= 0) {
-        showError('Adicione itens ao carrinho antes de aplicar um cupom.')
-        return
-      }
-
-      try {
-        const result = await validateTicket(ticketCode, currentOrderValue)
-
-        if (result.success && result.data) {
-          applyTicket(result.data)
-          showSuccess(`Cupom "${ticketCode}" aplicado com sucesso!`)
-        } else {
-          showError(result.error || 'Erro ao validar cupom.')
-        }
-      } catch {
-        showError('Erro inesperado ao validar cupom.')
-      }
+  // Ticket selection handlers
+  const handleToggleTicket = useCallback(
+    (ticket: TicketDTO) => {
+      toggleTicketSelection(ticket)
     },
-    [items, validateTicket, applyTicket, removeTicket, showSuccess, showError],
+    [toggleTicketSelection],
   )
+
+  const handleClearTickets = useCallback(() => {
+    clearSelectedTickets()
+  }, [clearSelectedTickets])
 
   return {
     // Cart state
     items,
     summary,
-    appliedTicket,
+    selectedTickets,
     isEmpty,
 
     // User state
@@ -176,7 +193,6 @@ export const useCartPage = (): UseCartPageReturn => {
 
     // Loading states
     isCheckingOut,
-    isValidatingTicket: isValidating,
 
     // Modal state
     showAddressModal,
@@ -186,7 +202,8 @@ export const useCartPage = (): UseCartPageReturn => {
     removeItem,
 
     // Ticket operations
-    handleApplyTicket,
+    onToggleTicket: handleToggleTicket,
+    onClearTickets: handleClearTickets,
 
     // Checkout operations
     handleCheckout,

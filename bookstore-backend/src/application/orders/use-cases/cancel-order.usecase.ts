@@ -34,8 +34,8 @@ export class CancelOrder {
       item.book.increaseStock(item.quantity);
     }
 
-    if (order.ticket) {
-      await this.usersService.reinstateTicketForUser(userId, order.ticket);
+    if (order.tickets) {
+      await this.usersService.reinstateTicketsForUser(userId, order.tickets);
     }
 
     await this.booksService.saveAll(order.items.map((item) => item.book));

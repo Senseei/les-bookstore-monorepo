@@ -11,7 +11,7 @@ import {
 export class PaymentsDTO {
   @IsArray()
   @ValidateNested({ each: true })
-  @ArrayMinSize(1)
+  // Allow empty array for orders fully covered by tickets (finalPrice = R$0.00)
   @Type(() => PaymentDTO)
   payments: PaymentDTO[];
 }
