@@ -22,6 +22,8 @@ import { Refund } from './refund.entity';
 
 @Entity('tb_orders')
 export class Order extends DomainEntity {
+  public static readonly MAX_PERIOD_TO_REFUND_IN_DAYS = 30;
+
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     eager: true,
     cascade: true,
@@ -31,8 +33,11 @@ export class Order extends DomainEntity {
   @Column()
   orderDate: Date = new Date();
 
-  @Column({ type: 'enum', enum: OrderStatus })
-  status: OrderStatus = OrderStatus.PENDING;
+  @Column({ name: 'status', type: 'enum', enum: OrderStatus })
+  _status: OrderStatus = OrderStatus.PENDING;
+
+  @Column({ type: 'jsonb', default: [] })
+  statusHistory: OrderStatusChange[] = [];
 
   @ManyToOne(() => Address, { eager: true })
   @JoinColumn()
@@ -102,6 +107,17 @@ export class Order extends DomainEntity {
       this._refunds = [];
     }
     return this._refunds;
+  }
+
+  get status(): OrderStatus {
+    return this._status;
+  }
+
+  set status(newStatus: OrderStatus) {
+    if (this._status !== newStatus) {
+      this._status = newStatus;
+      this.statusHistory.push(new OrderStatusChange(this._status, newStatus));
+    }
   }
 
   public getPromotionalTicket(): Ticket | null {
@@ -246,7 +262,17 @@ export class Order extends DomainEntity {
   }
 
   public canBeRefunded(): boolean {
-    return this.status === OrderStatus.DELIVERED;
+    const deliveredDate = this.statusHistory.find(
+      (change) => change.current === OrderStatus.DELIVERED,
+    )?.at;
+
+    if (!deliveredDate) return false;
+
+    const now = new Date();
+    const diffInMs = now.getTime() - deliveredDate.getTime();
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+    return diffInDays <= Order.MAX_PERIOD_TO_REFUND_IN_DAYS;
   }
 
   public getRefundableItems(): OrderItem[] {
@@ -299,5 +325,17 @@ export class Order extends DomainEntity {
         refund.status === RefundStatus.REQUESTED ||
         refund.status === RefundStatus.APPROVED,
     );
+  }
+}
+
+export class OrderStatusChange {
+  previous: OrderStatus;
+  current: OrderStatus;
+  at: Date;
+
+  constructor(previous: OrderStatus, current: OrderStatus) {
+    this.previous = previous;
+    this.current = current;
+    this.at = new Date();
   }
 }

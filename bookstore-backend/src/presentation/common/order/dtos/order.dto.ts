@@ -14,6 +14,7 @@ export class OrderDTO {
   status: OrderStatus;
   tickets: TicketResponseDto[];
   totalRefunded: number;
+  canBeRefunded: boolean;
 
   constructor(order: Order) {
     this.id = order.id;
@@ -33,5 +34,6 @@ export class OrderDTO {
       (ticket) => new TicketResponseDto(ticket),
     );
     this.totalRefunded = order.getTotalRefunded();
+    this.canBeRefunded = order.canBeRefunded();
   }
 }

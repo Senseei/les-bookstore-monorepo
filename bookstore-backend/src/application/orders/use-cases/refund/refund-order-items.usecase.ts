@@ -28,7 +28,7 @@ export class RefundOrderItems {
 
     if (!order.canBeRefunded()) {
       throw new BadRequestException(
-        'Order cannot be refunded in its current status',
+        'Order cannot be refunded in its current status or has expired refund period',
       );
     }
 
