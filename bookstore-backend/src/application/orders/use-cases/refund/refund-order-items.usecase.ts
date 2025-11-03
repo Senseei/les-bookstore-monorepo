@@ -32,6 +32,12 @@ export class RefundOrderItems {
       );
     }
 
+    if (order.isTherePendingRefunds()) {
+      throw new BadRequestException(
+        'There is already a pending refund for this order',
+      );
+    }
+
     const refund = new Refund({
       reason: dto.reason,
     });

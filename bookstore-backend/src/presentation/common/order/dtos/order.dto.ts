@@ -32,6 +32,7 @@ export class OrderDTO {
     if (order.refunds && order.refunds.length > 0) {
       this.refundsSummary = new RefundsSummaryDTO(order.refunds);
     }
-    this.canBeRefunded = order.canBeRefunded();
+    this.canBeRefunded =
+      order.canBeRefunded() && !order.isTherePendingRefunds();
   }
 }

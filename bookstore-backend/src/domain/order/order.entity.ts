@@ -280,6 +280,16 @@ export class Order extends DomainEntity {
     return diffInDays <= Order.MAX_PERIOD_TO_REFUND_IN_DAYS;
   }
 
+  public isTherePendingRefunds(): boolean {
+    if (!this.refunds) return false;
+
+    return this.refunds.some(
+      (refund) =>
+        refund.status === RefundStatus.REQUESTED ||
+        refund.status === RefundStatus.APPROVED,
+    );
+  }
+
   public getRefundableItems(): OrderItem[] {
     if (!this.canBeRefunded()) return [];
 
