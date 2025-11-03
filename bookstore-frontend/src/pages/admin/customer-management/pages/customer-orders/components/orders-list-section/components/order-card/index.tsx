@@ -156,11 +156,6 @@ export const OrderCard = ({
           <S.OrderTotal>
             {formatCurrency(order.subtotal - order.discount || order.subtotal)}
           </S.OrderTotal>
-          {order.status === 'delivered' && !order.canBeRefunded && (
-            <S.FullyRefundedBadge>
-              ✓ Totalmente reembolsado
-            </S.FullyRefundedBadge>
-          )}
         </S.OrderSummary>
 
         <S.OrderItems>

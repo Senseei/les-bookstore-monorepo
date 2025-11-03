@@ -210,13 +210,6 @@ export const OrderCard = ({
                 </span>
               </S.SummaryItem>
             )}
-            {order.status === 'delivered' && !order.canBeRefunded && (
-              <S.SummaryItem>
-                <S.FullyRefundedBadge>
-                  ✓ Totalmente reembolsado
-                </S.FullyRefundedBadge>
-              </S.SummaryItem>
-            )}
           </S.OrderSummary>
 
           <S.OrderItems>
