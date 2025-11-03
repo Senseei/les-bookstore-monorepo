@@ -17,7 +17,6 @@ import type {
   RefundRequestDTO,
   RefundStatusType,
 } from '@/dtos'
-import { useOrderStatus, useRefundStatus } from '@/hooks'
 
 import * as S from './styles'
 
@@ -32,6 +31,17 @@ interface OrderCardProps {
     orderId: string,
     refundData: RefundRequestDTO,
   ) => Promise<{ success: boolean }>
+  onChangeOrderStatus?: (
+    orderId: string,
+    newStatus: OrderStatusType,
+  ) => Promise<void>
+  onChangeRefundStatus?: (
+    orderId: string,
+    refundId: string,
+    newStatus: RefundStatusType,
+  ) => Promise<void>
+  isOrderStatusLoading?: boolean
+  isRefundStatusLoading?: boolean
 }
 
 export const OrderCard = ({
@@ -41,26 +51,31 @@ export const OrderCard = ({
   formatDate,
   onOrderUpdate,
   onRequestRefund,
+  onChangeOrderStatus,
+  onChangeRefundStatus,
+  isOrderStatusLoading = false,
+  isRefundStatusLoading = false,
 }: OrderCardProps) => {
-  const { changeOrderStatus, isLoading } = useOrderStatus()
-  const { changeUserRefundStatus, isLoading: isRefundLoading } =
-    useRefundStatus()
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false)
 
   const handleStatusChange = async (
     orderId: string,
     newStatus: OrderStatusType,
   ) => {
-    await changeOrderStatus(orderId, newStatus)
-    onOrderUpdate?.()
+    if (onChangeOrderStatus) {
+      await onChangeOrderStatus(orderId, newStatus)
+      onOrderUpdate?.()
+    }
   }
 
   const handleRefundStatusChange = async (
     refundId: string,
     newStatus: RefundStatusType,
   ) => {
-    await changeUserRefundStatus(customerId, order.id, refundId, newStatus)
-    onOrderUpdate?.()
+    if (onChangeRefundStatus) {
+      await onChangeRefundStatus(order.id, refundId, newStatus)
+      onOrderUpdate?.()
+    }
   }
 
   const handleRefundClick = () => {
@@ -199,7 +214,7 @@ export const OrderCard = ({
               refund={refund}
               availableChanges={ADMIN_REFUND_STATUS_CHANGES}
               onStatusChange={handleRefundStatusChange}
-              isLoading={isRefundLoading}
+              isLoading={isRefundStatusLoading}
             />
           ))}
 
@@ -207,7 +222,7 @@ export const OrderCard = ({
           order={order}
           availableChanges={ADMIN_STATUS_CHANGES}
           onStatusChange={handleStatusChange}
-          isLoading={isLoading}
+          isLoading={isOrderStatusLoading}
         />
       </S.OrderContent>
 

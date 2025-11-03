@@ -27,7 +27,7 @@ import type {
   RefundRequestDTO,
   RefundStatusType,
 } from '@/dtos'
-import { useOrderStatus, useRefundStatus } from '@/hooks'
+import { useOrder } from '@/hooks'
 import { calculateOrderTotal } from '@/utils'
 
 import * as S from './styles'
@@ -71,8 +71,12 @@ export const OrderCard = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const [isCancelling, setIsCancelling] = useState(false)
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false)
-  const { changeOrderStatus, isLoading } = useOrderStatus()
-  const { changeRefundStatus, isLoading: isRefundLoading } = useRefundStatus()
+  const {
+    changeOrderStatus,
+    changeRefundStatus,
+    isStatusLoading,
+    isRefundLoading,
+  } = useOrder()
 
   const handleStatusChange = async (
     orderId: string,
@@ -269,7 +273,7 @@ export const OrderCard = ({
             order={order}
             availableChanges={USER_STATUS_CHANGES}
             onStatusChange={handleStatusChange}
-            isLoading={isLoading}
+            isLoading={isStatusLoading}
           />
         </S.OrderContent>
 

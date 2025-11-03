@@ -1,7 +1,12 @@
 import { Package } from 'phosphor-react'
 
 import { Button, Card, CardContent } from '@/components'
-import type { OrderDTO, RefundRequestDTO } from '@/dtos'
+import type {
+  OrderDTO,
+  OrderStatusType,
+  RefundRequestDTO,
+  RefundStatusType,
+} from '@/dtos'
 
 import { OrderCard } from './components'
 import * as S from './styles'
@@ -23,6 +28,17 @@ interface OrdersListSectionProps {
     orderId: string,
     refundData: RefundRequestDTO,
   ) => Promise<{ success: boolean }>
+  onChangeOrderStatus?: (
+    orderId: string,
+    newStatus: OrderStatusType,
+  ) => Promise<void>
+  onChangeRefundStatus?: (
+    orderId: string,
+    refundId: string,
+    newStatus: RefundStatusType,
+  ) => Promise<void>
+  isOrderStatusLoading?: boolean
+  isRefundStatusLoading?: boolean
 }
 
 export const OrdersListSection = ({
@@ -38,6 +54,10 @@ export const OrdersListSection = ({
   formatDate,
   onOrderUpdate,
   onRequestRefund,
+  onChangeOrderStatus,
+  onChangeRefundStatus,
+  isOrderStatusLoading = false,
+  isRefundStatusLoading = false,
 }: OrdersListSectionProps) => {
   if (isLoading) {
     return (
@@ -84,6 +104,10 @@ export const OrdersListSection = ({
                 formatDate={formatDate}
                 onOrderUpdate={onOrderUpdate}
                 onRequestRefund={onRequestRefund}
+                onChangeOrderStatus={onChangeOrderStatus}
+                onChangeRefundStatus={onChangeRefundStatus}
+                isOrderStatusLoading={isOrderStatusLoading}
+                isRefundStatusLoading={isRefundStatusLoading}
               />
             ))}
           </S.OrdersList>
