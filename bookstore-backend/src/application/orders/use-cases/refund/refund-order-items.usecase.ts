@@ -19,8 +19,12 @@ interface RefundRequestDTO {
 export class RefundOrderItems {
   constructor(private readonly ordersService: OrdersService) {}
 
-  public async execute(id: string, dto: RefundRequestDTO): Promise<Order> {
-    const order = await this.ordersService.findByIdOrThrow(id);
+  public async execute(
+    id: string,
+    dto: RefundRequestDTO,
+    userId: string,
+  ): Promise<Order> {
+    const order = await this.ordersService.findByIdAndUserOrThrow(id, userId);
 
     if (!order.canBeRefunded()) {
       throw new BadRequestException(

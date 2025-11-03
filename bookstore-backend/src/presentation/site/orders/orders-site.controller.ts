@@ -16,6 +16,7 @@ import { OrdersController } from '@/presentation/common/order/orders.controller'
 
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
+import { RefundRequestDTO } from './dtos/refund-request.dto';
 import { OrdersSiteWebService } from './orders-site.webservice';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -41,5 +42,15 @@ export class OrdersSiteController extends OrdersController {
     @Body() dto: PaymentsDTO,
   ): Promise<OrderDTO> {
     return await this.webService.pay(orderId, dto);
+  }
+
+  @Post(':id/refund')
+  public async refundOrderItems(
+    @Param('id') orderId: string,
+    @Body() dto: RefundRequestDTO,
+    @Request() req: AuthenticatedRequest,
+  ): Promise<OrderDTO> {
+    const userId = req.user.userId;
+    return await this.webService.refundItems(orderId, dto, userId);
   }
 }
