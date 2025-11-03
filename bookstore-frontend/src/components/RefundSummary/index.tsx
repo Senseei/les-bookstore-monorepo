@@ -19,26 +19,30 @@ interface RefundSummaryProps {
 
 const getRefundStatusIcon = (status: RefundStatusType) => {
   switch (status) {
-    case 'pending':
+    case 'requested':
       return <Clock size={12} />
     case 'approved':
-    case 'processed':
+    case 'completed':
       return <CheckCircle size={12} />
     case 'rejected':
       return <XCircle size={12} />
-    default:
+    case 'in_transit':
       return <ArrowCounterClockwise size={12} />
+    default:
+      return <Clock size={12} />
   }
 }
 
 const getRefundStatusLabel = (status: RefundStatusType) => {
   switch (status) {
-    case 'pending':
-      return 'Pendente'
+    case 'requested':
+      return 'Solicitado'
     case 'approved':
       return 'Aprovado'
-    case 'processed':
-      return 'Processado'
+    case 'in_transit':
+      return 'Em Trânsito'
+    case 'completed':
+      return 'Concluído'
     case 'rejected':
       return 'Rejeitado'
     default:
@@ -50,12 +54,22 @@ export const RefundSummary = ({
   refundsSummary,
   compact = false,
 }: RefundSummaryProps) => {
-  const { totalRefunded, refundsCount, pendingRefunds, hasPendingRefunds } =
-    refundsSummary
+  const { totalRefunded, refundsCount, refunds } = refundsSummary
 
   if (refundsCount === 0) {
     return null
   }
+
+  // Sort refunds by requestDate (newest first)
+  const sortedRefunds = refunds.sort(
+    (a, b) =>
+      new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime(),
+  )
+
+  // Check if there are any pending refunds
+  const hasPendingRefunds = refunds.some(
+    (refund) => refund.status === 'requested',
+  )
 
   return (
     <S.RefundSummaryContainer>
@@ -72,34 +86,28 @@ export const RefundSummary = ({
       {hasPendingRefunds && (
         <S.PendingRefundsNotice>
           <Clock size={12} />
-          {pendingRefunds.length === 1
+          {refunds.filter((r) => r.status === 'requested').length === 1
             ? '1 reembolso pendente'
-            : `${pendingRefunds.length} reembolsos pendentes`}
+            : `${refunds.filter((r) => r.status === 'requested').length} reembolsos pendentes`}
         </S.PendingRefundsNotice>
       )}
 
       {!compact && (
         <S.RefundDetails>
-          {[
-            ...pendingRefunds,
-            ...refundsSummary.completedRefunds,
-            ...refundsSummary.rejectedRefunds,
-          ]
-            .slice(0, 3)
-            .map((refund) => (
-              <S.RefundItem key={refund.id}>
-                <S.RefundItemInfo>
-                  {getRefundStatusIcon(refund.status)}
-                  <S.RefundItemId>#{refund.id.slice(-6)}</S.RefundItemId>
-                  <S.RefundStatus status={refund.status}>
-                    {getRefundStatusLabel(refund.status)}
-                  </S.RefundStatus>
-                </S.RefundItemInfo>
-                <S.RefundItemAmount>
-                  {formatCurrency(refund.totalAmount)}
-                </S.RefundItemAmount>
-              </S.RefundItem>
-            ))}
+          {sortedRefunds.slice(0, 3).map((refund) => (
+            <S.RefundItem key={refund.id}>
+              <S.RefundItemInfo>
+                {getRefundStatusIcon(refund.status)}
+                <S.RefundItemId>#{refund.id.slice(-6)}</S.RefundItemId>
+                <S.RefundStatus status={refund.status}>
+                  {getRefundStatusLabel(refund.status)}
+                </S.RefundStatus>
+              </S.RefundItemInfo>
+              <S.RefundItemAmount>
+                {formatCurrency(refund.totalAmount)}
+              </S.RefundItemAmount>
+            </S.RefundItem>
+          ))}
         </S.RefundDetails>
       )}
     </S.RefundSummaryContainer>

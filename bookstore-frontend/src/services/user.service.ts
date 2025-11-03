@@ -1,5 +1,9 @@
 import type { PaginatedResultDTO } from '@/dtos/common'
-import type { ChangeOrderStatusDTO, OrderDTO } from '@/dtos/order'
+import type {
+  ChangeOrderStatusDTO,
+  ChangeRefundStatusDTO,
+  OrderDTO,
+} from '@/dtos/order'
 import type { RefundRequestDTO } from '@/dtos/refund'
 import type { AddressDTO } from '@/dtos/user/address'
 import type { CustomerDTO } from '@/dtos/user/customer.dto'
@@ -250,5 +254,21 @@ export class UserService {
       `/users/${userId}/orders/${orderId}/refunds`,
       refundData,
     )
+  }
+
+  /**
+   * Change refund status for a user's order (Admin)
+   */
+  static async changeUserOrderRefundStatus(
+    userId: string,
+    orderId: string,
+    refundId: string,
+    statusData: ChangeRefundStatusDTO,
+  ): Promise<OrderDTO> {
+    const response = await AxiosApp.patch<OrderDTO>(
+      `/users/${userId}/orders/${orderId}/refunds/${refundId}`,
+      statusData,
+    )
+    return response.data
   }
 }

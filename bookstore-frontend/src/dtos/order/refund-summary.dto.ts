@@ -1,8 +1,9 @@
 export const RefundStatus = {
-  PENDING: 'pending',
+  REQUESTED: 'requested',
   APPROVED: 'approved',
   REJECTED: 'rejected',
-  PROCESSED: 'processed',
+  IN_TRANSIT: 'in_transit',
+  COMPLETED: 'completed',
 } as const
 
 export type RefundStatusType = (typeof RefundStatus)[keyof typeof RefundStatus]
@@ -28,8 +29,6 @@ export interface RefundDTO {
 export interface RefundsSummaryDTO {
   totalRefunded: number
   refundsCount: number
-  pendingRefunds: RefundDTO[]
-  completedRefunds: RefundDTO[]
-  rejectedRefunds: RefundDTO[]
-  hasPendingRefunds: boolean
+  refunds: RefundDTO[]
+  hasRefunds: boolean
 }

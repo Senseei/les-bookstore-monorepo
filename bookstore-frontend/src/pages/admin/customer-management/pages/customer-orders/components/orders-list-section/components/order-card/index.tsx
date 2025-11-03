@@ -2,15 +2,22 @@ import { Calendar, DotsThreeOutline, Package } from 'phosphor-react'
 import { useState } from 'react'
 
 import {
+  ADMIN_REFUND_STATUS_CHANGES,
   ADMIN_STATUS_CHANGES,
   Badge,
   DropdownMenu,
   OrderStatusChanger,
   RefundModal,
+  RefundStatusChanger,
   RefundSummary,
 } from '@/components'
-import type { OrderDTO, OrderStatusType, RefundRequestDTO } from '@/dtos'
-import { UserService } from '@/services'
+import type {
+  OrderDTO,
+  OrderStatusType,
+  RefundRequestDTO,
+  RefundStatusType,
+} from '@/dtos'
+import { useOrderStatus, useRefundStatus } from '@/hooks'
 
 import * as S from './styles'
 
@@ -35,25 +42,25 @@ export const OrderCard = ({
   onOrderUpdate,
   onRequestRefund,
 }: OrderCardProps) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const { changeOrderStatus, isLoading } = useOrderStatus()
+  const { changeUserRefundStatus, isLoading: isRefundLoading } =
+    useRefundStatus()
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false)
-  const [isRequestingRefund, setIsRequestingRefund] = useState(false)
 
   const handleStatusChange = async (
     orderId: string,
     newStatus: OrderStatusType,
   ) => {
-    setIsLoading(true)
-    try {
-      await UserService.changeUserOrderStatus(customerId, orderId, {
-        status: newStatus,
-      })
-      onOrderUpdate?.()
-    } catch {
-      // TODO: Add proper error handling with toast notifications
-    } finally {
-      setIsLoading(false)
-    }
+    await changeOrderStatus(orderId, newStatus)
+    onOrderUpdate?.()
+  }
+
+  const handleRefundStatusChange = async (
+    refundId: string,
+    newStatus: RefundStatusType,
+  ) => {
+    await changeUserRefundStatus(customerId, order.id, refundId, newStatus)
+    onOrderUpdate?.()
   }
 
   const handleRefundClick = () => {
@@ -63,7 +70,6 @@ export const OrderCard = ({
   const handleRefundSubmit = async (refundData: RefundRequestDTO) => {
     if (!onRequestRefund) return
 
-    setIsRequestingRefund(true)
     try {
       const result = await onRequestRefund(customerId, order.id, refundData)
       if (result.success) {
@@ -72,8 +78,6 @@ export const OrderCard = ({
       }
     } catch {
       // Error handling is done in the parent component
-    } finally {
-      setIsRequestingRefund(false)
     }
   }
   const getStatusInfo = (status: string) => {
@@ -172,14 +176,32 @@ export const OrderCard = ({
           </S.OrderDiscount>
         )}
 
-        {order.refundsSummary && order.refundsSummary.refundsCount > 0 && (
+        {/* Show RefundSummary if there are any refunds */}
+        {(order.refundsSummary?.refundsCount || 0) > 0 && (
           <RefundSummary
-            refundsSummary={order.refundsSummary}
+            refundsSummary={order.refundsSummary!}
             formatCurrency={formatCurrency}
             formatDate={formatDate}
             compact={false}
           />
         )}
+
+        {/* Show RefundStatusChanger for all refunds that need admin action */}
+        {order.refundsSummary?.refunds
+          ?.sort(
+            (a, b) =>
+              new Date(b.requestDate).getTime() -
+              new Date(a.requestDate).getTime(),
+          )
+          .map((refund) => (
+            <RefundStatusChanger
+              key={`refund-status-${refund.id}`}
+              refund={refund}
+              availableChanges={ADMIN_REFUND_STATUS_CHANGES}
+              onStatusChange={handleRefundStatusChange}
+              isLoading={isRefundLoading}
+            />
+          ))}
 
         <OrderStatusChanger
           order={order}

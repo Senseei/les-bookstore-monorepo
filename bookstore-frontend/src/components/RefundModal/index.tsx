@@ -44,12 +44,8 @@ export function RefundModal({
   ): number => {
     if (!order.refundsSummary) return originalQuantity
 
-    // Get all refunds (pending, completed, rejected)
-    const allRefunds = [
-      ...order.refundsSummary.pendingRefunds,
-      ...order.refundsSummary.completedRefunds,
-      ...order.refundsSummary.rejectedRefunds,
-    ]
+    // Get all refunds from the unified refunds array
+    const allRefunds = order.refundsSummary?.refunds || []
 
     const totalRefundedQuantity = allRefunds.reduce(
       (total: number, refund: RefundDTO) => {

@@ -96,13 +96,22 @@ export const RefundStatus = styled.span<{ status: string }>`
 
   ${({ status, theme }) => {
     switch (status) {
-      case 'pending':
+      case 'requested':
         return `
           color: ${theme.COLORS.WARNING_DARK};
           background: ${theme.COLORS.WARNING_LIGHTER};
         `
       case 'approved':
-      case 'processed':
+        return `
+          color: ${theme.COLORS.SUCCESS_DARK};
+          background: ${theme.COLORS.SUCCESS_LIGHTER};
+        `
+      case 'in_transit':
+        return `
+          color: ${theme.COLORS.PRIMARY_DARK};
+          background: ${theme.COLORS.PRIMARY_LIGHTER};
+        `
+      case 'completed':
         return `
           color: ${theme.COLORS.SUCCESS_DARK};
           background: ${theme.COLORS.SUCCESS_LIGHTER};
