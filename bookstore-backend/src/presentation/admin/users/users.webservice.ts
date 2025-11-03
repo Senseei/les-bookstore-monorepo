@@ -2,7 +2,10 @@ import { UsersService } from '@application/users/services';
 import { Injectable } from '@nestjs/common';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
+import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
+import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { UserRole } from '@/domain/user/enums/role.enum';
+import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 import { BaseUsersWebService } from '@/presentation/common/users/base-users.webservice';
 import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
 import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
@@ -15,6 +18,7 @@ export class UsersWebService extends BaseUsersWebService {
   constructor(
     private readonly usersService: UsersService,
     ordersService: OrdersService,
+    private readonly changeOrderStatusUseCase: ChangeOrderStatus,
   ) {
     super(ordersService);
   }
@@ -46,6 +50,16 @@ export class UsersWebService extends BaseUsersWebService {
       result.count,
       params.limit,
       params.page,
+    );
+  }
+
+  public async changeOrderStatus(
+    orderId: string,
+    status: OrderStatus,
+    userId: string,
+  ): Promise<OrderDTO> {
+    return new OrderDTO(
+      await this.changeOrderStatusUseCase.execute(orderId, status, userId),
     );
   }
 

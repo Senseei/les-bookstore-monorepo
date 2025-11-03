@@ -25,11 +25,9 @@ export class ChangeOrderStatus {
   public async execute(
     orderId: string,
     status: OrderStatus,
-    userId?: string,
+    userId: string,
   ): Promise<Order> {
-    const order = userId
-      ? await this.service.findByIdAndUserOrThrow(orderId, userId)
-      : await this.service.findByIdOrThrow(orderId);
+    const order = await this.service.findByIdAndUserOrThrow(orderId, userId);
 
     const handler = this.handlers.get(status);
     if (handler) {

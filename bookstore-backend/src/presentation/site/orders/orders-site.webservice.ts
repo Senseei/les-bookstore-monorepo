@@ -4,7 +4,6 @@ import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-s
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
 import { RefundOrderItems } from '@/application/orders/use-cases/refund/refund-order-items.usecase';
-import { UsersService } from '@/application/users/services';
 import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 
@@ -15,7 +14,6 @@ import { RefundRequestDTO } from './dtos/refund-request.dto';
 @Injectable()
 export class OrdersSiteWebService {
   constructor(
-    private readonly usersService: UsersService,
     private readonly createNewOrder: CreateNewOrder,
     private readonly payOrder: PayOrder,
     private readonly changeOrderStatus: ChangeOrderStatus,
@@ -38,14 +36,8 @@ export class OrdersSiteWebService {
     userId: string,
     status: OrderStatus,
   ): Promise<OrderDTO> {
-    const loggedUser = await this.usersService.findByIdOrThrow(userId);
-
     return new OrderDTO(
-      await this.changeOrderStatus.execute(
-        orderId,
-        status,
-        loggedUser.isAdmin() ? undefined : userId,
-      ),
+      await this.changeOrderStatus.execute(orderId, status, userId),
     );
   }
 

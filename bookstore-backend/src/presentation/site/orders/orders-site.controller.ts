@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -12,8 +13,8 @@ import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
 import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
 import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
-import { OrdersController } from '@/presentation/common/order/orders.controller';
 
+import { ChangeOrderStatusDTO } from './dtos/change-order-status.dto';
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
 import { RefundRequestDTO } from './dtos/refund-request.dto';
@@ -22,10 +23,8 @@ import { OrdersSiteWebService } from './orders-site.webservice';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.USER)
 @Controller('orders')
-export class OrdersSiteController extends OrdersController {
-  constructor(webService: OrdersSiteWebService) {
-    super(webService);
-  }
+export class OrdersSiteController {
+  constructor(private readonly webService: OrdersSiteWebService) {}
 
   @Post()
   public async createOrder(
@@ -52,5 +51,16 @@ export class OrdersSiteController extends OrdersController {
   ): Promise<OrderDTO> {
     const userId = req.user.userId;
     return await this.webService.refundItems(orderId, dto, userId);
+  }
+
+  @Roles(UserRole.USER)
+  @Patch(':id')
+  public async changeOrderStatus(
+    @Param('id') orderId: string,
+    @Body() dto: ChangeOrderStatusDTO,
+    @Request() req: AuthenticatedRequest,
+  ): Promise<OrderDTO> {
+    const userId = req.user.userId;
+    return this.webService.changeStatus(orderId, userId, dto.status);
   }
 }
