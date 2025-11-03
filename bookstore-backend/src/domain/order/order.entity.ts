@@ -319,7 +319,7 @@ export class Order extends DomainEntity {
 
     return this.refunds
       .filter((refund) => refund.status === RefundStatus.COMPLETED)
-      .reduce((sum, refund) => sum + refund.totalAmount, 0);
+      .reduce((sum, refund) => sum + refund.getTotalAmount(), 0);
   }
 
   public hasPendingRefunds(): boolean {

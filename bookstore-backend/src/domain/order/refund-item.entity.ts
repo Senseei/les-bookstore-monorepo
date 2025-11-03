@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
+import { DecimalColumn } from '../decorators/decimal-column.decorator';
 import { DomainEntity } from '../domain.entity';
 import { OrderItem } from './order-item.entity';
 import { Refund } from './refund.entity';
@@ -10,14 +11,14 @@ export class RefundItem extends DomainEntity {
   @JoinColumn()
   refund: Refund;
 
-  @ManyToOne(() => OrderItem)
+  @ManyToOne(() => OrderItem, { eager: true })
   @JoinColumn()
   orderItem: OrderItem;
 
   @Column()
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @DecimalColumn()
   unitPrice: number;
 
   constructor(props: {

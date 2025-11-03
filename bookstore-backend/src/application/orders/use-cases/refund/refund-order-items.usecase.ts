@@ -32,14 +32,12 @@ export class RefundOrderItems {
       );
     }
 
-    const refundItems = this.validateAndCreateRefundItems(order, dto.items);
+    const refund = new Refund({
+      reason: dto.reason,
+    });
 
-    order.refunds.push(
-      new Refund({
-        items: refundItems,
-        reason: dto.reason,
-      }),
-    );
+    refund.items.push(...this.validateAndCreateRefundItems(order, dto.items));
+    order.refunds.push(refund);
 
     return this.ordersService.save(order);
   }

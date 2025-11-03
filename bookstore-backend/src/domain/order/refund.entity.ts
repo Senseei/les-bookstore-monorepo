@@ -11,8 +11,11 @@ export class Refund extends DomainEntity {
   @JoinColumn()
   order: Order;
 
-  @OneToMany(() => RefundItem, (refundItem) => refundItem.refund)
-  items: RefundItem[];
+  @OneToMany(() => RefundItem, (refundItem) => refundItem.refund, {
+    eager: true,
+    cascade: true,
+  })
+  _items: RefundItem[];
 
   @Column()
   requestDate: Date = new Date();
@@ -20,25 +23,27 @@ export class Refund extends DomainEntity {
   @Column({ type: 'enum', enum: RefundStatus })
   status: RefundStatus = RefundStatus.REQUESTED;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  totalAmount: number;
-
   @Column({ type: 'text', nullable: true })
   reason?: string;
 
   @Column({ nullable: true })
   processedAt?: Date;
 
-  constructor(props: { items: RefundItem[]; reason?: string }) {
+  constructor(props: { reason?: string }) {
     super();
     if (props) {
-      this.items = props.items;
       this.reason = props.reason;
-      this.totalAmount = this.calculateTotalAmount();
     }
   }
 
-  private calculateTotalAmount(): number {
+  get items(): RefundItem[] {
+    if (!this._items) {
+      this._items = [];
+    }
+    return this._items;
+  }
+
+  public getTotalAmount(): number {
     return this.items.reduce((sum, item) => sum + item.getTotalPrice(), 0);
   }
 

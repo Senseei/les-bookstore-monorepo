@@ -7,13 +7,11 @@ export class OrderItemDTO {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  refundedQuantity: number;
 
-  constructor(entity: OrderItem, refundedQuantity: number = 0) {
+  constructor(entity: OrderItem) {
     this.book = new OrderBookDTO(entity.book);
     this.quantity = entity.quantity;
     this.unitPrice = entity.unitPrice;
     this.totalPrice = entity.getTotalPrice();
-    this.refundedQuantity = refundedQuantity;
   }
 }
