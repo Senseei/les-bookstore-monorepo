@@ -44,7 +44,7 @@ export class OrdersSiteController {
     return await this.webService.pay(orderId, dto);
   }
 
-  @Post(':id/refund')
+  @Post(':id/refunds')
   public async refundOrderItems(
     @Param('id') orderId: string,
     @Body() dto: RefundRequestDTO,

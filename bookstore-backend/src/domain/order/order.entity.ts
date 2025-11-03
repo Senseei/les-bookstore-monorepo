@@ -19,6 +19,7 @@ import { OrderItem } from './order-item.entity';
 import { PaymentStatus } from './payment/enums/payment-status.enum';
 import { Payment } from './payment/payment.entity';
 import { Refund } from './refund.entity';
+import { OrderStatusChangeTransformer } from './transformers/order-status-change.transformer';
 
 @Entity('tb_orders')
 export class Order extends DomainEntity {
@@ -36,7 +37,11 @@ export class Order extends DomainEntity {
   @Column({ name: 'status', type: 'enum', enum: OrderStatus })
   _status: OrderStatus = OrderStatus.PENDING;
 
-  @Column({ type: 'jsonb', default: [] })
+  @Column({
+    type: 'jsonb',
+    default: [],
+    transformer: OrderStatusChangeTransformer,
+  })
   statusHistory: OrderStatusChange[] = [];
 
   @ManyToOne(() => Address, { eager: true })
