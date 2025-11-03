@@ -13,10 +13,17 @@ export class OrderDTO {
   orderDate: Date;
   status: OrderStatus;
   tickets: TicketResponseDto[];
+  totalRefunded: number;
 
   constructor(order: Order) {
     this.id = order.id;
-    this.items = order.items.map((item) => new OrderItemDTO(item));
+
+    const refundedQuantities = order.getRefundedQuantitiesByItem();
+    this.items = order.items.map(
+      (item) =>
+        new OrderItemDTO(item, refundedQuantities.get(item.bookId) || 0),
+    );
+
     this.totalItems = order.getTotalItems();
     this.subtotal = order.getSubtotal();
     this.discount = order.getDiscount();
@@ -25,5 +32,6 @@ export class OrderDTO {
     this.tickets = (order.tickets || []).map(
       (ticket) => new TicketResponseDto(ticket),
     );
+    this.totalRefunded = order.getTotalRefunded();
   }
 }

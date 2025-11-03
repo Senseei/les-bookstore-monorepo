@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
 import { TicketsService } from '@/application/orders/services/tickets.service';
-import { ApplyTicketsToOrder } from '@/application/orders/use-cases/apply-tickets-to-order.use-case';
+import { ApplyTicketsToOrder } from '@/application/orders/use-cases/apply-tickets-to-order.usecase';
 import { CancelOrder } from '@/application/orders/use-cases/cancel-order.usecase';
 import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
 import { CancelOrderHandler } from '@/application/orders/use-cases/change-order-status/handlers/cancel-order.handler';

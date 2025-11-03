@@ -56,25 +56,23 @@ export class Order extends DomainEntity {
       referencedColumnName: 'id',
     },
   })
-  tickets: Ticket[];
+  _tickets: Ticket[];
 
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
   @JoinColumn()
   customer: CustomerDetails;
 
-  @OneToMany(() => Refund, (refund) => refund.order)
-  refunds: Refund[];
+  @OneToMany(() => Refund, (refund) => refund.order, {
+    eager: true,
+    cascade: true,
+  })
+  _refunds: Refund[];
 
-  constructor(props: {
-    customer: CustomerDetails;
-    deliveryAddress: Address;
-    tickets?: Ticket[];
-  }) {
+  constructor(props: { customer: CustomerDetails; deliveryAddress: Address }) {
     super();
     if (props) {
       this.customer = props.customer;
       this.deliveryAddress = props.deliveryAddress;
-      this.tickets = props.tickets || [];
     }
   }
 
@@ -90,6 +88,20 @@ export class Order extends DomainEntity {
       this._payments = [];
     }
     return this._payments;
+  }
+
+  get tickets(): Ticket[] {
+    if (!this._tickets) {
+      this._tickets = [];
+    }
+    return this._tickets;
+  }
+
+  get refunds(): Refund[] {
+    if (!this._refunds) {
+      this._refunds = [];
+    }
+    return this._refunds;
   }
 
   public getPromotionalTicket(): Ticket | null {

@@ -11,10 +11,7 @@ export class Refund extends DomainEntity {
   @JoinColumn()
   order: Order;
 
-  @OneToMany(() => RefundItem, (refundItem) => refundItem.refund, {
-    eager: true,
-    cascade: true,
-  })
+  @OneToMany(() => RefundItem, (refundItem) => refundItem.refund)
   items: RefundItem[];
 
   @Column()
@@ -32,10 +29,9 @@ export class Refund extends DomainEntity {
   @Column({ nullable: true })
   processedAt?: Date;
 
-  constructor(props: { order: Order; items: RefundItem[]; reason?: string }) {
+  constructor(props: { items: RefundItem[]; reason?: string }) {
     super();
     if (props) {
-      this.order = props.order;
       this.items = props.items;
       this.reason = props.reason;
       this.totalAmount = this.calculateTotalAmount();
