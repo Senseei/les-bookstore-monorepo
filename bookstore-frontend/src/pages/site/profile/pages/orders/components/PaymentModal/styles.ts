@@ -6,7 +6,11 @@ export const ModalContent = styled.div`
   gap: 24px;
   padding: 24px;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `
 
 export const Header = styled.div`
@@ -113,6 +117,12 @@ export const CardsSection = styled.div`
   gap: 16px;
 `
 
+export const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
 export const SectionTitle = styled.h3`
   display: flex;
   align-items: center;
@@ -121,6 +131,64 @@ export const SectionTitle = styled.h3`
   font-size: 16px;
   font-weight: 600;
   margin: 0;
+`
+
+export const CardFormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid ${({ theme }) => theme.COLORS.NEUTRAL_200};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.COLORS.NEUTRAL_50};
+`
+
+export const FormHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const FormTitle = styled.h4`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${({ theme }) => theme.COLORS.NEUTRAL_900};
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+`
+
+export const FormContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+
+  /* Ensure form fields have proper width */
+  input,
+  select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+`
+
+export const FormRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+export const FormActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid ${({ theme }) => theme.COLORS.NEUTRAL_200};
 `
 
 export const CardsContainer = styled.div`

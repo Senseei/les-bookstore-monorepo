@@ -12,6 +12,7 @@ interface ModalProps {
   maxHeight?: string
   width?: string
   height?: string
+  'data-testid'?: string
 }
 
 export const Modal = ({
@@ -23,6 +24,7 @@ export const Modal = ({
   maxHeight = '90vh',
   width = '100%',
   height = 'auto',
+  'data-testid': dataTestId,
 }: ModalProps) => {
   if (!isOpen) return null
 
@@ -35,6 +37,7 @@ export const Modal = ({
         maxHeight={maxHeight}
         width={width}
         height={height}
+        data-testid={dataTestId}
       >
         <S.CloseButton onClick={onClose}>
           <X size={20} />
