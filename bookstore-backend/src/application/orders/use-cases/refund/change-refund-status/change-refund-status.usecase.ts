@@ -40,7 +40,7 @@ export class ChangeRefundStatus {
 
     const handler = this.handlers.get(status);
     if (handler) {
-      await handler.handle(refund, userId);
+      await handler.handle(refund, userId, order);
     }
 
     refund.status = status;
