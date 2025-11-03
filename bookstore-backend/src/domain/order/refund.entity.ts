@@ -7,7 +7,7 @@ import { RefundItem } from './refund-item.entity';
 
 @Entity('tb_refunds')
 export class Refund extends DomainEntity {
-  @ManyToOne(() => Order)
+  @ManyToOne(() => Order, (order) => order.refunds)
   @JoinColumn()
   order: Order;
 
