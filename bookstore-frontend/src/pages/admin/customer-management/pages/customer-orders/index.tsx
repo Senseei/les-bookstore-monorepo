@@ -2,6 +2,8 @@ import { ArrowClockwise, Package } from 'phosphor-react'
 import { useParams } from 'react-router'
 
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components'
+import type { RefundRequestDTO } from '@/dtos'
+import { UserService } from '@/services'
 
 import { OrdersListSection, SearchAndFilters } from './components'
 import * as S from './styles'
@@ -41,6 +43,20 @@ export const CustomerOrders = () => {
     formatCurrency,
     formatDate,
   } = useCustomerOrders(customerId!)
+
+  const handleRequestRefund = async (
+    customerId: string,
+    orderId: string,
+    refundData: RefundRequestDTO,
+  ): Promise<{ success: boolean }> => {
+    try {
+      await UserService.requestUserOrderRefund(customerId, orderId, refundData)
+      await refreshOrders()
+      return { success: true }
+    } catch {
+      return { success: false }
+    }
+  }
 
   if (error) {
     return (
@@ -147,6 +163,7 @@ export const CustomerOrders = () => {
           formatCurrency={formatCurrency}
           formatDate={formatDate}
           onOrderUpdate={refreshOrders}
+          onRequestRefund={handleRequestRefund}
         />
       )}
     </S.ContentContainer>

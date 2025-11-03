@@ -1,4 +1,11 @@
-import { Calendar, CreditCard, Package, Ticket, X } from 'phosphor-react'
+import {
+  Calendar,
+  CreditCard,
+  DotsThreeOutline,
+  Package,
+  Ticket,
+  X,
+} from 'phosphor-react'
 import { useState } from 'react'
 
 import {
@@ -6,10 +13,13 @@ import {
   Button,
   Card,
   ConfirmationModal,
+  DropdownMenu,
   OrderStatusChanger,
+  RefundModal,
+  RefundSummary,
   USER_STATUS_CHANGES,
 } from '@/components'
-import type { OrderDTO, OrderStatusType } from '@/dtos'
+import type { OrderDTO, OrderStatusType, RefundRequestDTO } from '@/dtos'
 import { useOrderStatus } from '@/hooks'
 import { calculateOrderTotal } from '@/utils'
 
@@ -22,6 +32,10 @@ interface OrderCardProps {
   onCancelOrder: (orderId: string) => Promise<{ success: boolean }>
   onPayOrder?: (orderId: string) => void
   onOrderUpdate?: () => void
+  onRequestRefund?: (
+    orderId: string,
+    refundData: RefundRequestDTO,
+  ) => Promise<{ success: boolean }>
 }
 
 const getStatusBadge = (status: OrderDTO['status']) => {
@@ -45,9 +59,12 @@ export const OrderCard = ({
   onCancelOrder,
   onPayOrder,
   onOrderUpdate,
+  onRequestRefund,
 }: OrderCardProps) => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const [isCancelling, setIsCancelling] = useState(false)
+  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false)
+  const [isRequestingRefund, setIsRequestingRefund] = useState(false)
   const { changeOrderStatus, isLoading } = useOrderStatus()
 
   const handleStatusChange = async (
@@ -69,12 +86,36 @@ export const OrderCard = ({
   // Only show pay button for pending orders
   const canPay = order.status === 'pending'
 
+  // Only show refund option for delivered orders that can be refunded
+  const canRequestRefund = order.status === 'delivered' && order.canBeRefunded
+
   const handleCancelClick = () => {
     setIsConfirmModalOpen(true)
   }
 
   const handlePayClick = () => {
     onPayOrder?.(order.id)
+  }
+
+  const handleRefundClick = () => {
+    setIsRefundModalOpen(true)
+  }
+
+  const handleRefundSubmit = async (refundData: RefundRequestDTO) => {
+    if (!onRequestRefund) return
+
+    setIsRequestingRefund(true)
+    try {
+      const result = await onRequestRefund(order.id, refundData)
+      if (result.success) {
+        setIsRefundModalOpen(false)
+        onOrderUpdate?.()
+      }
+    } catch {
+      // Error handling is done in the parent component
+    } finally {
+      setIsRequestingRefund(false)
+    }
   }
 
   const handleConfirmCancel = async () => {
@@ -111,13 +152,28 @@ export const OrderCard = ({
               <S.OrderTotal>{formatCurrency(totalPrice)}</S.OrderTotal>
             )}
           </S.OrderInfo>
-          <Badge
-            variant={statusInfo.variant}
-            size="sm"
-            data-testid="order-status-badge"
-          >
-            {statusInfo.label}
-          </Badge>
+          <S.OrderHeaderActions>
+            <Badge
+              variant={statusInfo.variant}
+              size="sm"
+              data-testid="order-status-badge"
+            >
+              {statusInfo.label}
+            </Badge>
+            {canRequestRefund && (
+              <DropdownMenu
+                trigger={<DotsThreeOutline size={20} />}
+                items={[
+                  {
+                    id: 'refund',
+                    label: 'Desejo solicitar um reembolso',
+                    onClick: handleRefundClick,
+                  },
+                ]}
+                align="right"
+              />
+            )}
+          </S.OrderHeaderActions>
         </S.OrderHeader>
 
         <S.OrderContent>
@@ -136,6 +192,13 @@ export const OrderCard = ({
                     ? `${order.tickets.length} cupom${order.tickets.length > 1 ? 's' : ''} aplicado${order.tickets.length > 1 ? 's' : ''}`
                     : `Desconto: ${formatCurrency(order.discount)}`}
                 </span>
+              </S.SummaryItem>
+            )}
+            {order.status === 'delivered' && !order.canBeRefunded && (
+              <S.SummaryItem>
+                <S.FullyRefundedBadge>
+                  ✓ Totalmente reembolsado
+                </S.FullyRefundedBadge>
               </S.SummaryItem>
             )}
           </S.OrderSummary>
@@ -161,6 +224,15 @@ export const OrderCard = ({
               </S.MoreItems>
             )}
           </S.OrderItems>
+
+          {order.refundsSummary && order.refundsSummary.refundsCount > 0 && (
+            <RefundSummary
+              refundsSummary={order.refundsSummary}
+              formatCurrency={formatCurrency}
+              formatDate={formatDate}
+              compact={true}
+            />
+          )}
 
           <OrderStatusChanger
             order={order}
@@ -208,6 +280,14 @@ export const OrderCard = ({
         confirmText="Sim, cancelar pedido"
         cancelText="Não, manter pedido"
         variant="warning"
+      />
+
+      <RefundModal
+        isOpen={isRefundModalOpen}
+        onClose={() => setIsRefundModalOpen(false)}
+        order={order}
+        onSubmit={handleRefundSubmit}
+        isLoading={isRequestingRefund}
       />
     </>
   )

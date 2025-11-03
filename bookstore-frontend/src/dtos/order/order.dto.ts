@@ -1,5 +1,6 @@
 import type { TicketDTO } from '../ticket'
 import type { OrderBookDTO } from './order-book.dto'
+import type { RefundsSummaryDTO } from './refund-summary.dto'
 
 export interface OrderItemDTO {
   book: OrderBookDTO
@@ -17,4 +18,6 @@ export interface OrderDTO {
   orderDate: Date
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
   tickets: TicketDTO[]
+  refundsSummary?: RefundsSummaryDTO
+  canBeRefunded: boolean
 }

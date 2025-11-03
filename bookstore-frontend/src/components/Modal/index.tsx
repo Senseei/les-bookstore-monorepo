@@ -8,9 +8,22 @@ interface ModalProps {
   onClose: () => void
   children: ReactNode
   className?: string
+  maxWidth?: string
+  maxHeight?: string
+  width?: string
+  height?: string
 }
 
-export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
+export const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  className,
+  maxWidth = '480px',
+  maxHeight = '90vh',
+  width = '100%',
+  height = 'auto',
+}: ModalProps) => {
   if (!isOpen) return null
 
   return (
@@ -18,6 +31,10 @@ export const Modal = ({ isOpen, onClose, children, className }: ModalProps) => {
       <S.ModalContainer
         className={className}
         onClick={(e: MouseEvent) => e.stopPropagation()}
+        maxWidth={maxWidth}
+        maxHeight={maxHeight}
+        width={width}
+        height={height}
       >
         <S.CloseButton onClick={onClose}>
           <X size={20} />

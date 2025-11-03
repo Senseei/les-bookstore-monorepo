@@ -1,5 +1,6 @@
 import type { PaginatedResultDTO } from '@/dtos/common'
 import type { ChangeOrderStatusDTO, OrderDTO } from '@/dtos/order'
+import type { RefundRequestDTO } from '@/dtos/refund'
 import type { AddressDTO } from '@/dtos/user/address'
 import type { CustomerDTO } from '@/dtos/user/customer.dto'
 import type { MinUserDTO } from '@/dtos/user/min-user'
@@ -235,5 +236,19 @@ export class UserService {
       statusData,
     )
     return response.data
+  }
+
+  /**
+   * Request a refund for a user's order (Admin)
+   */
+  static async requestUserOrderRefund(
+    userId: string,
+    orderId: string,
+    refundData: RefundRequestDTO,
+  ): Promise<void> {
+    await AxiosApp.post(
+      `/users/${userId}/orders/${orderId}/refunds`,
+      refundData,
+    )
   }
 }

@@ -23,6 +23,8 @@ export {
 } from './OrderStatusChanger'
 export { ProfileMenu } from './ProfileMenu'
 export { ProtectedRoute } from './ProtectedRoute'
+export { RefundModal } from './RefundModal'
+export { RefundSummary } from './RefundSummary'
 export { Select } from './Select'
 export { Textarea } from './Textarea'
 export { ToastContainer } from './ToastContainer'

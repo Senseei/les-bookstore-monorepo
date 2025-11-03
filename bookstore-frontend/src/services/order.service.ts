@@ -3,6 +3,7 @@ import type {
   CreateOrderDTO,
   OrderDTO,
   PaymentsDTO,
+  RefundRequestDTO,
 } from '@/dtos'
 import { OrderStatus } from '@/dtos'
 
@@ -60,5 +61,17 @@ export class OrderService {
       paymentsData,
     )
     return response.data
+  }
+
+  /**
+   * Request a refund for an order
+   * @param orderId - The ID of the order to refund
+   * @param refundData - The refund request data
+   */
+  static async requestRefund(
+    orderId: string,
+    refundData: RefundRequestDTO,
+  ): Promise<void> {
+    await AxiosApp.post(`/orders/${orderId}/refunds`, refundData)
   }
 }

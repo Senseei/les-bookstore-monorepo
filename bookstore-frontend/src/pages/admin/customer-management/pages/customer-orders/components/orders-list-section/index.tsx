@@ -1,7 +1,7 @@
 import { Package } from 'phosphor-react'
 
 import { Button, Card, CardContent } from '@/components'
-import type { OrderDTO } from '@/dtos'
+import type { OrderDTO, RefundRequestDTO } from '@/dtos'
 
 import { OrderCard } from './components'
 import * as S from './styles'
@@ -18,6 +18,11 @@ interface OrdersListSectionProps {
   formatCurrency: (value: number) => string
   formatDate: (date: Date | string) => string
   onOrderUpdate?: () => void
+  onRequestRefund?: (
+    customerId: string,
+    orderId: string,
+    refundData: RefundRequestDTO,
+  ) => Promise<{ success: boolean }>
 }
 
 export const OrdersListSection = ({
@@ -32,6 +37,7 @@ export const OrdersListSection = ({
   formatCurrency,
   formatDate,
   onOrderUpdate,
+  onRequestRefund,
 }: OrdersListSectionProps) => {
   if (isLoading) {
     return (
@@ -77,6 +83,7 @@ export const OrdersListSection = ({
                 formatCurrency={formatCurrency}
                 formatDate={formatDate}
                 onOrderUpdate={onOrderUpdate}
+                onRequestRefund={onRequestRefund}
               />
             ))}
           </S.OrdersList>

@@ -2,11 +2,12 @@ import { ArrowClockwise, Package, Storefront } from 'phosphor-react'
 import { useState } from 'react'
 
 import { Button, NavigationButton } from '@/components'
-import type { OrderDTO, PaymentsDTO } from '@/dtos'
+import type { OrderDTO, PaymentsDTO, RefundRequestDTO } from '@/dtos'
 import { useCard, usePayment } from '@/hooks'
 import { Container } from '@/pages/site/layout/styles'
 import { useToast } from '@/providers'
 import { ROUTES } from '@/routes/constants'
+import { OrderService } from '@/services'
 
 import { OrderCard, PaymentModal } from './components'
 import * as S from './styles'
@@ -62,6 +63,23 @@ export const Orders = () => {
       handleClosePaymentModal()
     } catch {
       showError('Não foi possível processar o pagamento. Tente novamente.')
+    }
+  }
+
+  const handleRequestRefund = async (
+    orderId: string,
+    refundData: RefundRequestDTO,
+  ): Promise<{ success: boolean }> => {
+    try {
+      await OrderService.requestRefund(orderId, refundData)
+      showSuccess('Sua solicitação de reembolso foi enviada com sucesso!')
+      await handleRefreshOrders()
+      return { success: true }
+    } catch {
+      showError(
+        'Não foi possível enviar a solicitação de reembolso. Tente novamente.',
+      )
+      return { success: false }
     }
   }
 
@@ -172,6 +190,7 @@ export const Orders = () => {
                   onCancelOrder={handleCancelOrder}
                   onPayOrder={handlePayOrder}
                   onOrderUpdate={handleRefreshOrders}
+                  onRequestRefund={handleRequestRefund}
                 />
               ))}
             </S.OrdersList>
