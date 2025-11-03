@@ -10,10 +10,15 @@ import { CancelOrderHandler } from '@/application/orders/use-cases/change-order-
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { GenerateExchangeTicket } from '@/application/orders/use-cases/generate-exchange-ticket.use-case';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
+import { ChangeRefundStatus } from '@/application/orders/use-cases/refund/change-refund-status/change-refund-status.usecase';
+import { CompletedRefundHandler } from '@/application/orders/use-cases/refund/change-refund-status/handlers/completed-refund.handler';
+import { RefundOrderItems } from '@/application/orders/use-cases/refund/refund-order-items.usecase';
 import { ValidateTicket } from '@/application/orders/use-cases/tickets/validate-ticket.usecase';
 import { Order } from '@/domain/order/order.entity';
 import { OrderItem } from '@/domain/order/order-item.entity';
 import { Payment } from '@/domain/order/payment/payment.entity';
+import { Refund } from '@/domain/order/refund.entity';
+import { RefundItem } from '@/domain/order/refund-item.entity';
 import { Ticket } from '@/domain/ticket/ticket.entity';
 import { MockPaymentGateway } from '@/infrastructure/payment/mock/mock-payment.gateway';
 import {
@@ -43,13 +48,24 @@ const USE_CASES = [
   ApplyTicketsToOrder,
   GenerateExchangeTicket,
   ChangeOrderStatus,
+  ChangeRefundStatus,
+  RefundOrderItems,
 ];
 const BUSINESS_SERVICES = [TicketsService, OrdersService];
+
 const CHANGE_STATUS_HANDLERS = [CancelOrderHandler];
+const REFUND_STATUS_HANDLERS = [CompletedRefundHandler];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem, Payment, Ticket]),
+    TypeOrmModule.forFeature([
+      Order,
+      OrderItem,
+      Payment,
+      Ticket,
+      Refund,
+      RefundItem,
+    ]),
     BooksModule,
     forwardRef(() => UsersModule),
   ],
@@ -59,10 +75,16 @@ const CHANGE_STATUS_HANDLERS = [CancelOrderHandler];
     ...USE_CASES,
     ...BUSINESS_SERVICES,
     ...CHANGE_STATUS_HANDLERS,
+    ...REFUND_STATUS_HANDLERS,
     {
       provide: 'OrderStatusChangeHandlers',
       useFactory: (...handlers: typeof CHANGE_STATUS_HANDLERS) => handlers,
       inject: [...CHANGE_STATUS_HANDLERS],
+    },
+    {
+      provide: 'RefundStatusChangeHandlers',
+      useFactory: (...handlers: typeof REFUND_STATUS_HANDLERS) => handlers,
+      inject: [...REFUND_STATUS_HANDLERS],
     },
     {
       provide: 'OrdersRepository',
@@ -77,6 +99,11 @@ const CHANGE_STATUS_HANDLERS = [CancelOrderHandler];
       useClass: MockPaymentGateway,
     },
   ],
-  exports: [...BUSINESS_SERVICES],
+  exports: [
+    ...BUSINESS_SERVICES,
+    ChangeRefundStatus,
+    ChangeOrderStatus,
+    RefundOrderItems,
+  ],
 })
 export class OrdersModule {}
