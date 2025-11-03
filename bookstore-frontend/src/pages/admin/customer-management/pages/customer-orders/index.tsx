@@ -137,6 +137,7 @@ export const CustomerOrders = () => {
       ) : (
         <OrdersListSection
           orders={orders}
+          customerId={customerId!}
           isLoading={isLoading}
           currentPage={currentPage}
           pageSize={pageSize}

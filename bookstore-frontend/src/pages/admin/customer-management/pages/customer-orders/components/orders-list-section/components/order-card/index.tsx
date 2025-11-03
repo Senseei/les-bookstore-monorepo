@@ -1,14 +1,16 @@
 import { Calendar, Package } from 'phosphor-react'
+import { useState } from 'react'
 
 import { ADMIN_STATUS_CHANGES, Badge, OrderStatusChanger } from '@/components'
 import type { OrderDTO } from '@/dtos'
 import type { OrderStatusType } from '@/dtos'
-import { useOrderStatus } from '@/hooks'
+import { UserService } from '@/services'
 
 import * as S from './styles'
 
 interface OrderCardProps {
   order: OrderDTO
+  customerId: string
   formatCurrency: (value: number) => string
   formatDate: (date: Date | string) => string
   onOrderUpdate?: () => void
@@ -16,18 +18,28 @@ interface OrderCardProps {
 
 export const OrderCard = ({
   order,
+  customerId,
   formatCurrency,
   formatDate,
   onOrderUpdate,
 }: OrderCardProps) => {
-  const { changeOrderStatus, isLoading } = useOrderStatus()
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleStatusChange = async (
     orderId: string,
     newStatus: OrderStatusType,
   ) => {
-    await changeOrderStatus(orderId, newStatus)
-    onOrderUpdate?.()
+    setIsLoading(true)
+    try {
+      await UserService.changeUserOrderStatus(customerId, orderId, {
+        status: newStatus,
+      })
+      onOrderUpdate?.()
+    } catch {
+      // TODO: Add proper error handling with toast notifications
+    } finally {
+      setIsLoading(false)
+    }
   }
   const getStatusInfo = (status: string) => {
     switch (status) {

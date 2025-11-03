@@ -8,6 +8,7 @@ import * as S from './styles'
 
 interface OrdersListSectionProps {
   orders: OrderDTO[]
+  customerId: string
   isLoading: boolean
   currentPage: number
   pageSize: number
@@ -21,6 +22,7 @@ interface OrdersListSectionProps {
 
 export const OrdersListSection = ({
   orders,
+  customerId,
   isLoading,
   currentPage,
   pageSize,
@@ -71,6 +73,7 @@ export const OrdersListSection = ({
               <OrderCard
                 key={order.id}
                 order={order}
+                customerId={customerId}
                 formatCurrency={formatCurrency}
                 formatDate={formatDate}
                 onOrderUpdate={onOrderUpdate}

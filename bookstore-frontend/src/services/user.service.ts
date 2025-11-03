@@ -1,5 +1,5 @@
 import type { PaginatedResultDTO } from '@/dtos/common'
-import type { OrderDTO } from '@/dtos/order'
+import type { ChangeOrderStatusDTO, OrderDTO } from '@/dtos/order'
 import type { AddressDTO } from '@/dtos/user/address'
 import type { CustomerDTO } from '@/dtos/user/customer.dto'
 import type { MinUserDTO } from '@/dtos/user/min-user'
@@ -220,5 +220,20 @@ export class UserService {
    */
   static async inactivateUser(userId: string): Promise<void> {
     await AxiosApp.delete(`/users/${userId}`)
+  }
+
+  /**
+   * Change order status for a user (Admin)
+   */
+  static async changeUserOrderStatus(
+    userId: string,
+    orderId: string,
+    statusData: ChangeOrderStatusDTO,
+  ): Promise<OrderDTO> {
+    const response = await AxiosApp.patch<OrderDTO>(
+      `/users/${userId}/orders/${orderId}`,
+      statusData,
+    )
+    return response.data
   }
 }
