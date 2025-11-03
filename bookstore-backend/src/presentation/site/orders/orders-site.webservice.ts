@@ -30,8 +30,12 @@ export class OrdersSiteWebService {
     return new OrderDTO(await this.createNewOrder.execute(dto, userId));
   }
 
-  public async pay(orderId: string, dto: PaymentsDTO): Promise<OrderDTO> {
-    return new OrderDTO(await this.payOrder.execute(orderId, dto));
+  public async pay(
+    orderId: string,
+    dto: PaymentsDTO,
+    userId: string,
+  ): Promise<OrderDTO> {
+    return new OrderDTO(await this.payOrder.execute(orderId, dto, userId));
   }
 
   public async changeStatus(

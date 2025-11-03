@@ -40,8 +40,10 @@ export class OrdersSiteController {
   public async payOrder(
     @Param('id') orderId: string,
     @Body() dto: PaymentsDTO,
+    @Request() req: AuthenticatedRequest,
   ): Promise<OrderDTO> {
-    return await this.webService.pay(orderId, dto);
+    const userId = req.user.userId;
+    return await this.webService.pay(orderId, dto, userId);
   }
 
   @Post(':id/refunds')

@@ -1,4 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Transactional } from 'typeorm-transactional';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
 import { RefundStatus } from '@/domain/order/enums/refund-status.enum';
@@ -21,6 +22,7 @@ export class ChangeRefundStatus {
     }
   }
 
+  @Transactional()
   public async execute(
     orderId: string,
     refundId: string,
