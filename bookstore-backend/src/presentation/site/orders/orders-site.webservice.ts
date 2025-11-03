@@ -3,7 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
+import { ChangeRefundStatus } from '@/application/orders/use-cases/refund/change-refund-status/change-refund-status.usecase';
 import { RefundOrderItems } from '@/application/orders/use-cases/refund/refund-order-items.usecase';
+import { RefundStatus } from '@/domain/order/enums/refund-status.enum';
 import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 
@@ -17,6 +19,7 @@ export class OrdersSiteWebService {
     private readonly createNewOrder: CreateNewOrder,
     private readonly payOrder: PayOrder,
     private readonly changeOrderStatus: ChangeOrderStatus,
+    private readonly changeRefundStatusUseCase: ChangeRefundStatus,
     private readonly refundOrderItems: RefundOrderItems,
   ) {}
 
@@ -38,6 +41,22 @@ export class OrdersSiteWebService {
   ): Promise<OrderDTO> {
     return new OrderDTO(
       await this.changeOrderStatus.execute(orderId, status, userId),
+    );
+  }
+
+  public async changeRefundStatus(
+    orderId: string,
+    refundId: string,
+    userId: string,
+    status: RefundStatus,
+  ): Promise<OrderDTO> {
+    return new OrderDTO(
+      await this.changeRefundStatusUseCase.execute(
+        orderId,
+        refundId,
+        status,
+        userId,
+      ),
     );
   }
 

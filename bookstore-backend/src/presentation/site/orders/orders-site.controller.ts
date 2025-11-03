@@ -12,9 +12,10 @@ import { UserRole } from '@/domain/user/enums/role.enum';
 import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
 import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
+import { ChangeRefundStatusDTO } from '@/presentation/common/order/dtos/change-refund-status.dto';
 import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 
-import { ChangeOrderStatusDTO } from './dtos/change-order-status.dto';
+import { ChangeOrderStatusDTO } from '../../common/order/dtos/change-order-status.dto';
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';
 import { RefundRequestDTO } from './dtos/refund-request.dto';
@@ -53,7 +54,6 @@ export class OrdersSiteController {
     return await this.webService.refundItems(orderId, dto, userId);
   }
 
-  @Roles(UserRole.USER)
   @Patch(':id')
   public async changeOrderStatus(
     @Param('id') orderId: string,
@@ -62,5 +62,21 @@ export class OrdersSiteController {
   ): Promise<OrderDTO> {
     const userId = req.user.userId;
     return this.webService.changeStatus(orderId, userId, dto.status);
+  }
+
+  @Patch(':id/refunds/:refundId')
+  public async changeRefundStatus(
+    @Param('id') orderId: string,
+    @Param('refundId') refundId: string,
+    @Body() dto: ChangeRefundStatusDTO,
+    @Request() req: AuthenticatedRequest,
+  ): Promise<OrderDTO> {
+    const userId = req.user.userId;
+    return this.webService.changeRefundStatus(
+      orderId,
+      refundId,
+      userId,
+      dto.status,
+    );
   }
 }

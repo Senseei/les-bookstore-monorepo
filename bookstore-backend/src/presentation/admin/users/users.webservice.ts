@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
 import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-status/change-order-status.usecase';
+import { ChangeRefundStatus } from '@/application/orders/use-cases/refund/change-refund-status/change-refund-status.usecase';
+import { RefundStatus } from '@/domain/order/enums/refund-status.enum';
 import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { UserRole } from '@/domain/user/enums/role.enum';
 import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
@@ -19,6 +21,7 @@ export class UsersWebService extends BaseUsersWebService {
     private readonly usersService: UsersService,
     ordersService: OrdersService,
     private readonly changeOrderStatusUseCase: ChangeOrderStatus,
+    private readonly changeRefundStatusUseCase: ChangeRefundStatus,
   ) {
     super(ordersService);
   }
@@ -61,6 +64,21 @@ export class UsersWebService extends BaseUsersWebService {
     return new OrderDTO(
       await this.changeOrderStatusUseCase.execute(orderId, status, userId),
     );
+  }
+
+  public async changeRefundStatus(
+    orderId: string,
+    refundId: string,
+    status: RefundStatus,
+    userId: string,
+  ): Promise<OrderDTO> {
+    const order = await this.changeRefundStatusUseCase.execute(
+      orderId,
+      refundId,
+      status,
+      userId,
+    );
+    return new OrderDTO(order);
   }
 
   public async inactivate(id: string): Promise<void> {
