@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { ChangeRefundStatusDTO } from '@/presentation/common/order/dtos/change-r
 import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 import { PaginatedResultDTO } from '@/presentation/dtos/paginated-result.dto';
 import { PaginationParamsDTO } from '@/presentation/dtos/pagination-params.dto';
+import { RefundRequestDTO } from '@/presentation/site/orders/dtos/refund-request.dto';
 
 import { CustomerDTO } from './dtos/customer.dto';
 import { MinUserDTO } from './dtos/min-user.dto';
@@ -62,6 +64,15 @@ export class UsersController {
     @Body() dto: ChangeOrderStatusDTO,
   ): Promise<OrderDTO> {
     return this.usersWebService.changeOrderStatus(orderId, dto.status, userId);
+  }
+
+  @Post(':id/orders/:orderId/refunds')
+  public async refundOrderItems(
+    @Param('id') userId: string,
+    @Param('orderId') orderId: string,
+    @Body() dto: RefundRequestDTO,
+  ): Promise<OrderDTO> {
+    return await this.usersWebService.refundItems(orderId, dto, userId);
   }
 
   @Patch(':id/orders/:orderId/refunds/:refundId')
