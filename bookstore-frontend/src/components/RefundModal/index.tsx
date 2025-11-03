@@ -110,12 +110,13 @@ export function RefundModal({
         })),
       })
 
-      toast.showSuccess('Solicitação de reembolso enviada com sucesso!')
+      // Success feedback is handled by the CRUD hook
       onClose()
       setReason('')
       setRefundItems((items) => items.map((item) => ({ ...item, quantity: 0 })))
     } catch {
-      toast.showError('Erro ao solicitar reembolso. Tente novamente.')
+      // Error feedback is handled by the CRUD hook
+      // Component just needs to reset loading state
     } finally {
       setLoading(false)
     }

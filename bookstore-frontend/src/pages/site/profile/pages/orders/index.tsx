@@ -3,11 +3,10 @@ import { useState } from 'react'
 
 import { Button, NavigationButton } from '@/components'
 import type { OrderDTO, PaymentsDTO, RefundRequestDTO } from '@/dtos'
-import { useCard, usePayment } from '@/hooks'
+import { useCard, useOrder, usePayment } from '@/hooks'
 import { Container } from '@/pages/site/layout/styles'
 import { useToast } from '@/providers'
 import { ROUTES } from '@/routes/constants'
-import { OrderService } from '@/services'
 
 import { OrderCard, PaymentModal } from './components'
 import * as S from './styles'
@@ -34,6 +33,7 @@ export const Orders = () => {
 
   const { getCards } = useCard()
   const { payOrder, isLoading: isPaymentLoading } = usePayment()
+  const { requestRefund } = useOrder()
   const { showSuccess, showError } = useToast()
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
@@ -70,17 +70,11 @@ export const Orders = () => {
     orderId: string,
     refundData: RefundRequestDTO,
   ): Promise<{ success: boolean }> => {
-    try {
-      await OrderService.requestRefund(orderId, refundData)
-      showSuccess('Sua solicitação de reembolso foi enviada com sucesso!')
+    const result = await requestRefund(orderId, refundData)
+    if (result.success) {
       await handleRefreshOrders()
-      return { success: true }
-    } catch {
-      showError(
-        'Não foi possível enviar a solicitação de reembolso. Tente novamente.',
-      )
-      return { success: false }
     }
+    return result
   }
 
   if (isLoading) {
