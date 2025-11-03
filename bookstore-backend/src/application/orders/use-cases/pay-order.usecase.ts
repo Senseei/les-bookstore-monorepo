@@ -3,9 +3,9 @@ import { Transactional } from 'typeorm-transactional';
 
 import { CardsService } from '@/application/users/services/cards.service';
 import { UsersService } from '@/application/users/services/users.service';
+import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { Order } from '@/domain/order/order.entity';
 import { Payment } from '@/domain/order/payment/payment.entity';
-import { OrderStatus } from '@/domain/order/status.enum';
 import { toPaymentMethod } from '@/domain/user/enums/card-type.enum';
 import { PaymentsDTO } from '@/presentation/site/orders/dtos/payments.dto';
 

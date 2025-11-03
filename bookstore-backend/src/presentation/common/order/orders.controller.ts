@@ -6,7 +6,7 @@ import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
 import { ChangeOrderStatusDTO } from '@/presentation/site/orders/dtos/change-order-status.dto';
 import { OrdersSiteWebService } from '@/presentation/site/orders/orders-site.webservice';
 
-import { OrderDTO } from '../books/dtos/order.dto';
+import { OrderDTO } from './dtos/order.dto';
 
 export abstract class OrdersController {
   constructor(protected readonly webService: OrdersSiteWebService) {}

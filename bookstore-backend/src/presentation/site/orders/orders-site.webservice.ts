@@ -4,8 +4,8 @@ import { ChangeOrderStatus } from '@/application/orders/use-cases/change-order-s
 import { CreateNewOrder } from '@/application/orders/use-cases/create-new-order.usecase';
 import { PayOrder } from '@/application/orders/use-cases/pay-order.usecase';
 import { UsersService } from '@/application/users/services';
-import { OrderStatus } from '@/domain/order/status.enum';
-import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
+import { OrderStatus } from '@/domain/order/enums/status.enum';
+import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';
 import { PaymentsDTO } from './dtos/payments.dto';

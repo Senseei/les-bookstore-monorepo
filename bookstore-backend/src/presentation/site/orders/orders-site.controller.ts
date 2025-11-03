@@ -11,7 +11,7 @@ import { UserRole } from '@/domain/user/enums/role.enum';
 import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
 import { JwtAuthGuard, RolesGuard } from '@/infrastructure/auth/guards';
 import { AuthenticatedRequest } from '@/presentation/auth/interfaces';
-import { OrderDTO } from '@/presentation/common/books/dtos/order.dto';
+import { OrderDTO } from '@/presentation/common/order/dtos/order.dto';
 import { OrdersController } from '@/presentation/common/order/orders.controller';
 
 import { CreateNewOrderDTO } from './dtos/create-new-order.dto';

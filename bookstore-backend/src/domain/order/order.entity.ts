@@ -13,10 +13,12 @@ import { TicketNature } from '../ticket/enums/ticket-nature.enum';
 import { Ticket } from '../ticket/ticket.entity';
 import { Address } from '../user/address.entity';
 import { CustomerDetails } from '../user/customer-details.entity';
+import { RefundStatus } from './enums/refund-status.enum';
+import { OrderStatus } from './enums/status.enum';
 import { OrderItem } from './order-item.entity';
 import { PaymentStatus } from './payment/enums/payment-status.enum';
 import { Payment } from './payment/payment.entity';
-import { OrderStatus } from './status.enum';
+import { Refund } from './refund.entity';
 
 @Entity('tb_orders')
 export class Order extends DomainEntity {
@@ -59,6 +61,9 @@ export class Order extends DomainEntity {
   @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
   @JoinColumn()
   customer: CustomerDetails;
+
+  @OneToMany(() => Refund, (refund) => refund.order)
+  refunds: Refund[];
 
   constructor(props: {
     customer: CustomerDetails;
@@ -226,5 +231,61 @@ export class Order extends DomainEntity {
       throw new Error('Order cannot be cancelled in its current status.');
     }
     this.status = OrderStatus.CANCELLED;
+  }
+
+  public canBeRefunded(): boolean {
+    return this.status === OrderStatus.DELIVERED;
+  }
+
+  public getRefundableItems(): OrderItem[] {
+    if (!this.canBeRefunded()) return [];
+
+    const refundedQuantities = this.getRefundedQuantitiesByItem();
+
+    return this.items.filter((item) => {
+      const refundedQty = refundedQuantities.get(item.bookId) || 0;
+      return item.quantity > refundedQty;
+    });
+  }
+
+  public getRefundedQuantitiesByItem(): Map<string, number> {
+    const refundedQuantities = new Map<string, number>();
+
+    if (!this.refunds) return refundedQuantities;
+
+    const completedRefunds = this.refunds.filter(
+      (refund) => refund.status === RefundStatus.COMPLETED,
+    );
+
+    for (const refund of completedRefunds) {
+      for (const refundItem of refund.items) {
+        const currentQty =
+          refundedQuantities.get(refundItem.orderItem.bookId) || 0;
+        refundedQuantities.set(
+          refundItem.orderItem.bookId,
+          currentQty + refundItem.quantity,
+        );
+      }
+    }
+
+    return refundedQuantities;
+  }
+
+  public getTotalRefunded(): number {
+    if (!this.refunds) return 0;
+
+    return this.refunds
+      .filter((refund) => refund.status === RefundStatus.COMPLETED)
+      .reduce((sum, refund) => sum + refund.totalAmount, 0);
+  }
+
+  public hasPendingRefunds(): boolean {
+    if (!this.refunds) return false;
+
+    return this.refunds.some(
+      (refund) =>
+        refund.status === RefundStatus.REQUESTED ||
+        refund.status === RefundStatus.APPROVED,
+    );
   }
 }

@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Transactional } from 'typeorm-transactional';
 
 import { OrdersService } from '@/application/orders/services/orders.service';
+import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { Order } from '@/domain/order/order.entity';
-import { OrderStatus } from '@/domain/order/status.enum';
 
 import { OrderStatusChangeHandler } from './order-status-change-handler.interface';
 
