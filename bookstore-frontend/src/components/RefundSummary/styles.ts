@@ -49,6 +49,11 @@ export const RefundDetails = styled.div`
   overflow-y: auto;
 `
 
+export const RefundItemDate = styled.span`
+  font-size: ${({ theme }) => theme.FONT_SIZE.XXSMALL};
+  color: ${({ theme }) => theme.COLORS.NEUTRAL_500};
+`
+
 export const RefundItem = styled.div`
   display: flex;
   align-items: center;

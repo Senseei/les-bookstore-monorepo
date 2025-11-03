@@ -243,7 +243,7 @@ export const OrderCard = ({
               refundsSummary={order.refundsSummary!}
               formatCurrency={formatCurrency}
               formatDate={formatDate}
-              compact={true}
+              compact={false}
             />
           )}
 

@@ -6,7 +6,6 @@ import {
 } from 'phosphor-react'
 
 import type { RefundsSummaryDTO, RefundStatusType } from '@/dtos'
-import { formatCurrency } from '@/utils'
 
 import * as S from './styles'
 
@@ -52,6 +51,8 @@ const getRefundStatusLabel = (status: RefundStatusType) => {
 
 export const RefundSummary = ({
   refundsSummary,
+  formatCurrency,
+  formatDate,
   compact = false,
 }: RefundSummaryProps) => {
   const { totalRefunded, refundsCount, refunds } = refundsSummary
@@ -102,6 +103,9 @@ export const RefundSummary = ({
                 <S.RefundStatus status={refund.status}>
                   {getRefundStatusLabel(refund.status)}
                 </S.RefundStatus>
+                <S.RefundItemDate>
+                  {formatDate(new Date(refund.requestDate))}
+                </S.RefundItemDate>
               </S.RefundItemInfo>
               <S.RefundItemAmount>
                 {formatCurrency(refund.totalAmount)}
