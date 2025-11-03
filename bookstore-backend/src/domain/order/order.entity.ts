@@ -285,8 +285,8 @@ export class Order extends DomainEntity {
 
     return this.refunds.some(
       (refund) =>
-        refund.status === RefundStatus.REQUESTED ||
-        refund.status === RefundStatus.APPROVED,
+        refund.status !== RefundStatus.COMPLETED &&
+        refund.status !== RefundStatus.REJECTED,
     );
   }
 

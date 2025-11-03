@@ -28,7 +28,6 @@ export class OrderDTO {
     this.tickets = (order.tickets || []).map(
       (ticket) => new TicketResponseDto(ticket),
     );
-    console.log(order.refunds);
     if (order.refunds && order.refunds.length > 0) {
       this.refundsSummary = new RefundsSummaryDTO(order.refunds);
     }

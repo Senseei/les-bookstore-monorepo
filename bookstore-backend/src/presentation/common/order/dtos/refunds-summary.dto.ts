@@ -41,33 +41,15 @@ export class RefundDTO {
 export class RefundsSummaryDTO {
   totalRefunded: number;
   refundsCount: number;
-  pendingRefunds: RefundDTO[];
-  completedRefunds: RefundDTO[];
-  rejectedRefunds: RefundDTO[];
-  hasPendingRefunds: boolean;
+  refunds: RefundDTO[];
+  hasRefunds: boolean;
 
   constructor(refunds: Refund[]) {
-    const refundDTOs = refunds.map((refund) => new RefundDTO(refund));
-
     this.refundsCount = refunds.length;
     this.totalRefunded = refunds
       .filter((refund) => refund.status === RefundStatus.COMPLETED)
       .reduce((sum, refund) => sum + refund.getTotalAmount(), 0);
-
-    this.pendingRefunds = refundDTOs.filter(
-      (refund) =>
-        refund.status === RefundStatus.REQUESTED ||
-        refund.status === RefundStatus.APPROVED,
-    );
-
-    this.completedRefunds = refundDTOs.filter(
-      (refund) => refund.status === RefundStatus.COMPLETED,
-    );
-
-    this.rejectedRefunds = refundDTOs.filter(
-      (refund) => refund.status === RefundStatus.REJECTED,
-    );
-
-    this.hasPendingRefunds = this.pendingRefunds.length > 0;
+    this.refunds = refunds.map((refund) => new RefundDTO(refund));
+    this.hasRefunds = this.refunds.length > 0;
   }
 }
