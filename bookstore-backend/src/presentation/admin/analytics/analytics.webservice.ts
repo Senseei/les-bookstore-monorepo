@@ -73,9 +73,20 @@ export class AnalyticsWebService {
       0,
     );
 
+    const totalCount = chartDataPoints.reduce(
+      (sum, point) => sum + point.salesVolume,
+      0,
+    );
+
+    const orders = chartDataPoints.reduce(
+      (sum, point) => sum + point.orderCount,
+      0,
+    );
+
     const metadata = new ChartMetadataDTO(
       totalRevenue,
-      chartDataPoints.length,
+      totalCount,
+      orders,
       period,
     );
     return new ChartDataDTO<OrdersAnalyticsChartDataPointDTO>(

@@ -14,17 +14,20 @@ export class ChartDataDTO<D extends ChartDataPointDTO> {
 export class ChartMetadataDTO {
   total: number;
   count: number;
+  orders: number;
   period: Period;
   currency?: string;
 
   constructor(
     total: number,
     count: number,
+    orders: number,
     period: Period,
     currency: string = 'BRL',
   ) {
     this.total = total;
     this.count = count;
+    this.orders = orders;
     this.period = period;
     this.currency = currency;
   }

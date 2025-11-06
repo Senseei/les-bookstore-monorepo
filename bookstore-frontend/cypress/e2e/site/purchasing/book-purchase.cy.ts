@@ -763,33 +763,36 @@ describe('Book Purchase Flow', () => {
       }).then((userResponse) => {
         if (
           userResponse.status === 200 &&
-          (!userResponse.body.addresses || userResponse.body.addresses.length === 0)
+          (!userResponse.body.addresses ||
+            userResponse.body.addresses.length === 0)
         ) {
           // User has no addresses - create one
-          return cy.request({
-            method: 'POST',
-            url: `${Cypress.env('API_URL') || 'http://localhost:3000'}/api/me/addresses`,
-            headers: {
-              Authorization: `Bearer ${testUser.token.accessToken}`,
-              'Content-Type': 'application/json',
-            },
-            body: {
-              addressName: 'Casa',
-              type: 'house',
-              purpose: 'both',
-              postalCode: '08720340',
-              street: 'Avenida Professor Mariano Salvarani',
-              number: '521',
-              district: 'Jardim Camila',
-              city: 'Mogi das Cruzes',
-              state: 'SP',
-              complement: 'Casa 1',
-            },
-            failOnStatusCode: false,
-          }).then(() => {
-            // Wait a bit for address to be saved
-            cy.wait(300)
-          })
+          return cy
+            .request({
+              method: 'POST',
+              url: `${Cypress.env('API_URL') || 'http://localhost:3000'}/api/me/addresses`,
+              headers: {
+                Authorization: `Bearer ${testUser.token.accessToken}`,
+                'Content-Type': 'application/json',
+              },
+              body: {
+                addressName: 'Casa',
+                type: 'house',
+                purpose: 'both',
+                postalCode: '08720340',
+                street: 'Avenida Professor Mariano Salvarani',
+                number: '521',
+                district: 'Jardim Camila',
+                city: 'Mogi das Cruzes',
+                state: 'SP',
+                complement: 'Casa 1',
+              },
+              failOnStatusCode: false,
+            })
+            .then(() => {
+              // Wait a bit for address to be saved
+              cy.wait(300)
+            })
         }
       })
 
@@ -1193,10 +1196,9 @@ describe('Book Purchase Flow', () => {
         .first()
         .within(() => {
           // Order status should be Cancelado
-          cy.get('[data-testid="order-status-badge"]', { timeout: 5000 }).should(
-            'contain',
-            'Cancelado',
-          )
+          cy.get('[data-testid="order-status-badge"]', {
+            timeout: 5000,
+          }).should('contain', 'Cancelado')
 
           // Action buttons should be removed from this order
           cy.get('[data-testid="order-pay-button"]').should('not.exist')
@@ -1487,7 +1489,10 @@ describe('Book Purchase Flow', () => {
 
       // Verify new card appears in payment card list
       cy.contains('**** **** **** 4444').should('be.visible')
-      cy.get('[data-testid="payment-card-option"]').should('have.length.at.least', 1)
+      cy.get('[data-testid="payment-card-option"]').should(
+        'have.length.at.least',
+        1,
+      )
 
       cy.log('✅ New card created and displayed')
     })
@@ -1615,9 +1620,7 @@ describe('Book Purchase Flow', () => {
       cy.get('body').then(($body) => {
         // Check if add-card-button is visible (means no cards exist)
         if ($body.find('[data-testid="add-card-button"]').length > 0) {
-          cy.get('[data-testid="add-card-button"]')
-            .should('be.visible')
-            .click()
+          cy.get('[data-testid="add-card-button"]').should('be.visible').click()
           cy.wait(500)
           cy.get('[data-testid="card-form"]').within(() => {
             cy.get('input[name="number"]').type('5555555555554444')
@@ -1628,11 +1631,11 @@ describe('Book Purchase Flow', () => {
             cy.get('select[aria-label="Tipo do cartão"]').select('credit')
           })
           cy.get('[data-testid="save-card-button"]').click()
-          
+
           // Wait for form to close OR check if there's an error
           // If form doesn't close, there might be a validation error or duplicate card
           cy.wait(2000)
-          
+
           // Check if form closed (card created successfully)
           cy.get('body').then(($body) => {
             if ($body.find('[data-testid="card-form"]').length > 0) {
@@ -1642,7 +1645,7 @@ describe('Book Purchase Flow', () => {
               cy.wait(500)
             }
           })
-          
+
           // Wait a bit more for cards list to update
           cy.wait(1000)
         }
@@ -1688,13 +1691,13 @@ describe('Book Purchase Flow', () => {
       cy.get('[data-testid="ticket-code"]')
         .contains(/TROCA-[A-Z0-9-]+/i, { timeout: 5000 }) // Match the generated TROCA ticket code pattern
         .should('exist')
-      
+
       // Verify it's within a ticket card
       cy.get('[data-testid="ticket-code"]')
         .contains(/TROCA-[A-Z0-9-]+/i)
         .closest('[data-testid="ticket-card"]')
         .should('exist')
-      
+
       // Verify the ticket nature badge shows "Troca"
       cy.get('[data-testid="ticket-code"]')
         .contains(/TROCA-[A-Z0-9-]+/i)
@@ -1748,9 +1751,7 @@ describe('Book Purchase Flow', () => {
       cy.get('body').then(($body) => {
         // Check if add-card-button is visible (means no cards exist)
         if ($body.find('[data-testid="add-card-button"]').length > 0) {
-          cy.get('[data-testid="add-card-button"]')
-            .should('be.visible')
-            .click()
+          cy.get('[data-testid="add-card-button"]').should('be.visible').click()
           cy.wait(500)
           cy.get('[data-testid="card-form"]').within(() => {
             cy.get('input[name="number"]').type('5555555555554444')
@@ -1761,11 +1762,11 @@ describe('Book Purchase Flow', () => {
             cy.get('select[aria-label="Tipo do cartão"]').select('credit')
           })
           cy.get('[data-testid="save-card-button"]').click()
-          
+
           // Wait for form to close OR check if there's an error
           // If form doesn't close, there might be a validation error or duplicate card
           cy.wait(2000)
-          
+
           // Check if form closed (card created successfully)
           cy.get('body').then(($body) => {
             if ($body.find('[data-testid="card-form"]').length > 0) {
@@ -1775,7 +1776,7 @@ describe('Book Purchase Flow', () => {
               cy.wait(500)
             }
           })
-          
+
           // Wait a bit more for cards list to update
           cy.wait(1000)
         }
