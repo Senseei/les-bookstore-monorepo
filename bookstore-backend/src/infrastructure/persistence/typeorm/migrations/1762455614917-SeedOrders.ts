@@ -11,8 +11,8 @@ export class SeedOrders1762455614917 implements MigrationInterface {
     const bookPrices = [89.9, 79.9];
 
     // Generate orders from January 2023 to November 2024 (almost 2 years)
-    const startDate = new Date('2024-01-01T00:00:00Z');
-    const endDate = new Date('2025-11-30T23:59:59Z');
+    const startDate = new Date('2024-01-01T00:00:00');
+    const endDate = new Date('2025-11-03T23:59:59');
 
     // Check for existing orders with our pattern to avoid conflicts
     const existingOrdersResult = (await queryRunner.query(`
@@ -159,7 +159,7 @@ export class SeedOrders1762455614917 implements MigrationInterface {
       const values = batch
         .map(
           (order) =>
-            `('${order.id}', '${order.orderDate}', '${order.status}', '${order.customerId}', true, NOW(), NOW())`,
+            `('${order.id}', '${order.orderDate}', '${order.status}', '${order.customerId}', true, '${order.orderDate}', NOW())`,
         )
         .join(', ');
 
@@ -188,7 +188,7 @@ export class SeedOrders1762455614917 implements MigrationInterface {
     }
 
     console.log(
-      `Successfully seeded ${orders.length} orders spanning from 2023-01-01 to 2024-11-30!`,
+      `Successfully seeded ${orders.length} orders spanning from ${startDate.toISOString()} to ${endDate.toISOString()}!`,
     );
   }
 
