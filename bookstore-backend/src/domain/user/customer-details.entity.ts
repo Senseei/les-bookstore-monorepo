@@ -42,24 +42,15 @@ export class CustomerDetails extends DomainEntity {
   // Collection getters to ensure arrays are always initialized ============
 
   get addresses(): Address[] {
-    if (!this._addresses) {
-      this._addresses = [];
-    }
-    return this._addresses;
+    return (this._addresses ??= []);
   }
 
   get cards(): Card[] {
-    if (!this._cards) {
-      this._cards = [];
-    }
-    return this._cards;
+    return (this._cards ??= []);
   }
 
   get usedTickets(): Ticket[] {
-    if (!this._usedTickets) {
-      this._usedTickets = [];
-    }
-    return this._usedTickets;
+    return (this._usedTickets ??= []);
   }
 
   // Business logic methods ================================================

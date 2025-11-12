@@ -37,10 +37,7 @@ export class Refund extends DomainEntity {
   }
 
   get items(): RefundItem[] {
-    if (!this._items) {
-      this._items = [];
-    }
-    return this._items;
+    return (this._items ??= []);
   }
 
   public getTotalAmount(): number {
