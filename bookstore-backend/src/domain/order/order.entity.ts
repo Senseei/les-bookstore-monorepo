@@ -68,7 +68,7 @@ export class Order extends DomainEntity {
   })
   _tickets: Ticket[];
 
-  @ManyToOne(() => CustomerDetails, (customer) => customer.orders)
+  @ManyToOne(() => CustomerDetails)
   @JoinColumn()
   customer: CustomerDetails;
 
