@@ -21,9 +21,8 @@ export class ChatRepositoryImpl
   public async findByUserId(userId: string): Promise<ChatConversation | null> {
     return await this.repository.findOne({
       where: { user: { id: userId } },
-      relations: ['messages'],
       order: {
-        messages: {
+        _messages: {
           createdAt: 'DESC',
         },
       },
