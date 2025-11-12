@@ -30,7 +30,7 @@ export class UsersWebService extends BaseUsersWebService {
   }
 
   public async findById(id: string): Promise<CustomerDTO> {
-    const user = await this.usersService.findByIdOrThrow(id);
+    const user = await this.usersService.findByIdOrThrow(id, 'User');
     const recentOrders = await this.getRecentOrders(user.id, 5);
     return new CustomerDTO(user, recentOrders);
   }
