@@ -31,7 +31,8 @@ export class GeminiGateway implements AiGateway {
 
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.model = this.genAI.getGenerativeModel({
-      model: this.configService.get<string>('GEMINI_MODEL') || 'gemini-pro',
+      model:
+        this.configService.get<string>('GEMINI_MODEL') || 'gemini-1.5-flash',
       generationConfig: {
         temperature: 0.7,
         topP: 0.8,
