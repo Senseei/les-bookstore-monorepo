@@ -27,7 +27,7 @@ export class Refund extends DomainEntity {
   reason?: string;
 
   @Column({ nullable: true })
-  processedAt?: Date;
+  completedAt?: Date;
 
   constructor(props: { reason?: string }) {
     super();
@@ -66,6 +66,6 @@ export class Refund extends DomainEntity {
       throw new Error('Only approved refunds can be completed');
     }
     this.status = RefundStatus.COMPLETED;
-    this.processedAt = new Date();
+    this.completedAt = new Date();
   }
 }
