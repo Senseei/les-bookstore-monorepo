@@ -1,22 +1,18 @@
 import { AiAction } from '@/infrastructure/ai/enums/ai-action.enum';
 
 export class AiResponseDTO {
-  message: string;
+  message?: string;
   metadata?: {
     booksRecommended?: string[];
-    page?: number;
-    isRecommendation?: boolean;
-    needsMoreContext?: boolean;
+    requestedPage?: number;
     requiredActions?: AiAction[];
   };
 
   constructor(
-    message: string,
+    message?: string,
     metadata?: {
       booksRecommended?: string[];
-      page?: number;
-      isRecommendation?: boolean;
-      needsMoreContext?: boolean;
+      requestedPage?: number;
       requiredActions?: AiAction[];
     },
   ) {

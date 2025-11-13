@@ -1,5 +1,4 @@
 export enum AiAction {
-  AVAILABLE_BOOKS = 'available_books',
-  USER_PURCHASE_HISTORY = 'user_purchase_history',
-  CONVERSATION_SUMMARY = 'conversation_summary',
+  INCLUDE_AVAILABLE_BOOKS = 'available_books',
+  INCLUDE_USER_PURCHASE_HISTORY = 'user_purchase_history',
 }

@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
-  IsBoolean,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -16,21 +15,14 @@ export class AiResponseMetadata {
   @IsOptional()
   booksRecommended?: string[] = [];
 
-  @IsNumber()
-  attempt: number = 1;
-
-  @IsOptional()
-  @IsBoolean()
-  isRecommendation?: boolean = false;
-
-  @IsOptional()
-  @IsBoolean()
-  needsMoreContext?: boolean = false;
-
   @IsOptional()
   @IsArray()
   @IsEnum(AiAction, { each: true })
   requiredActions?: AiAction[] = [];
+
+  @IsOptional()
+  @IsNumber()
+  requestedPage?: number = 1;
 }
 
 export class AiResponseData {

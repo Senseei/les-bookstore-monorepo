@@ -11,9 +11,11 @@ import { MessageRole } from '@/domain/chat/enums/message-role.enum';
 import { AiAction } from '@/infrastructure/ai/enums/ai-action.enum';
 
 import { ChatContext } from '../chat-context';
+import { PromptConfig } from '../enums/configs.enum';
 import { AiGateway } from '../interfaces/ai.gateway';
 import { AiResponseDTO } from '../interfaces/ai-response.dto';
 import { ChatService } from '../services/chat.service';
+import { PromptFactory } from './prompt-config/prompt.factory';
 
 @Injectable()
 export class SendMessage {
@@ -22,6 +24,7 @@ export class SendMessage {
     private readonly ordersService: OrdersService,
     private readonly usersService: UsersService,
     private readonly booksService: BooksService,
+    private readonly promptFactory: PromptFactory,
     @Inject('AiGateway') private readonly aiGateway: AiGateway,
   ) {}
 
@@ -35,47 +38,24 @@ export class SendMessage {
     const conversation =
       (await this.service.findByUserId(userId)) || new ChatConversation(user);
 
-    // Step 1: Try with basic context first
-    const basicContext = await this.buildBasicContext(conversation);
-    const firstResponse = await this.aiGateway.generateResponse(
-      message,
-      basicContext,
-    );
-
-    // Step 2: If AI needs more context, provide it and merge responses
-    let finalResponse = firstResponse;
-    if (
-      firstResponse.metadata?.needsMoreContext &&
-      firstResponse.metadata?.requiredActions?.length > 0
-    ) {
-      const enrichedContext = await this.buildEnrichedContext(
-        conversation,
-        firstResponse.metadata.requiredActions,
-        firstResponse.metadata.page || 1,
-      );
-
-      const secondResponse = await this.aiGateway.generateResponse(
-        message,
-
-        enrichedContext,
-      );
-
-      // Merge the two responses
-      finalResponse = {
-        message: firstResponse.message + '\n\n' + secondResponse.message,
-        metadata: secondResponse.metadata, // Use the enriched metadata
-      };
-    }
-
     const userMessage = new ChatMessage({
       content: message,
       role: MessageRole.USER,
     });
 
+    const context = await this.buildChatContext(conversation, userMessage);
+    const prompt = this.promptFactory.createPrompt(
+      message,
+      PromptConfig.BOOKSTORE_ASSISTANT,
+      context,
+    );
+
+    const response = await this.aiGateway.generateResponse(prompt, context);
+
     const assistantMessage = new ChatMessage({
-      content: finalResponse.message,
+      content: response.message,
       role: MessageRole.ASSISTANT,
-      metadata: finalResponse.metadata,
+      metadata: response.metadata,
     });
 
     conversation.messages.push(userMessage);
@@ -86,103 +66,61 @@ export class SendMessage {
     return { userMessage, assistantMessage };
   }
 
-  private async buildBasicContext(
+  private async buildChatContext(
     chat: ChatConversation,
+    currentMessage: ChatMessage,
   ): Promise<ChatContext> {
-    const conversationSummary = await this.getConversationSummary(chat);
+    const conversationSummary = await this.getConversationSummary(
+      chat,
+      currentMessage,
+    );
 
-    return new ChatContext(chat.user.name, conversationSummary);
-  }
-
-  private async buildEnrichedContext(
-    chat: ChatConversation,
-    actions: AiAction[],
-    requestedPage: number = 1,
-  ): Promise<ChatContext> {
-    const conversationSummary = await this.getConversationSummary(chat);
+    const actions = conversationSummary.metadata?.requiredActions || [];
 
     let purchaseHistory: Book[] | undefined = undefined;
     let availableBooks: Book[] | undefined = undefined;
 
-    // Only fetch data if AI requested it
-    if (actions.includes(AiAction.USER_PURCHASE_HISTORY)) {
+    if (actions.includes(AiAction.INCLUDE_USER_PURCHASE_HISTORY)) {
       purchaseHistory = await this.ordersService.findLastBoughtBooksByUser(
         chat.user.id,
         10,
       );
     }
 
-    if (actions.includes(AiAction.AVAILABLE_BOOKS)) {
-      const books = await this.booksService.findAll(requestedPage, 10);
+    if (actions.includes(AiAction.INCLUDE_AVAILABLE_BOOKS)) {
+      const books = await this.booksService.findAll(
+        conversationSummary.metadata?.requestedPage || 1,
+        10,
+      );
       availableBooks = books.items;
     }
 
     return new ChatContext(
       chat.user.name,
-      conversationSummary,
+      conversationSummary.message,
       purchaseHistory,
       availableBooks,
-      requestedPage,
     );
   }
 
   private async getConversationSummary(
     chat: ChatConversation,
-  ): Promise<string> {
-    const messages = chat.messages;
-
-    if (messages.length === 0) {
-      return 'No previous conversation history.';
-    }
-
-    // Use AI to generate intelligent summary that includes what context might be needed
-    return (await this.generateIntelligentSummary(chat)).message;
-  }
-
-  private async generateIntelligentSummary(
-    chat: ChatConversation,
+    currentMessage: ChatMessage,
   ): Promise<AiResponseDTO> {
-    const messages = chat.messages;
+    const messages =
+      `PAST MESSAGES:\n` +
+      chat.messages
+        .map(
+          (msg) =>
+            `${msg.role === MessageRole.USER ? 'USER' : 'ASSISTANT'}: ${msg.content}`,
+        )
+        .join('\n') +
+      `\nCURRENT USER MESSAGE: ${currentMessage.content}`;
 
-    // Build conversation text with enhanced context
-    const conversationText = messages
-      .map((msg) => {
-        const role = msg.role === MessageRole.USER ? 'User' : 'AI';
-        let content = `${role}: ${msg.content}`;
-
-        // Add metadata context for AI messages
-        if (msg.role === MessageRole.ASSISTANT && msg.metadata) {
-          const metadata = msg.metadata;
-          const contextInfo = [];
-
-          if (
-            metadata.booksRecommended &&
-            metadata.booksRecommended.length > 0
-          ) {
-            contextInfo.push(
-              `recommended ${metadata.booksRecommended.length} books`,
-            );
-          }
-
-          if (contextInfo.length > 0) {
-            content += ` [${contextInfo.join(', ')}]`;
-          }
-        }
-
-        return content;
-      })
-      .join('\n');
-
-    const summaryPrompt = `Summarize the following conversation between a user and an AI assistant in a bookstore context.
-      Focus on:
-      - Main topics and interests discussed
-      - Books or genres the user has shown interest in
-      - Any feedback about previous recommendations
-
-      Conversation:
-      ${conversationText}
-
-      Provide a concise summary that will help continue the conversation effectively:`;
+    const summaryPrompt = this.promptFactory.createPrompt(
+      messages,
+      PromptConfig.CONVERSATION_SUMMARIZER,
+    );
 
     return this.aiGateway.generateResponse(summaryPrompt);
   }
