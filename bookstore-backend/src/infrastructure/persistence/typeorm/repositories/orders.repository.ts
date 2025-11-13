@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { OrdersRepository } from '@/application/orders/interfaces/orders.repository';
 import { Book } from '@/domain/book.entity';
+import { OrderStatus } from '@/domain/order/enums/status.enum';
 import { Order } from '@/domain/order/order.entity';
 
 import { CRUDRepository } from './base.repository';
@@ -42,7 +43,11 @@ export class OrdersRepositoryImpl
       .addSelect('MAX(order.orderDate)', 'last_order_date')
       .where('user.id = :userId', { userId })
       .andWhere('order.status IN (:...statuses)', {
-        statuses: ['delivered', 'shipped', 'processing'], // Only count successful orders
+        statuses: [
+          OrderStatus.DELIVERED,
+          OrderStatus.SHIPPED,
+          OrderStatus.CONFIRMED,
+        ], // Only count successful orders
       })
       .groupBy('item.bookId')
       .orderBy('last_order_date', 'DESC')
