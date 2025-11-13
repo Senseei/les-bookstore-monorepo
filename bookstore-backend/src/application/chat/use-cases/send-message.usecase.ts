@@ -105,7 +105,7 @@ export class SendMessage {
 
     if (actions.includes(AiAction.INCLUDE_AVAILABLE_BOOKS)) {
       const books = await this.booksService.findAll(
-        conversationSummary.metadata?.requestedPage || 1,
+        chat.getLastRequestedPage() + 1,
         10,
       );
       availableBooks = books.items;
