@@ -24,11 +24,16 @@ const BOOKSTORE_ASSISTANT_TEMPLATE: PromptConfigTemplate = {
   responseFormat: {
     type: 'json',
     schemaDescription: `{
-  "message": "string - The response to the customer in their language",
-  "metadata": {
-    "booksRecommended": ["array", "of", "book-uuid-strings"], - ONLY exact UUIDs from the available catalog (never ISBN numbers)
-  }
-}`,
+      "message": "string - The response to the customer in their language",
+      "metadata": {
+        "booksRecommended": [
+          {
+            id: string, - The exact UUID of a recommended book from the available catalog
+            title: string - The title of the recommended book
+          }
+        ], - An array of up to 3 recommended books from the available catalog
+      }
+    }`,
   },
   maxRecommendations: 3,
   catalogDisplayLimit: 20,
