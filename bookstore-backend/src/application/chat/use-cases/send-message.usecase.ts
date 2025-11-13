@@ -45,8 +45,12 @@ export class SendMessage {
     const conversation =
       (await this.service.findByUserId(userId)) || new ChatConversation(user);
 
-    let response: AiResponseDTO;
+    const userMessage = new ChatMessage({
+      content: message,
+      role: MessageRole.USER,
+    });
 
+    let response: AiResponseDTO;
     try {
       const context = await this.buildChatContext(conversation, message);
       const prompt = this.promptFactory.createPrompt(
@@ -62,11 +66,6 @@ export class SendMessage {
         'AI service is currently unavailable. Please try again later.',
       );
     }
-
-    const userMessage = new ChatMessage({
-      content: message,
-      role: MessageRole.USER,
-    });
 
     const assistantMessage = new ChatMessage({
       content: response.message,
@@ -106,7 +105,7 @@ export class SendMessage {
     if (actions.includes(AiAction.INCLUDE_AVAILABLE_BOOKS)) {
       const books = await this.booksService.findAll(
         conversationSummary.metadata?.nextPage || 1,
-        10,
+        20,
       );
       availableBooks = books.items;
     }
