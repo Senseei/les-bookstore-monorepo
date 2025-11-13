@@ -8,17 +8,17 @@ export class ChatContext {
   purchaseHistory?: Book[];
   availableBooks?: Book[];
 
-  constructor(
-    username: string,
-    lastMessages: ChatMessage[],
-    conversationSummary: string,
-    purchaseHistory?: Book[],
-    availableBooks?: Book[],
-  ) {
-    this.username = username;
-    this.lastMessages = lastMessages;
-    this.conversationSummary = conversationSummary;
-    this.purchaseHistory = purchaseHistory;
-    this.availableBooks = availableBooks;
+  constructor(props: {
+    username: string;
+    lastMessages: ChatMessage[];
+    conversationSummary: string;
+    purchaseHistory?: Book[];
+    availableBooks?: Book[];
+  }) {
+    this.username = props.username;
+    this.lastMessages = props.lastMessages;
+    this.conversationSummary = props.conversationSummary;
+    this.purchaseHistory = props.purchaseHistory;
+    this.availableBooks = props.availableBooks;
   }
 }

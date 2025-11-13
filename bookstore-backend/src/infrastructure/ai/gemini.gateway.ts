@@ -90,7 +90,7 @@ export class GeminiGateway implements AiGateway {
     return new AiResponseDTO(aiResponseData.message, {
       booksRecommended: aiResponseData.metadata?.booksRecommended || [],
       requiredActions: aiResponseData.metadata?.requiredActions || [],
-      requestedPage: aiResponseData.metadata?.requestedPage,
+      nextPage: aiResponseData.metadata?.nextPage,
     });
   }
 }

@@ -4,7 +4,7 @@ export class AiResponseDTO {
   message?: string;
   metadata?: {
     booksRecommended?: string[];
-    requestedPage?: number;
+    nextPage?: number;
     requiredActions?: AiAction[];
   };
 
@@ -12,7 +12,7 @@ export class AiResponseDTO {
     message?: string,
     metadata?: {
       booksRecommended?: string[];
-      requestedPage?: number;
+      nextPage?: number;
       requiredActions?: AiAction[];
     },
   ) {

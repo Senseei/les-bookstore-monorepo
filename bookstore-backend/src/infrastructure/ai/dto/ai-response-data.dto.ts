@@ -22,7 +22,7 @@ export class AiResponseMetadata {
 
   @IsOptional()
   @IsNumber()
-  requestedPage?: number = 1;
+  nextPage?: number = 1;
 }
 
 export class AiResponseData {

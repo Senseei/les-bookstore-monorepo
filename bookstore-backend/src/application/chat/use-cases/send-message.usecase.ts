@@ -105,19 +105,19 @@ export class SendMessage {
 
     if (actions.includes(AiAction.INCLUDE_AVAILABLE_BOOKS)) {
       const books = await this.booksService.findAll(
-        chat.getLastRequestedPage() + 1,
+        conversationSummary.metadata?.nextPage || 1,
         10,
       );
       availableBooks = books.items;
     }
 
-    return new ChatContext(
-      chat.user.name,
-      chat.getLastMessages(10),
-      conversationSummary.message,
+    return new ChatContext({
+      username: chat.user.name,
+      lastMessages: chat.getLastMessages(10),
+      conversationSummary: conversationSummary.message,
       purchaseHistory,
       availableBooks,
-    );
+    });
   }
 
   private async getConversationSummary(
@@ -131,7 +131,8 @@ export class SendMessage {
         .getLastMessages(lastNMessages)
         .map(
           (msg) =>
-            `${msg.role === MessageRole.USER ? 'USER' : 'ASSISTANT'}: ${msg.content}`,
+            `${msg.role === MessageRole.USER ? 'USER' : 'ASSISTANT'}: ${msg.content}` +
+            `${msg.metadata ? ` (Metadata: ${JSON.stringify(msg.metadata)})` : ''}`,
         )
         .join('\n') +
       `\nCURRENT USER MESSAGE: ${currentMessage}`;
