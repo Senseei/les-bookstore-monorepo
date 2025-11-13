@@ -9,7 +9,7 @@ export abstract class BasePromptStrategy {
 
     let prompt = this.generateSystemRole(config);
     prompt += this.generateInstructions(config);
-    prompt += this.generateContextualPrompt(message, context);
+    prompt += this.generateContextualPrompt(message, context, config);
     prompt += this.generateResponseFormat(config);
 
     return prompt;

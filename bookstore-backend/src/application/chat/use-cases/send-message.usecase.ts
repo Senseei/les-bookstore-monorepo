@@ -113,6 +113,7 @@ export class SendMessage {
 
     return new ChatContext(
       chat.user.name,
+      chat.getLastMessages(10),
       conversationSummary.message,
       purchaseHistory,
       availableBooks,
@@ -122,10 +123,12 @@ export class SendMessage {
   private async getConversationSummary(
     chat: ChatConversation,
     currentMessage: string,
+    lastNMessages = 20,
   ): Promise<AiResponseDTO> {
     const messages =
       `PAST MESSAGES:\n` +
-      chat.messages
+      chat
+        .getLastMessages(lastNMessages)
         .map(
           (msg) =>
             `${msg.role === MessageRole.USER ? 'USER' : 'ASSISTANT'}: ${msg.content}`,

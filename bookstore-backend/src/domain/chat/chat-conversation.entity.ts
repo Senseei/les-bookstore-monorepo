@@ -21,7 +21,9 @@ export class ChatConversation extends DomainEntity {
   }
 
   public getLastMessages(count: number = 10): ChatMessage[] {
-    return this.messages.slice(-count);
+    return this.messages
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()) // Sort oldest to newest
+      .slice(-count);
   }
 
   constructor(user: User) {

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ChatContext } from '@/application/chat/chat-context';
 import { PromptConfigTemplate } from '@/application/chat/config/prompt-config.interface';
 import { PromptConfig } from '@/application/chat/enums/configs.enum';
+import { MessageRole } from '@/domain/chat/enums/message-role.enum';
 
 import { BasePromptStrategy } from './base-prompt.strategy';
 import { PromptStrategy } from './prompt-strategy.interface';
@@ -31,6 +32,14 @@ export class BookstoreAssistantStrategy
     ) {
       contextSection += `**CONVERSATION SUMMARY:**\n${context.conversationSummary}\n\n`;
     }
+
+    contextSection += `**RECENT MESSAGES:**\n`;
+    context.lastMessages.forEach((msg) => {
+      contextSection += `- ${
+        msg.role === MessageRole.USER ? 'USER' : 'ASSISTANT'
+      }: ${msg.content}\n`;
+    });
+    contextSection += `\n`;
 
     // Check if we have an enriched or old context with additional data
     if (context.purchaseHistory) {
