@@ -1,4 +1,4 @@
-import { GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
@@ -20,8 +20,7 @@ import { AiResponseData } from './dto/ai-response-data.dto';
 @Injectable()
 export class GeminiGateway implements AiGateway {
   private readonly logger = new Logger(GeminiGateway.name);
-  private readonly genAI: GoogleGenerativeAI;
-  private readonly model: GenerativeModel;
+  private readonly ai: GoogleGenAI;
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -29,16 +28,8 @@ export class GeminiGateway implements AiGateway {
       throw new Error('GEMINI_API_KEY is not configured');
     }
 
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({
-      model:
-        this.configService.get<string>('GEMINI_MODEL') || 'gemini-1.5-flash',
-      generationConfig: {
-        temperature: 0.7,
-        topP: 0.8,
-        topK: 40,
-        maxOutputTokens: 1024,
-      },
+    this.ai = new GoogleGenAI({
+      apiKey,
     });
   }
 
@@ -55,9 +46,24 @@ export class GeminiGateway implements AiGateway {
         hasContext: !!context,
       });
 
-      const result = await this.model.generateContent(prompt);
-      const response = result.response;
-      const responseText = response.text();
+      const modelName =
+        this.configService.get<string>('GEMINI_MODEL') ||
+        'gemini-2.0-flash-exp';
+      const result = await this.ai.models.generateContent({
+        model: modelName,
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+      });
+
+      const responseText =
+        result.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
       this.logger.debug('Received response from Gemini', {
         responseLength: responseText.length,
