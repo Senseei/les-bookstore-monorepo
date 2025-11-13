@@ -24,12 +24,15 @@ export class ChatConversation extends DomainEntity {
   }
 
   get messages(): ChatMessage[] {
-    return (this._messages ??= []);
+    if (!this._messages) {
+      this._messages = [];
+    }
+    return this._messages.sort(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+    ); // Sort by createdAt ascending
   }
 
   public getLastMessages(count: number = 10): ChatMessage[] {
-    return this.messages
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()) // Sort oldest to newest
-      .slice(-count);
+    return this.messages.slice(-count); // Get the last 'count' messages
   }
 }
