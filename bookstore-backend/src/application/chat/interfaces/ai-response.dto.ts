@@ -1,9 +1,14 @@
 import { AiAction } from '@/infrastructure/ai/enums/ai-action.enum';
 
+export interface RecommendedBook {
+  id: string;
+  title: string;
+}
+
 export class AiResponseDTO {
   message?: string;
   metadata?: {
-    booksRecommended?: string[];
+    booksRecommended?: RecommendedBook[];
     nextPage?: number;
     requiredActions?: AiAction[];
   };
@@ -11,7 +16,7 @@ export class AiResponseDTO {
   constructor(
     message?: string,
     metadata?: {
-      booksRecommended?: string[];
+      booksRecommended?: RecommendedBook[];
       nextPage?: number;
       requiredActions?: AiAction[];
     },

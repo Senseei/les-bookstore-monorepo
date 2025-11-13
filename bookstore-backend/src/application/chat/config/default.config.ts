@@ -16,7 +16,7 @@ const BOOKSTORE_ASSISTANT_TEMPLATE: PromptConfigTemplate = {
     'CRITICAL: ALWAYS use the exact book ID from the catalog (the UUID in brackets [ID]), NEVER use ISBN numbers',
     'Suggest up to 3 books per recommendation',
     "Briefly explain why you are recommending each book based on the user's purchase history or interests",
-    'In metadata.booksRecommended, include ONLY the exact UUIDs (IDs) of recommended books from the catalog',
+    'In metadata.booksRecommended, include ONLY the exact UUIDs (IDs) and titles of recommended books from the catalog',
     'If the user asks for recommendations, ask for their preferences if not already provided, or ask it to use their purchase history to infer preferences',
     'If the user does not like the recomendations, new books we will be given to you to choose from. Do not repeat previous recommendations.',
     'If the user still wants recommendations but there are no more books in the catalog to suggest, politely inform them that there are no further recommendations available at this time',
