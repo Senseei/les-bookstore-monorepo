@@ -38,14 +38,14 @@ export class OrdersRepositoryImpl
       .innerJoin('order.customer', 'customer')
       .innerJoin('customer.user', 'user')
       .innerJoin('order._items', 'item')
-      .select('item.bookId', 'bookId')
-      .addSelect('MAX(order.orderDate)', 'lastOrderDate')
+      .select('item.bookId', 'book_id')
+      .addSelect('MAX(order.orderDate)', 'last_order_date')
       .where('user.id = :userId', { userId })
       .andWhere('order.status IN (:...statuses)', {
         statuses: ['delivered', 'shipped', 'processing'], // Only count successful orders
       })
       .groupBy('item.bookId')
-      .orderBy('lastOrderDate', 'DESC')
+      .orderBy('last_order_date', 'DESC')
       .limit(limit);
 
     return await this.repository.manager
@@ -53,10 +53,10 @@ export class OrdersRepositoryImpl
       .innerJoin(
         `(${subQuery.getQuery()})`,
         'recent_books',
-        'book.id = recent_books.bookId',
+        'book.id = recent_books.book_id',
       )
       .setParameters(subQuery.getParameters())
-      .orderBy('recent_books.lastOrderDate', 'DESC')
+      .orderBy('recent_books.last_order_date', 'DESC')
       .getMany();
   }
 }
