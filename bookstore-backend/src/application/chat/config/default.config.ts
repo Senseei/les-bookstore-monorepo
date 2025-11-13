@@ -16,7 +16,6 @@ const BOOKSTORE_ASSISTANT_TEMPLATE: PromptConfigTemplate = {
     'CRITICAL: ALWAYS use the exact book ID from the catalog (the UUID in brackets [ID]), NEVER use ISBN numbers',
     'Suggest up to 3 books per recommendation',
     "Briefly explain why you are recommending each book based on the user's purchase history or interests",
-    'ALWAYS return a response in valid JSON format with "message" and "metadata" properties',
     'In metadata.booksRecommended, include ONLY the exact UUIDs (IDs) of recommended books from the catalog',
     'If the user asks for recommendations, ask for their preferences if not already provided, or ask it to use their purchase history to infer preferences',
     'If the user does not like the recomendations, new books we will be given to you to choose from. Do not repeat previous recommendations.',
@@ -46,7 +45,6 @@ const CONVERSATION_SUMMARIZER_TEMPLATE: PromptConfigTemplate = {
     'Track the current page of the catalog the user is browsing based on their requests for more recommendations, you may found it in the recent messages',
     'Be careful to include the CURRENT USER MESSAGE in your summary, for example, if the user is asking for more recommendations, include the appropriate action in the metadata',
     'If you are going to request an action, request the available books to get more books from the catalog, the assistant cannot suggest books without it. You can either request the available books and user purchase history, but not only the user purchase history',
-    'ALWAYS return a response in valid JSON format with "message" and "metadata" properties',
   ],
   responseFormat: {
     type: 'json',

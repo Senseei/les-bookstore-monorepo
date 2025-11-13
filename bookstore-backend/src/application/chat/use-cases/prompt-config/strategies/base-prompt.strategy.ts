@@ -29,8 +29,7 @@ export abstract class BasePromptStrategy {
   }
 
   private generateResponseFormat(config: PromptConfigTemplate): string {
-    return `You should respond in the following format:\n\n
-    **RESPONSE FORMAT:**\nType: ${config.responseFormat.type}\nSchema Description: ${config.responseFormat.schemaDescription}\n\n`;
+    return `You must ALWAYS return a JSON following this schema:\n\n${config.responseFormat.schemaDescription}\n\n`;
   }
 
   public abstract generateContextualPrompt(
