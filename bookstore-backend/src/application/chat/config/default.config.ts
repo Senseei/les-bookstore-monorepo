@@ -45,6 +45,7 @@ const CONVERSATION_SUMMARIZER_TEMPLATE: PromptConfigTemplate = {
     'Write the summary in a neutral and professional tone, remember your target is the bookstore virtual AI assistant',
     'Track the current page of the catalog the user is browsing based on their requests for more recommendations',
     'Be careful to include the CURRENT USER MESSAGE in your summary, for example, if the user is asking for more recommendations, include the appropriate action in the metadata',
+    'If you are going to request an action, request the available books to get more books from the catalog, the assistant cannot suggest books without it. You can either request the available books and user purchase history, but not only the user purchase history',
     'ALWAYS return a response in valid JSON format with "message" and "metadata" properties',
   ],
   responseFormat: {

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { ChatContext } from '@/application/chat/chat-context';
-import { PromptConfigTemplate } from '@/application/chat/config/prompt-config.interface';
 import { PromptConfig } from '@/application/chat/enums/configs.enum';
 import { MessageRole } from '@/domain/chat/enums/message-role.enum';
 
@@ -20,7 +19,6 @@ export class BookstoreAssistantStrategy
   public generateContextualPrompt(
     message: string,
     context: ChatContext,
-    config: PromptConfigTemplate,
   ): string {
     let contextSection = `**CUSTOMER CONTEXT:**\n`;
     contextSection += `Name: ${context.username}\n\n`;
@@ -41,7 +39,7 @@ export class BookstoreAssistantStrategy
     });
     contextSection += `\n`;
 
-    // Check if we have an enriched or old context with additional data
+    contextSection += `**PURCHASE HISTORY:**\n`;
     if (context.purchaseHistory) {
       const purchaseHistoryText =
         context.purchaseHistory.length > 0
@@ -49,26 +47,24 @@ export class BookstoreAssistantStrategy
               .map((book) => `- "${book.title}" by ${book.author}`)
               .join('\n')
           : 'No previous purchases.';
-      contextSection += `**PURCHASE HISTORY:**\n${purchaseHistoryText}\n\n`;
+      contextSection += `${purchaseHistoryText}\n\n`;
     }
 
-    if (context.availableBooks) {
-      const catalogText = context.availableBooks
-        .slice(0, config.catalogDisplayLimit)
-        .map(
-          (book) =>
-            `[${book.id}] "${book.title}" by ${book.author} - $${book.price.toFixed(2)}` +
-            (book.description
-              ? ` - ${book.description.substring(0, 100)}...`
-              : '') +
-            ` (Stock: ${book.stock})`,
-        )
-        .join('\n');
+    if (context.availableBooks !== undefined) {
+      const catalogText =
+        context.availableBooks.length === 0
+          ? 'No more books available.'
+          : context.availableBooks
+              .map(
+                (book) =>
+                  `[${book.id}] "${book.title}" by ${book.author} - $${book.price.toFixed(2)}` +
+                  ` (Stock: ${book.stock})`,
+              )
+              .join('\n');
       contextSection += `**AVAILABLE CATALOG - ONLY RECOMMEND FROM THESE BOOKS:**\n${catalogText}\n\n`;
-      contextSection += `IMPORTANT: You can ONLY recommend books from the catalog above. Use the exact ID in brackets [ID].\n\n`;
     }
 
-    contextSection += `**USER MESSAGE:**\n${message}\n\n`;
+    contextSection += `**CURRENT USER MESSAGE:**\n${message}\n\n`;
 
     return contextSection;
   }
