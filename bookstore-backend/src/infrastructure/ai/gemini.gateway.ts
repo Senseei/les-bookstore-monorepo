@@ -43,8 +43,6 @@ export class GeminiGateway implements AiGateway {
       ],
     });
 
-    this.logger.debug('Received raw response from Gemini', result);
-
     const responseText =
       result.candidates?.[0]?.content?.parts?.[0]?.text || '';
 

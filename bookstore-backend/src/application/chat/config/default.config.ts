@@ -1,8 +1,9 @@
 import { AiAction } from '@/infrastructure/ai/enums/ai-action.enum';
 
+import { PromptConfig } from '../enums/configs.enum';
 import { PromptConfigTemplate } from './prompt-config.interface';
 
-export const BOOKSTORE_ASSISTANT_TEMPLATE: PromptConfigTemplate = {
+const BOOKSTORE_ASSISTANT_TEMPLATE: PromptConfigTemplate = {
   systemRole: `You are a virtual assistant specialized EXCLUSIVELY in book recommendations and bookstore assistance.`,
   instructions: [
     'ONLY assist with bookstore-related queries: book recommendations, book information, purchase policies, shipping, returns',
@@ -33,7 +34,7 @@ export const BOOKSTORE_ASSISTANT_TEMPLATE: PromptConfigTemplate = {
   catalogDisplayLimit: 20,
 };
 
-export const CONVERSATION_SUMMARIZER_TEMPLATE: PromptConfigTemplate = {
+const CONVERSATION_SUMMARIZER_TEMPLATE: PromptConfigTemplate = {
   systemRole: `You are an AI specialized in summarizing customer support chat conversations for a bookstore's virtual assistant.
     Your goal is to create concise summaries that capture the main topics and user preferences discussed, to help the assistant provide better recommendations in future interactions.`,
   instructions: [
@@ -56,4 +57,9 @@ export const CONVERSATION_SUMMARIZER_TEMPLATE: PromptConfigTemplate = {
       }
     }`,
   },
+};
+
+export const TEMPLATE_MAP: Record<PromptConfig, PromptConfigTemplate> = {
+  [PromptConfig.BOOKSTORE_ASSISTANT]: BOOKSTORE_ASSISTANT_TEMPLATE,
+  [PromptConfig.CONVERSATION_SUMMARIZER]: CONVERSATION_SUMMARIZER_TEMPLATE,
 };

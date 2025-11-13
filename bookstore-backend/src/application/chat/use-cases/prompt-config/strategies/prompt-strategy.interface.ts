@@ -4,6 +4,10 @@ import { PromptConfig } from '@/application/chat/enums/configs.enum';
 
 export interface PromptStrategy {
   generatePrompt(message: string, context?: ChatContext): string;
+  generateContextualPrompt(
+    message: string,
+    context?: ChatContext,
+    config?: PromptConfigTemplate,
+  ): string;
   getConfig(): PromptConfig;
-  getTemplate(): PromptConfigTemplate;
 }

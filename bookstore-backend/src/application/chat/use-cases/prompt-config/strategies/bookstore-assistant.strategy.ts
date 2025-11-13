@@ -1,45 +1,23 @@
 import { Injectable } from '@nestjs/common';
 
 import { ChatContext } from '@/application/chat/chat-context';
-import { BOOKSTORE_ASSISTANT_TEMPLATE } from '@/application/chat/config/default.config';
 import { PromptConfigTemplate } from '@/application/chat/config/prompt-config.interface';
 import { PromptConfig } from '@/application/chat/enums/configs.enum';
 
+import { BasePromptStrategy } from './base-prompt.strategy';
 import { PromptStrategy } from './prompt-strategy.interface';
 
 @Injectable()
-export class BookstoreAssistantStrategy implements PromptStrategy {
-  public generatePrompt(message: string, context: ChatContext): string {
-    const config = this.getTemplate();
-
-    let prompt = `${config.systemRole}\n\n`;
-
-    // Add instructions
-    prompt += `**INSTRUCTIONS:**\n`;
-    config.instructions.forEach((instruction, index) => {
-      prompt += `${index + 1}. ${instruction}\n`;
-    });
-    prompt += '\n';
-
-    // Add context section
-    const contextSection = this.buildContextSection(context, config);
-    prompt += contextSection;
-
-    // Add the user's message
-    prompt += `**USER MESSAGE:**\n${message}\n\n`;
-
-    return prompt;
-  }
-
+export class BookstoreAssistantStrategy
+  extends BasePromptStrategy
+  implements PromptStrategy
+{
   public getConfig(): PromptConfig {
     return PromptConfig.BOOKSTORE_ASSISTANT;
   }
 
-  public getTemplate(): PromptConfigTemplate {
-    return BOOKSTORE_ASSISTANT_TEMPLATE;
-  }
-
-  private buildContextSection(
+  public generateContextualPrompt(
+    message: string,
     context: ChatContext,
     config: PromptConfigTemplate,
   ): string {
@@ -80,6 +58,8 @@ export class BookstoreAssistantStrategy implements PromptStrategy {
       contextSection += `**AVAILABLE CATALOG - ONLY RECOMMEND FROM THESE BOOKS:**\n${catalogText}\n\n`;
       contextSection += `IMPORTANT: You can ONLY recommend books from the catalog above. Use the exact ID in brackets [ID].\n\n`;
     }
+
+    contextSection += `**USER MESSAGE:**\n${message}\n\n`;
 
     return contextSection;
   }
