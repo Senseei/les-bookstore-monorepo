@@ -18,6 +18,9 @@ export class ChatMessage extends DomainEntity {
   @Column({ type: 'enum', enum: MessageRole })
   role: MessageRole;
 
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  sentAt: Date = new Date();
+
   @Column({ type: 'jsonb', nullable: true })
   metadata?: {
     booksRecommended?: string[]; // IDs dos livros recomendados

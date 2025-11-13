@@ -10,7 +10,7 @@ export class ChatMessageDTO {
   constructor(entity: ChatMessage) {
     this.content = entity.content;
     this.role = entity.role;
-    this.sentAt = entity.createdAt;
+    this.sentAt = entity.sentAt;
     this.booksRecommended = entity.metadata?.booksRecommended || [];
   }
 }

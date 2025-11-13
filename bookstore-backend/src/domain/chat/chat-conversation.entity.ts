@@ -28,8 +28,8 @@ export class ChatConversation extends DomainEntity {
       this._messages = [];
     }
     return this._messages.sort(
-      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-    ); // Sort by createdAt ascending
+      (a, b) => a.sentAt.getTime() - b.sentAt.getTime(),
+    ); // Sort by sentAt ascending
   }
 
   public getLastMessages(count: number = 10): ChatMessage[] {
