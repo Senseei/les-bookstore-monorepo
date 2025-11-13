@@ -85,9 +85,15 @@ export abstract class BaseService<E extends DomainEntity> {
     await this.save(entity);
   }
 
+  public async delete(id: string): Promise<void>;
+  public async delete(entity: E): Promise<void>;
+
   @Transactional()
-  public async delete(id: string): Promise<void> {
-    const entity = await this.findByIdOrThrow(id, 'Entity');
-    await this.commonRepository.delete(entity);
+  public async delete(entity: string | E): Promise<void> {
+    const entityToDelete =
+      typeof entity === 'string'
+        ? await this.findByIdOrThrow(entity, 'Entity')
+        : entity;
+    await this.commonRepository.delete(entityToDelete);
   }
 }

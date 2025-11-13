@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ChatService } from '@/application/chat/services/chat.service';
+import { ResetChat } from '@/application/chat/use-cases/reset-chat.usecase';
 import { SendMessage } from '@/application/chat/use-cases/send-message.usecase';
 import { ChatConversation } from '@/domain/chat/chat-conversation.entity';
 import { ChatMessage } from '@/domain/chat/chat-message.entity';
@@ -14,7 +15,7 @@ import { BooksModule } from './books.module';
 import { OrdersModule } from './orders.module';
 import { UsersModule } from './users.module';
 
-const USE_CASES = [SendMessage];
+const USE_CASES = [SendMessage, ResetChat];
 
 @Module({
   imports: [

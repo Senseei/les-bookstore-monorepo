@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -39,5 +40,13 @@ export class ChatSiteController {
     @Body() dto: SendMessageDTO,
   ): Promise<ChatMessageResponseDTO> {
     return this.webService.sendMessage(req.user.userId, dto.message);
+  }
+
+  @Delete()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async resetConversation(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<void> {
+    await this.webService.resetConversation(req.user.userId);
   }
 }

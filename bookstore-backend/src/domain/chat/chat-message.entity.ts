@@ -6,7 +6,9 @@ import { MessageRole } from './enums/message-role.enum';
 
 @Entity('tb_chat_messages')
 export class ChatMessage extends DomainEntity {
-  @ManyToOne(() => ChatConversation, (conversation) => conversation.messages)
+  @ManyToOne(() => ChatConversation, (conversation) => conversation.messages, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   conversation: ChatConversation;
 
