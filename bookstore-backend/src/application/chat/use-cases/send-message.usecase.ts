@@ -10,7 +10,7 @@ import { ChatMessage } from '@/domain/chat/chat-message.entity';
 import { MessageRole } from '@/domain/chat/enums/message-role.enum';
 import { AiAction } from '@/infrastructure/ai/enums/ai-action.enum';
 
-import { BasicChatContext, EnrichedChatContext } from '../basic-chat-context';
+import { ChatContext } from '../chat-context';
 import { AiGateway } from '../interfaces/ai.gateway';
 import { AiResponseDTO } from '../interfaces/ai-response.dto';
 import { ChatService } from '../services/chat.service';
@@ -35,23 +35,36 @@ export class SendMessage {
     const conversation =
       (await this.service.findByUserId(userId)) || new ChatConversation(user);
 
-    // Step 1: Send basic context first
+    // Step 1: Try with basic context first
     const basicContext = await this.buildBasicContext(conversation);
-    let response = await this.aiGateway.generateResponse(message, basicContext);
+    const firstResponse = await this.aiGateway.generateResponse(
+      message,
+      basicContext,
+    );
 
-    // Step 2: If AI needs more context, provide requested data
+    // Step 2: If AI needs more context, provide it and merge responses
+    let finalResponse = firstResponse;
     if (
-      response.metadata?.needsMoreContext &&
-      response.metadata?.requiredActions?.length > 0
+      firstResponse.metadata?.needsMoreContext &&
+      firstResponse.metadata?.requiredActions?.length > 0
     ) {
       const enrichedContext = await this.buildEnrichedContext(
         conversation,
-        response.metadata.requiredActions,
+        firstResponse.metadata.requiredActions,
+        firstResponse.metadata.page || 1,
       );
-      response = await this.aiGateway.generateResponse(
+
+      const secondResponse = await this.aiGateway.generateResponse(
         message,
+
         enrichedContext,
       );
+
+      // Merge the two responses
+      finalResponse = {
+        message: firstResponse.message + '\n\n' + secondResponse.message,
+        metadata: secondResponse.metadata, // Use the enriched metadata
+      };
     }
 
     const userMessage = new ChatMessage({
@@ -59,14 +72,13 @@ export class SendMessage {
       role: MessageRole.USER,
     });
 
-    conversation.messages.push(userMessage);
-
     const assistantMessage = new ChatMessage({
-      content: response.message,
+      content: finalResponse.message,
       role: MessageRole.ASSISTANT,
-      metadata: response.metadata,
+      metadata: finalResponse.metadata,
     });
 
+    conversation.messages.push(userMessage);
     conversation.messages.push(assistantMessage);
 
     await this.service.save(conversation);
@@ -76,23 +88,18 @@ export class SendMessage {
 
   private async buildBasicContext(
     chat: ChatConversation,
-  ): Promise<BasicChatContext> {
+  ): Promise<ChatContext> {
     const conversationSummary = await this.getConversationSummary(chat);
-    const currentAttempt = chat.getCurrentAttemptNumber() + 1;
 
-    return new BasicChatContext(
-      chat.user.name,
-      conversationSummary,
-      currentAttempt,
-    );
+    return new ChatContext(chat.user.name, conversationSummary);
   }
 
   private async buildEnrichedContext(
     chat: ChatConversation,
     actions: AiAction[],
-  ): Promise<EnrichedChatContext> {
+    requestedPage: number = 1,
+  ): Promise<ChatContext> {
     const conversationSummary = await this.getConversationSummary(chat);
-    const currentAttempt = chat.getCurrentAttemptNumber() + 1;
 
     let purchaseHistory: Book[] | undefined = undefined;
     let availableBooks: Book[] | undefined = undefined;
@@ -106,16 +113,16 @@ export class SendMessage {
     }
 
     if (actions.includes(AiAction.AVAILABLE_BOOKS)) {
-      const books = await this.booksService.findAll(currentAttempt, 10);
+      const books = await this.booksService.findAll(requestedPage, 10);
       availableBooks = books.items;
     }
 
-    return new EnrichedChatContext(
+    return new ChatContext(
       chat.user.name,
       conversationSummary,
-      currentAttempt,
       purchaseHistory,
       availableBooks,
+      requestedPage,
     );
   }
 
@@ -136,7 +143,6 @@ export class SendMessage {
     chat: ChatConversation,
   ): Promise<AiResponseDTO> {
     const messages = chat.messages;
-    const lastAttempt = chat.getCurrentAttemptNumber();
 
     // Build conversation text with enhanced context
     const conversationText = messages
@@ -158,10 +164,6 @@ export class SendMessage {
             );
           }
 
-          if (metadata.attempt) {
-            contextInfo.push(`attempt #${metadata.attempt}`);
-          }
-
           if (contextInfo.length > 0) {
             content += ` [${contextInfo.join(', ')}]`;
           }
@@ -176,7 +178,6 @@ export class SendMessage {
       - Main topics and interests discussed
       - Books or genres the user has shown interest in
       - Any feedback about previous recommendations
-      - Current attempt number: ${lastAttempt > 0 ? `#${lastAttempt}` : 'initial'}
 
       Conversation:
       ${conversationText}

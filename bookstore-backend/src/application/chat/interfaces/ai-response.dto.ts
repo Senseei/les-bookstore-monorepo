@@ -4,7 +4,7 @@ export class AiResponseDTO {
   message: string;
   metadata?: {
     booksRecommended?: string[];
-    attempt: number;
+    page?: number;
     isRecommendation?: boolean;
     needsMoreContext?: boolean;
     requiredActions?: AiAction[];
@@ -14,7 +14,7 @@ export class AiResponseDTO {
     message: string,
     metadata?: {
       booksRecommended?: string[];
-      attempt: number;
+      page?: number;
       isRecommendation?: boolean;
       needsMoreContext?: boolean;
       requiredActions?: AiAction[];

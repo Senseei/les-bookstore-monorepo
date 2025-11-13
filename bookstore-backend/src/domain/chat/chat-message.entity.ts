@@ -21,7 +21,6 @@ export class ChatMessage extends DomainEntity {
   @Column({ type: 'jsonb', nullable: true })
   metadata?: {
     booksRecommended?: string[]; // IDs dos livros recomendados
-    attempt?: number; // Tracking book recommendation attempts
   };
 
   constructor(props: {
@@ -29,7 +28,6 @@ export class ChatMessage extends DomainEntity {
     role: MessageRole;
     metadata?: {
       booksRecommended?: string[];
-      attempt: number;
     };
   }) {
     super();
