@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { Transactional } from 'typeorm-transactional';
 
 import { BooksService } from '@/application/books/services/books.service';
@@ -19,6 +24,8 @@ import { PromptFactory } from './prompt-config/prompt.factory';
 
 @Injectable()
 export class SendMessage {
+  private readonly logger = new Logger(SendMessage.name);
+
   constructor(
     private readonly service: ChatService,
     private readonly ordersService: OrdersService,
@@ -38,19 +45,28 @@ export class SendMessage {
     const conversation =
       (await this.service.findByUserId(userId)) || new ChatConversation(user);
 
+    let response: AiResponseDTO;
+
+    try {
+      const context = await this.buildChatContext(conversation, message);
+      const prompt = this.promptFactory.createPrompt(
+        message,
+        PromptConfig.BOOKSTORE_ASSISTANT,
+        context,
+      );
+
+      response = await this.aiGateway.generateResponse(prompt, context);
+    } catch (error) {
+      this.logger.error('Error processing message', error);
+      throw new ServiceUnavailableException(
+        'AI service is currently unavailable. Please try again later.',
+      );
+    }
+
     const userMessage = new ChatMessage({
       content: message,
       role: MessageRole.USER,
     });
-
-    const context = await this.buildChatContext(conversation, userMessage);
-    const prompt = this.promptFactory.createPrompt(
-      message,
-      PromptConfig.BOOKSTORE_ASSISTANT,
-      context,
-    );
-
-    const response = await this.aiGateway.generateResponse(prompt, context);
 
     const assistantMessage = new ChatMessage({
       content: response.message,
@@ -68,7 +84,7 @@ export class SendMessage {
 
   private async buildChatContext(
     chat: ChatConversation,
-    currentMessage: ChatMessage,
+    currentMessage: string,
   ): Promise<ChatContext> {
     const conversationSummary = await this.getConversationSummary(
       chat,
@@ -105,7 +121,7 @@ export class SendMessage {
 
   private async getConversationSummary(
     chat: ChatConversation,
-    currentMessage: ChatMessage,
+    currentMessage: string,
   ): Promise<AiResponseDTO> {
     const messages =
       `PAST MESSAGES:\n` +
@@ -115,7 +131,7 @@ export class SendMessage {
             `${msg.role === MessageRole.USER ? 'USER' : 'ASSISTANT'}: ${msg.content}`,
         )
         .join('\n') +
-      `\nCURRENT USER MESSAGE: ${currentMessage.content}`;
+      `\nCURRENT USER MESSAGE: ${currentMessage}`;
 
     const summaryPrompt = this.promptFactory.createPrompt(
       messages,

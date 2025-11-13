@@ -25,40 +25,30 @@ export class GeminiGateway implements AiGateway {
     });
   }
 
-  async generateResponse(message: string): Promise<AiResponseDTO> {
-    try {
-      this.logger.debug('Prompt preview', message);
+  public async generateResponse(message: string): Promise<AiResponseDTO> {
+    this.logger.debug('Prompt preview', message);
 
-      const modelName =
-        this.configService.get<string>('GEMINI_MODEL') ||
-        'gemini-2.5-flash-exp';
-      const result = await this.ai.models.generateContent({
-        model: modelName,
-        contents: [
-          {
-            parts: [
-              {
-                text: message,
-              },
-            ],
-          },
-        ],
-      });
+    const modelName =
+      this.configService.get<string>('GEMINI_MODEL') || 'gemini-2.5-flash-exp';
+    const result = await this.ai.models.generateContent({
+      model: modelName,
+      contents: [
+        {
+          parts: [
+            {
+              text: message,
+            },
+          ],
+        },
+      ],
+    });
 
-      this.logger.debug('Received raw response from Gemini', result);
+    this.logger.debug('Received raw response from Gemini', result);
 
-      const responseText =
-        result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const responseText =
+      result.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-      return this.parseResponse(responseText);
-    } catch (error) {
-      this.logger.error('Error generating response from Gemini', error);
-
-      // Fallback response
-      return new AiResponseDTO(
-        'Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente em alguns instantes.',
-      );
-    }
+    return this.parseResponse(responseText);
   }
 
   private parseResponse(responseText: string): AiResponseDTO {
