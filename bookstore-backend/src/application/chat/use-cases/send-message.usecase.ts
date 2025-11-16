@@ -73,8 +73,7 @@ export class SendMessage {
       metadata: response.metadata,
     });
 
-    conversation.messages.push(userMessage);
-    conversation.messages.push(assistantMessage);
+    conversation.messages.push(userMessage, assistantMessage);
 
     await this.service.save(conversation);
 
