@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, RequestTimeoutException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
@@ -13,6 +13,7 @@ import { AiResponseData } from './dto/ai-response-data.dto';
 export class GeminiGateway implements AiGateway {
   private readonly logger = new Logger(GeminiGateway.name);
   private readonly ai: GoogleGenAI;
+  private readonly timeout: number;
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('GEMINI_API_KEY');
@@ -23,6 +24,9 @@ export class GeminiGateway implements AiGateway {
     this.ai = new GoogleGenAI({
       apiKey,
     });
+
+    // Configurable timeout (default: 30 seconds)
+    this.timeout = this.configService.get<number>('AI_TIMEOUT_MS') || 30000;
   }
 
   public async generateResponse(message: string): Promise<AiResponseDTO> {
@@ -30,23 +34,63 @@ export class GeminiGateway implements AiGateway {
 
     const modelName =
       this.configService.get<string>('GEMINI_MODEL') || 'gemini-2.5-flash-exp';
-    const result = await this.ai.models.generateContent({
-      model: modelName,
-      contents: [
-        {
-          parts: [
+
+    try {
+      // Wrap API call with timeout
+      const result = await this.executeWithTimeout(
+        this.ai.models.generateContent({
+          model: modelName,
+          contents: [
             {
-              text: message,
+              parts: [
+                {
+                  text: message,
+                },
+              ],
             },
           ],
-        },
-      ],
-    });
+        }),
+        this.timeout,
+      );
 
-    const responseText =
-      result.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const responseText =
+        result.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-    return this.parseResponse(responseText);
+      return this.parseResponse(responseText);
+    } catch (error) {
+      if (error instanceof RequestTimeoutException) {
+        this.logger.error(
+          `AI request timeout after ${this.timeout}ms`,
+          error.stack,
+        );
+        throw error;
+      }
+      this.logger.error('Error calling Gemini API', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Execute a promise with timeout
+   */
+  private async executeWithTimeout<T>(
+    promise: Promise<T>,
+    timeoutMs: number,
+  ): Promise<T> {
+    return Promise.race([
+      promise,
+      new Promise<T>((_, reject) =>
+        setTimeout(
+          () =>
+            reject(
+              new RequestTimeoutException(
+                `AI request exceeded ${timeoutMs}ms timeout`,
+              ),
+            ),
+          timeoutMs,
+        ),
+      ),
+    ]);
   }
 
   private parseResponse(responseText: string): AiResponseDTO {

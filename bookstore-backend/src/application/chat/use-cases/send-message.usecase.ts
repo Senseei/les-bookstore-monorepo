@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable,
   Logger,
+  RequestTimeoutException,
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { Transactional } from 'typeorm-transactional';
@@ -61,9 +62,20 @@ export class SendMessage {
 
       response = await this.aiGateway.generateResponse(prompt, context);
     } catch (error) {
+      // Handle timeout specifically
+      if (error instanceof RequestTimeoutException) {
+        this.logger.error(
+          `AI request timeout for user ${userId}: ${error.message}`,
+        );
+        throw new ServiceUnavailableException(
+          'O assistente está demorando muito para responder. Por favor, tente novamente em alguns instantes.',
+        );
+      }
+
+      // Handle other errors
       this.logger.error('Error processing message', error);
       throw new ServiceUnavailableException(
-        'AI service is currently unavailable. Please try again later.',
+        'O serviço de assistente está temporariamente indisponível. Tente novamente mais tarde.',
       );
     }
 
@@ -99,13 +111,33 @@ export class SendMessage {
         chat.user.id,
         10,
       );
+
+      // ✅ Log for debugging
+      this.logger.debug(
+        `Purchase history loaded: ${purchaseHistory?.length || 0} books`,
+      );
     }
 
     if (actions.includes(AiAction.INCLUDE_AVAILABLE_BOOKS)) {
+      this.logger.debug('Loading available books...');
       const books = await this.booksService.findAll(
         conversationSummary.metadata?.nextPage || 1,
-        20,
+        50,
       );
+      availableBooks = books.items;
+      this.logger.debug(
+        `Available catalog loaded: ${availableBooks?.length || 0} books from page ${conversationSummary.metadata?.nextPage || 1}`,
+      );
+    }
+
+    if (
+      !availableBooks &&
+      currentMessage.toLowerCase().match(/recomen|sugeri|livro/)
+    ) {
+      this.logger.warn(
+        'User asking for recommendations but no catalog loaded. Loading default catalog.',
+      );
+      const books = await this.booksService.findAll(1, 50);
       availableBooks = books.items;
     }
 
