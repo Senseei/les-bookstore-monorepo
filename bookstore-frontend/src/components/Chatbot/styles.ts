@@ -75,6 +75,35 @@ export const ChatTitle = styled.h3`
   margin: 0;
 `
 
+export const HeaderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.SPACING.XS};
+`
+
+export const ResetButton = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.COLORS.NEUTRAL_50};
+  padding: ${({ theme }) => theme.SPACING.XS};
+  border-radius: ${({ theme }) => theme.BORDER_RADIUS.SM};
+  cursor: pointer;
+  transition: background-color ${({ theme }) => theme.TRANSITIONS.NORMAL};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.COLORS.PRIMARY_DARK};
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: ${({ theme }) => theme.SHADOWS.FOCUS}
+      ${({ theme }) => theme.COLORS.PRIMARY_LIGHT}40;
+  }
+`
+
 export const CloseButton = styled.button`
   background: none;
   border: none;

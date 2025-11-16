@@ -1,4 +1,4 @@
-import { ChatCircle, PaperPlaneTilt, X } from 'phosphor-react'
+import { ChatCircle, PaperPlaneTilt, Trash, X } from 'phosphor-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import type { ChatMessageDTO } from '@/dtos/chat'
@@ -106,6 +106,17 @@ export function Chatbot() {
     }
   }
 
+  const resetConversation = async () => {
+    try {
+      await ChatService.resetConversation()
+      setMessages([])
+      toast.showSuccess('Conversa resetada com sucesso.')
+    } catch (error) {
+      console.error('Erro ao resetar conversa:', error)
+      toast.showError('Erro ao resetar conversa. Tente novamente.')
+    }
+  }
+
   return (
     <>
       {/* Floating button */}
@@ -124,12 +135,23 @@ export function Chatbot() {
           {/* Header */}
           <S.ChatHeader>
             <S.ChatTitle>Assistente Virtual</S.ChatTitle>
-            <S.CloseButton
-              onClick={() => setIsOpen(false)}
-              aria-label="Fechar chat"
-            >
-              <X size={20} weight="bold" />
-            </S.CloseButton>
+            <S.HeaderActions>
+              {messages.length > 0 && (
+                <S.ResetButton
+                  onClick={resetConversation}
+                  aria-label="Resetar conversa"
+                  title="Resetar conversa"
+                >
+                  <Trash size={18} weight="bold" />
+                </S.ResetButton>
+              )}
+              <S.CloseButton
+                onClick={() => setIsOpen(false)}
+                aria-label="Fechar chat"
+              >
+                <X size={20} weight="bold" />
+              </S.CloseButton>
+            </S.HeaderActions>
           </S.ChatHeader>
 
           {/* Messages */}
