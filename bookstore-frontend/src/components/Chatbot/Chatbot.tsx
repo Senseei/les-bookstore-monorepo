@@ -32,7 +32,14 @@ export function Chatbot() {
     try {
       const conversation = await ChatService.getConversation()
       setMessages(conversation.messages)
-    } catch (error) {
+    } catch (error: unknown) {
+      // If conversation doesn't exist (404), show empty chat
+      // Conversation will be created automatically on first message
+      const apiError = error as { statusCode?: number }
+      if (apiError.statusCode === 404) {
+        setMessages([])
+        return
+      }
       console.error('Erro ao carregar conversa:', error)
       toast.showError('Erro ao carregar conversa. Tente novamente.')
     }
