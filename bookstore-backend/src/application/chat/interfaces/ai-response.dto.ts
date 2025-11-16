@@ -5,22 +5,16 @@ export interface RecommendedBook {
   title: string;
 }
 
+interface Metadata {
+  booksRecommended?: RecommendedBook[];
+  nextPage?: number;
+  requiredActions?: AiAction[];
+}
 export class AiResponseDTO {
   message?: string;
-  metadata?: {
-    booksRecommended?: RecommendedBook[];
-    nextPage?: number;
-    requiredActions?: AiAction[];
-  };
+  metadata?: Metadata;
 
-  constructor(
-    message?: string,
-    metadata?: {
-      booksRecommended?: RecommendedBook[];
-      nextPage?: number;
-      requiredActions?: AiAction[];
-    },
-  ) {
+  constructor(message?: string, metadata?: Metadata) {
     this.message = message;
     this.metadata = metadata;
   }
