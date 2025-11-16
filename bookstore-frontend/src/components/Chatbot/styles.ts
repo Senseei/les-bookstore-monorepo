@@ -206,11 +206,26 @@ export const RecommendedBookCard = styled.div`
   background-color: ${({ theme }) => theme.COLORS.NEUTRAL_100};
   border-radius: ${({ theme }) => theme.BORDER_RADIUS.SM};
   border: 1px solid ${({ theme }) => theme.COLORS.NEUTRAL_200};
-  transition: background-color ${({ theme }) => theme.TRANSITIONS.NORMAL};
+  transition: all ${({ theme }) => theme.TRANSITIONS.NORMAL};
   cursor: pointer;
+  user-select: none;
 
   &:hover {
-    background-color: ${({ theme }) => theme.COLORS.NEUTRAL_200};
+    background-color: ${({ theme }) => theme.COLORS.PRIMARY_LIGHTER}20;
+    border-color: ${({ theme }) => theme.COLORS.PRIMARY_MAIN};
+    transform: translateY(-1px);
+    box-shadow: ${({ theme }) => theme.SHADOWS.SM};
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: ${({ theme }) => theme.SHADOWS.FOCUS}
+      ${({ theme }) => theme.COLORS.PRIMARY_LIGHT}40;
+    border-color: ${({ theme }) => theme.COLORS.PRIMARY_MAIN};
   }
 `
 
@@ -224,6 +239,10 @@ export const LoadingBubble = styled.div`
   padding: ${({ theme }) => theme.SPACING.MD};
   border-radius: ${({ theme }) => theme.BORDER_RADIUS.LG};
   border: 1px solid ${({ theme }) => theme.COLORS.NEUTRAL_200};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.SPACING.XS};
 `
 
 export const LoadingDots = styled.div`
@@ -238,6 +257,13 @@ export const LoadingDot = styled.div<{ delay: string }>`
   border-radius: 50%;
   animation: ${bounce} 1.4s infinite ease-in-out;
   animation-delay: ${({ delay }) => delay};
+`
+
+export const LoadingMessage = styled.span`
+  font-size: ${({ theme }) => theme.FONT_SIZE.XSMALL};
+  color: ${({ theme }) => theme.COLORS.NEUTRAL_500};
+  text-align: center;
+  display: block;
 `
 
 export const InputContainer = styled.div`
