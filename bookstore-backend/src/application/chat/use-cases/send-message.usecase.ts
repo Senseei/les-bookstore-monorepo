@@ -61,6 +61,35 @@ export class SendMessage {
       );
 
       response = await this.aiGateway.generateResponse(prompt, context);
+
+      // ✅ VALIDATION: Remove hallucinated book IDs
+      if (response.metadata?.booksRecommended && context.availableBooks) {
+        const catalogIds = new Set(
+          context.availableBooks.map((book) => book.id),
+        );
+        const validRecommendations = response.metadata.booksRecommended.filter(
+          (rec) => {
+            const isValid = catalogIds.has(rec.id);
+            if (!isValid) {
+              this.logger.warn(
+                `AI hallucinated book ID: ${rec.id} - "${rec.title}". Removing from recommendations.`,
+              );
+            }
+            return isValid;
+          },
+        );
+        response.metadata.booksRecommended = validRecommendations;
+
+        // If ALL recommendations were hallucinated, warn in the message
+        if (
+          validRecommendations.length === 0 &&
+          response.metadata.booksRecommended.length > 0
+        ) {
+          this.logger.error(
+            'AI hallucinated ALL book recommendations. Catalog not properly loaded?',
+          );
+        }
+      }
     } catch (error) {
       // Handle timeout specifically
       if (error instanceof RequestTimeoutException) {
