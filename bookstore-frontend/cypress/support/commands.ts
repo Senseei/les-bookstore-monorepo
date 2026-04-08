@@ -7,6 +7,7 @@ declare global {
     interface Chainable {
       createRealUser(userData?: any): Chainable<any>
       createAdminUser(userData?: any): Chainable<any>
+      createCustomerWithOrders(): Chainable<any>
       loginRealUser(credentials: {
         email: string
         password: string
@@ -133,20 +134,17 @@ Cypress.Commands.add(
           )
 
           // Set authentication in localStorage using the correct key
-          cy.window().then((window) => {
+          // Chain the return to ensure localStorage is set before continuing
+          return cy.window().then((window) => {
             window.localStorage.setItem('auth-token', JSON.stringify(tokenData))
-          })
-
-          // Reload the page to trigger AuthProvider initialization
-          // This ensures axios headers are set properly
-          cy.reload()
-
-          return cy.wrap({
-            token: tokenData,
-            user: {
-              id: userId,
-              email: credentials.email,
-            },
+            
+            return {
+              token: tokenData,
+              user: {
+                id: userId,
+                email: credentials.email,
+              },
+            }
           })
         } else {
           cy.log('Login failed:', response.body)
@@ -157,16 +155,16 @@ Cypress.Commands.add(
             refreshToken: 'mock-refresh-token',
           }
 
-          cy.window().then((window) => {
+          return cy.window().then((window) => {
             window.localStorage.setItem('auth-token', JSON.stringify(mockToken))
-          })
-
-          return cy.wrap({
-            token: mockToken,
-            user: {
-              id: 'mock-user-id',
-              email: credentials.email,
-            },
+            
+            return {
+              token: mockToken,
+              user: {
+                id: 'mock-user-id',
+                email: credentials.email,
+              },
+            }
           })
         }
       })
@@ -493,6 +491,70 @@ Cypress.Commands.add('clearAuth', () => {
     window.localStorage.removeItem('auth-token')
   })
   Cypress.env('authToken', null)
+})
+
+/**
+ * Creates a customer user with at least one order for testing
+ */
+Cypress.Commands.add('createCustomerWithOrders', () => {
+  const apiUrl = Cypress.env('API_URL') || 'http://localhost:3000'
+
+  return cy.createRealUser().then((user) => {
+    const typedUser = user as {
+      id: string
+      email: string
+      name: string
+      token?: { accessToken: string; refreshToken: string }
+    }
+
+    // Create a test book
+    return cy
+      .request({
+        method: 'POST',
+        url: `${apiUrl}/api/test/create-book`,
+        body: {
+          title: `Test Book ${Date.now()}`,
+          author: 'Test Author',
+          publisher: 'Test Publisher',
+          isbn: `978${Date.now().toString().slice(-10)}`,
+          price: 50.0,
+          stock: 100,
+          active: true,
+        },
+        failOnStatusCode: false,
+      })
+      .then((bookResponse) => {
+        if (bookResponse.status !== 201 && bookResponse.status !== 200) {
+          cy.log('⚠️ Book creation failed:', bookResponse.status)
+          return cy.wrap(typedUser)
+        }
+
+        const book = bookResponse.body
+        cy.log('✅ Book created:', book.id)
+
+        // Create an order for this user
+        return cy
+          .request({
+            method: 'POST',
+            url: `${apiUrl}/api/test/create-order`,
+            body: {
+              userId: typedUser.id,
+              bookId: book.id,
+              quantity: 1,
+            },
+            failOnStatusCode: false,
+          })
+          .then((orderResponse) => {
+            if (orderResponse.status === 201 || orderResponse.status === 200) {
+              cy.log('✅ Order created for user:', typedUser.email)
+            } else {
+              cy.log('⚠️ Order creation failed:', orderResponse.status)
+              cy.log('Response:', JSON.stringify(orderResponse.body))
+            }
+            return cy.wrap(typedUser)
+          })
+      })
+  })
 })
 
 export {}
